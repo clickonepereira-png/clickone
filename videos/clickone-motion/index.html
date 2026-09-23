@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
-    <title>clickone — motion vertical 9:16</title>
+    <title>Aportes — motion vertical 9:16</title>
     <script src="assets/vendor/gsap.min.js"></script>
     <style>
       @font-face {
@@ -59,279 +59,333 @@
       }
 
       /* ---------- shared ---------- */
-      .scene {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 0 90px;
-      }
       .mask {
         display: block;
         overflow: hidden;
-        padding: 0 24px;
+        padding: 0 16px;
+        margin: 0 -16px;
       }
-      .mask > span {
+      .mask > span,
+      .mask > div {
         display: block;
       }
-      .label {
-        font-family: "Inter", sans-serif;
-        font-weight: 600;
-        font-size: 36px;
-        letter-spacing: 0.38em;
-        text-transform: uppercase;
-        color: var(--blue);
-      }
-
-      /* ---------- decor ---------- */
-      .dots {
+      .layer {
         position: absolute;
-        width: 220px;
-        height: 220px;
+        left: 90px;
+        right: 90px;
       }
-      #dots-a {
-        left: 70px;
-        top: 250px;
-      }
-      #dots-b {
-        right: 70px;
-        bottom: 250px;
-      }
-      #ring {
+      .icon {
         position: absolute;
-        left: 140px;
-        top: 560px;
-        width: 800px;
-        height: 800px;
-      }
-      #ring svg {
         display: block;
-        width: 100%;
-        height: 100%;
         overflow: visible;
       }
-      .sweep {
+
+      /* ---------- vector transitions ---------- */
+      .iris {
         position: absolute;
-        left: -400px;
-        width: 1880px;
-        height: 150px;
-        border-radius: 75px;
+        width: 3400px;
+        height: 3400px;
+        left: -870px; /* centred on the coin (≈ 830, 560) */
+        top: -1140px;
+        border-radius: 50%;
       }
-      #sweep-a {
-        top: 780px;
+      #iris-blue {
         background: var(--blue);
       }
-      #sweep-b {
-        top: 960px;
+      #iris-white {
+        background: var(--white);
+      }
+      .band {
+        position: absolute;
+        left: -500px;
+        width: 2080px;
+        border-radius: 999px;
+      }
+      #band-a {
+        top: 820px;
+        height: 170px;
+        background: var(--blue);
+      }
+      #band-b {
+        top: 1010px;
+        height: 90px;
         background: var(--sky);
       }
-      #sweep-c {
-        top: 870px;
+      #band-c {
+        top: 730px;
         height: 60px;
         background: var(--navy);
       }
-
-      /* ---------- scene 1 ---------- */
-      #s1 {
-        gap: 6px;
-      }
-      #s1-bar {
-        width: 120px;
-        height: 12px;
-        border-radius: 6px;
+      #panel {
+        position: absolute;
+        top: -200px;
+        left: 0;
+        width: 420px;
+        height: 2320px;
         background: var(--blue);
-        margin-bottom: 34px;
       }
-      #s1-big {
-        font-weight: 900;
-        font-size: 196px;
-        line-height: 1;
-        letter-spacing: -0.03em;
+      #panel-thin {
+        position: absolute;
+        top: -200px;
+        left: 0;
+        width: 70px;
+        height: 2320px;
+        background: var(--sky);
+      }
+
+      /* ---------- continuity accents ---------- */
+      #acc-dots {
+        position: absolute;
+        left: 90px;
+        top: 290px;
+        width: 170px;
+        height: 90px;
+      }
+      #acc-ring {
+        position: absolute;
+        left: 880px;
+        top: 1500px;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 10px solid var(--blue);
+      }
+
+      /* ---------- S1 · ¿Y cómo funcionan los aportes? ---------- */
+      #s1 {
+        top: 600px;
+      }
+      #s1-a {
+        font-weight: 500;
+        font-size: 92px;
+        line-height: 1.1;
+        color: var(--navy);
+        transform-origin: 0% 50%;
+      }
+      #s1-b {
+        font-weight: 600;
+        font-size: 78px;
+        line-height: 1.15;
+        margin-top: 26px;
         color: var(--navy);
       }
-      #s1-mas {
+      #s1-c {
+        font-weight: 900;
+        font-size: 158px;
+        line-height: 1.02;
+        letter-spacing: -0.04em;
+        color: var(--blue);
+        transform-origin: 0% 60%;
+      }
+      #coin {
+        left: 760px;
+        top: 450px;
+        width: 150px;
+        height: 150px;
+      }
+
+      /* ---------- S2 · EN SALUD CERO PESOS ---------- */
+      #s2-top {
+        top: 430px;
         display: flex;
-        align-items: flex-end;
+        align-items: center;
+        gap: 30px;
+      }
+      #cross {
+        position: relative;
+        flex: none;
+        width: 96px;
+        height: 96px;
+      }
+      #s2-lbl {
+        font-family: "Inter", sans-serif;
+        font-weight: 800;
+        font-size: 66px;
+        letter-spacing: 0.16em;
+        color: var(--blue);
+      }
+      #s2-big {
+        top: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #cero {
+        font-weight: 900;
+        font-size: 300px;
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+        color: var(--navy);
+      }
+      #pesos {
+        font-weight: 900;
+        font-size: 244px;
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+        color: var(--blue);
+      }
+      #pesos-bar {
+        width: 620px;
+        height: 22px;
+        border-radius: 11px;
+        background: var(--blue);
+        margin-top: 44px;
+      }
+
+      /* ---------- S3 · En pensión ---------- */
+      #s3 {
+        top: 470px;
+      }
+      #pen {
         font-weight: 300;
         font-style: italic;
-        font-size: 270px;
-        line-height: 1;
+        font-size: 124px;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        color: var(--blue);
+      }
+      #clock {
+        left: 800px;
+        top: 440px;
+        width: 150px;
+        height: 150px;
+      }
+      #p-body {
+        max-width: 820px;
+        margin-top: 70px;
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 60px;
+        line-height: 1.3;
+        color: var(--navy);
+      }
+      #p-body .w {
+        display: inline-block;
+        margin-right: 0.26em;
+      }
+      #sem-wrap {
+        position: relative;
+        margin-top: 30px;
+      }
+      #hl {
+        position: absolute;
+        left: -24px;
+        top: 34px;
+        width: 860px;
+        height: 250px;
+        border-radius: 24px;
+        background: var(--mist);
+      }
+      #sem {
+        position: relative;
+        font-weight: 900;
+        font-size: 150px;
+        line-height: 1.02;
         letter-spacing: -0.04em;
         color: var(--blue);
       }
-      #s1-dot {
-        display: block;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: var(--blue);
-        margin: 0 0 42px 10px;
-      }
-
-      /* ---------- scene 2 ---------- */
-      #s2 {
-        align-items: flex-start;
-        padding-left: 110px;
-        gap: 44px;
-      }
-      #s2 .label {
-        margin-bottom: 20px;
-      }
-      .row {
-        display: flex;
-        align-items: center;
-        gap: 40px;
-      }
-      .icon {
-        flex: none;
-        width: 150px;
-        height: 150px;
-        border-radius: 40px;
-        background: var(--blue);
-        display: grid;
-        place-items: center;
-      }
-      .icon.alt {
-        background: var(--white);
-        border: 7px solid var(--blue);
-      }
-      .icon svg {
-        width: 82px;
-        height: 82px;
-        overflow: visible;
-      }
-      .word {
-        font-size: 112px;
-        line-height: 1.05;
-        letter-spacing: -0.03em;
-      }
-      #w1 {
+      #trab {
+        position: relative;
         font-weight: 900;
+        font-style: italic;
+        font-size: 124px;
+        line-height: 1.05;
+        letter-spacing: -0.04em;
         color: var(--navy);
       }
-      #w2 {
-        font-weight: 300;
-        font-style: italic;
-        color: var(--blue);
-      }
-      #w3 {
-        font-weight: 800;
-        color: var(--blue);
-      }
 
-      /* ---------- scene 3 ---------- */
-      #s3 {
-        gap: 0;
-      }
-      #s3 .label {
-        margin-bottom: 30px;
-      }
-      #s3-num {
+      /* ---------- S4 · Y EN ARL ---------- */
+      #s4a {
+        top: 290px;
         display: flex;
-        align-items: flex-start;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: 50% 0%;
+      }
+      #arl {
+        font-family: "Inter", sans-serif;
+        font-weight: 800;
+        font-size: 70px;
+        letter-spacing: 0.18em;
+        color: var(--blue);
+      }
+      #aportas {
+        font-weight: 700;
+        font-size: 88px;
+        line-height: 1.05;
+        letter-spacing: 0.02em;
+        color: var(--navy);
+        margin-top: 24px;
+      }
+      #dias {
         font-weight: 900;
-        font-size: 200px;
+        font-size: 196px;
         line-height: 1;
         letter-spacing: -0.05em;
         color: var(--blue);
       }
-      #s3-num small {
-        font-size: 120px;
-        font-weight: 600;
-        margin-top: 22px;
-        letter-spacing: 0;
-      }
-      #s3-sub {
-        font-weight: 300;
+      #mes {
+        font-weight: 800;
         font-style: italic;
-        font-size: 84px;
-        color: var(--navy);
-        margin-top: 10px;
-      }
-      #bars {
-        position: absolute;
-        left: 50%;
-        margin-left: -150px;
-        top: 1420px;
-        width: 300px;
-        height: 170px;
-        display: flex;
-        align-items: flex-end;
-        gap: 30px;
-      }
-      .bar {
-        display: block;
-        flex: 1;
-        border-radius: 14px 14px 4px 4px;
-        background: var(--blue);
-      }
-      #b1 {
-        height: 70px;
-        background: var(--mist);
-      }
-      #b2 {
-        height: 115px;
-        background: var(--sky);
-      }
-      #b3 {
-        height: 170px;
-      }
-
-      /* ---------- scene 4 ---------- */
-      #s4 {
-        gap: 0;
-      }
-      #mark {
-        position: relative;
-        width: 200px;
-        height: 200px;
-        margin-bottom: 60px;
-      }
-      #cursor {
-        position: absolute;
-        left: 54px;
-        top: 46px;
-        width: 100px;
-        height: 110px;
-      }
-      .ripple {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        border: 5px solid var(--blue);
-      }
-      #wordmark {
-        display: flex;
-        font-size: 170px;
-        line-height: 1;
-        letter-spacing: -0.045em;
-      }
-      #wm-a {
-        font-weight: 900;
+        font-size: 116px;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
         color: var(--navy);
       }
-      #wm-b {
-        font-weight: 300;
-        color: var(--blue);
+      #s4b {
+        top: 850px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
-      #underline {
-        width: 560px;
-        height: 10px;
-        border-radius: 5px;
-        background: var(--blue);
-        margin: 44px 0 40px;
-      }
-      #tagline {
+      #asi {
         font-family: "Inter", sans-serif;
         font-weight: 500;
-        font-size: 46px;
-        letter-spacing: 0.02em;
+        font-size: 58px;
         color: var(--navy);
+      }
+      #prot {
+        font-weight: 900;
+        font-size: 172px;
+        line-height: 1;
+        letter-spacing: -0.045em;
+        color: var(--blue);
+      }
+      #tiempo {
+        font-weight: 800;
+        font-size: 104px;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--blue);
+      }
+      #end-row {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        margin-top: 60px;
+      }
+      #shield {
+        position: relative;
+        width: 140px;
+        height: 160px;
+      }
+      #listo {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        height: 110px;
+        padding: 0 46px 0 36px;
+        border-radius: 55px;
+        background: var(--blue);
+        color: var(--white);
+        font-weight: 700;
+        font-style: italic;
+        font-size: 60px;
+      }
+      #listo svg {
+        width: 50px;
+        height: 50px;
+        overflow: visible;
       }
     </style>
   </head>
@@ -345,219 +399,239 @@
       data-height="1920"
     >
       <div id="stage" class="clip" data-start="0" data-duration="4" data-track-index="0">
-        <!-- geometric decor -->
-        <svg id="dots-a" class="dots" viewBox="0 0 220 220" aria-hidden="true">
-          <g fill="#7d9bff">
-            <circle cx="10" cy="10" r="7" /><circle cx="60" cy="10" r="7" /><circle cx="110" cy="10" r="7" /><circle cx="160" cy="10" r="7" />
-            <circle cx="10" cy="60" r="7" /><circle cx="60" cy="60" r="7" /><circle cx="110" cy="60" r="7" />
-            <circle cx="10" cy="110" r="7" /><circle cx="60" cy="110" r="7" />
-            <circle cx="10" cy="160" r="7" />
-          </g>
-        </svg>
-        <svg id="dots-b" class="dots" viewBox="0 0 220 220" aria-hidden="true">
-          <g fill="#7d9bff">
-            <circle cx="210" cy="210" r="7" /><circle cx="160" cy="210" r="7" /><circle cx="110" cy="210" r="7" /><circle cx="60" cy="210" r="7" />
-            <circle cx="210" cy="160" r="7" /><circle cx="160" cy="160" r="7" /><circle cx="110" cy="160" r="7" />
-            <circle cx="210" cy="110" r="7" /><circle cx="160" cy="110" r="7" />
-            <circle cx="210" cy="60" r="7" />
-          </g>
+        <!-- ============ S1 ============ -->
+        <div id="s1" class="layer">
+          <div class="mask"><span id="s1-a">¿Y cómo</span></div>
+          <div class="mask"><span id="s1-b">funcionan los</span></div>
+          <div class="mask"><span id="s1-c">aportes?</span></div>
+        </div>
+        <svg id="coin" class="icon" viewBox="0 0 150 150" aria-hidden="true">
+          <circle cx="75" cy="75" r="72" fill="#1f4fff" />
+          <circle cx="75" cy="75" r="54" fill="none" stroke="#fff" stroke-width="5" opacity="0.45" />
+          <path
+            d="M92 55 C88 47 81 44 74 44 C64 44 57 50 57 58 C57 76 93 70 93 90 C93 99 85 106 75 106 C66 106 59 102 56 94 M75 34 L75 116"
+            fill="none"
+            stroke="#fff"
+            stroke-width="9"
+            stroke-linecap="round"
+          />
         </svg>
 
-        <!-- the travelling ring: S1 halo → S2 accent → S3 progress → S4 logo mark -->
-        <div id="ring" aria-hidden="true">
-          <svg viewBox="0 0 800 800">
-            <circle id="ring-fill" cx="400" cy="400" r="380" fill="#1f4fff" />
-            <circle
-              id="ring-line"
-              cx="400"
-              cy="400"
-              r="380"
-              fill="none"
-              stroke="#e3eaff"
-              stroke-width="10"
-              stroke-linecap="round"
-              pathLength="1"
-              stroke-dasharray="1 1"
-              transform="rotate(-90 400 400)"
-            />
+        <!-- iris mask transition S1 → S2 -->
+        <div id="iris-blue" class="iris"></div>
+        <div id="iris-white" class="iris"></div>
+
+        <!-- continuity accents -->
+        <svg id="acc-dots" viewBox="0 0 170 90" aria-hidden="true">
+          <g fill="#7d9bff">
+            <circle cx="10" cy="10" r="8" /><circle cx="60" cy="10" r="8" /><circle cx="110" cy="10" r="8" /><circle cx="160" cy="10" r="8" />
+            <circle cx="10" cy="60" r="8" /><circle cx="60" cy="60" r="8" /><circle cx="110" cy="60" r="8" /><circle cx="160" cy="60" r="8" />
+          </g>
+        </svg>
+        <div id="acc-ring"></div>
+
+        <!-- ============ S2 ============ -->
+        <div id="s2-top" class="layer">
+          <svg id="cross" viewBox="0 0 96 96" aria-hidden="true">
+            <rect x="33" y="4" width="30" height="88" rx="9" fill="#1f4fff" /><rect x="4" y="33" width="88" height="30" rx="9" fill="#1f4fff" />
           </svg>
+          <div class="mask"><span id="s2-lbl">EN SALUD</span></div>
+        </div>
+        <div id="s2-big" class="layer">
+          <div class="mask"><span id="cero">CERO</span></div>
+          <div class="mask"><span id="pesos">PESOS</span></div>
+          <div id="pesos-bar"></div>
         </div>
 
-        <!-- scene 1 — hook -->
-        <div id="s1" class="scene">
-          <div id="s1-bar"></div>
-          <div class="mask"><span id="s1-lbl" class="label">Tu marca</span></div>
-          <div class="mask"><span id="s1-big">MERECE</span></div>
-          <div id="s1-mas"><span id="s1-mas-t">más</span><span id="s1-dot"></span></div>
-        </div>
-
-        <!-- scene 2 — build -->
-        <div id="s2" class="scene">
-          <div class="mask"><span id="s2-lbl" class="label">Lo que hacemos</span></div>
-          <div class="row" id="r1">
-            <div class="icon" id="i1">
-              <svg viewBox="0 0 80 80" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round">
-                <circle class="draw" cx="40" cy="40" r="32" pathLength="1" />
-                <circle class="draw" cx="40" cy="40" r="16" pathLength="1" />
-                <circle cx="40" cy="40" r="4" fill="#fff" stroke="none" />
-              </svg>
-            </div>
-            <div class="mask"><span class="word" id="w1">Estrategia</span></div>
+        <!-- ============ S3 ============ -->
+        <div id="s3" class="layer">
+          <div class="mask"><span id="pen">En pensión</span></div>
+          <div id="p-body">
+            <span class="w">puedes</span><span class="w">cotizar</span><span class="w">de</span><span class="w">acuerdo</span><span class="w">con</span><span class="w">las</span>
           </div>
-          <div class="row" id="r2">
-            <div class="icon alt" id="i2">
-              <svg viewBox="0 0 80 80" fill="none" stroke="#1f4fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-                <path class="draw" d="M14 66 L20 46 L52 14 L66 28 L34 60 Z" pathLength="1" />
-                <path class="draw" d="M44 22 L58 36" pathLength="1" />
-              </svg>
-            </div>
-            <div class="mask"><span class="word" id="w2">Diseño</span></div>
-          </div>
-          <div class="row" id="r3">
-            <div class="icon" id="i3">
-              <svg viewBox="0 0 80 80" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-                <path class="draw" d="M8 62 L28 40 L42 52 L70 20" pathLength="1" />
-                <path class="draw" d="M52 20 L70 20 L70 38" pathLength="1" />
-              </svg>
-            </div>
-            <div class="mask"><span class="word" id="w3">Contenido</span></div>
+          <div id="sem-wrap">
+            <div id="hl"></div>
+            <div class="mask"><span id="sem">semanas</span></div>
+            <div class="mask"><span id="trab">trabajadas.</span></div>
           </div>
         </div>
+        <svg id="clock" class="icon" viewBox="0 0 150 150" aria-hidden="true">
+          <circle cx="75" cy="75" r="64" fill="#fff" stroke="#1f4fff" stroke-width="11" />
+          <g fill="#1f4fff">
+            <circle cx="75" cy="24" r="5" /><circle cx="126" cy="75" r="5" /><circle cx="75" cy="126" r="5" /><circle cx="24" cy="75" r="5" />
+          </g>
+          <line id="hand-h" x1="75" y1="75" x2="75" y2="48" stroke="#0b1f66" stroke-width="10" stroke-linecap="round" />
+          <line id="hand-m" x1="75" y1="75" x2="104" y2="75" stroke="#1f4fff" stroke-width="8" stroke-linecap="round" />
+          <circle cx="75" cy="75" r="8" fill="#0b1f66" />
+        </svg>
 
-        <!-- scene 3 — punch -->
-        <div id="s3" class="scene">
-          <div class="mask"><span id="s3-lbl" class="label">Resultados</span></div>
-          <div id="s3-num"><span id="s3-plus">+</span><span id="s3-count">0</span><small>%</small></div>
-          <div class="mask"><span id="s3-sub">más alcance</span></div>
-        </div>
-        <div id="bars" aria-hidden="true">
-          <span class="bar" id="b1"></span><span class="bar" id="b2"></span><span class="bar" id="b3"></span>
-        </div>
+        <!-- band sweep S2 → S3 -->
+        <div id="band-b" class="band"></div>
+        <div id="band-a" class="band"></div>
+        <div id="band-c" class="band"></div>
 
-        <!-- scene 4 — resolve -->
-        <div id="s4" class="scene">
-          <div id="mark">
-            <span class="ripple" id="rp1"></span>
-            <span class="ripple" id="rp2"></span>
-            <svg id="cursor" viewBox="0 0 100 110">
-              <path d="M18 8 L18 88 L38 70 L52 100 L66 94 L52 64 L80 64 Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round" />
+        <!-- ============ S4 ============ -->
+        <div id="s4a" class="layer">
+          <div class="mask"><span id="arl">Y EN ARL</span></div>
+          <div class="mask"><span id="aportas">APORTAS</span></div>
+          <div class="mask"><span id="dias">30 DÍAS</span></div>
+          <div class="mask"><span id="mes">mes completo</span></div>
+        </div>
+        <div id="s4b" class="layer">
+          <div class="mask"><span id="asi">así estarás</span></div>
+          <div class="mask"><span id="prot">protegido</span></div>
+          <div class="mask"><span id="tiempo">todo el tiempo</span></div>
+          <div id="end-row">
+            <svg id="shield" viewBox="0 0 140 160" aria-hidden="true">
+              <path d="M70 6 L128 28 V76 C128 114 102 140 70 154 C38 140 12 114 12 76 V28 Z" fill="#1f4fff" />
+              <path id="shield-check" d="M42 80 L62 100 L100 58" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
             </svg>
+            <div id="listo">
+              <svg viewBox="0 0 50 50" aria-hidden="true">
+                <circle cx="25" cy="25" r="23" fill="#fff" />
+                <path d="M14 26 L22 34 L36 17" fill="none" stroke="#1f4fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>y listo</span>
+            </div>
           </div>
-          <div class="mask">
-            <div id="wordmark"><span id="wm-a">click</span><span id="wm-b">one</span></div>
-          </div>
-          <div id="underline"></div>
-          <div class="mask"><span id="tagline">Marketing que conecta</span></div>
         </div>
 
-        <!-- vector wipe bands -->
-        <div id="sweep-b" class="sweep"></div>
-        <div id="sweep-a" class="sweep"></div>
-        <div id="sweep-c" class="sweep"></div>
+        <!-- panel wipe S3 → S4 -->
+        <div id="panel"></div>
+        <div id="panel-thin"></div>
       </div>
+
+      <!-- ============ SFX (synthesized: tools/make_sfx.py) ============ -->
+      <audio id="sfx-01" src="assets/sfx/whoosh.wav" data-start="0" data-duration="0.32" data-track-index="10" data-volume="0.55"></audio>
+      <audio id="sfx-02" src="assets/sfx/pop.wav" data-start="0.16" data-duration="0.09" data-track-index="11" data-volume="0.8"></audio>
+      <audio id="sfx-03" src="assets/sfx/click.wav" data-start="0.3" data-duration="0.03" data-track-index="12" data-volume="0.8"></audio>
+      <audio id="sfx-04" src="assets/sfx/whoosh-fast.wav" data-start="0.66" data-duration="0.22" data-track-index="10" data-volume="0.7"></audio>
+      <audio id="sfx-05" src="assets/sfx/click.wav" data-start="0.88" data-duration="0.03" data-track-index="12" data-volume="0.7"></audio>
+      <audio id="sfx-06" src="assets/sfx/pop-high.wav" data-start="0.92" data-duration="0.07" data-track-index="11" data-volume="0.7"></audio>
+      <audio id="sfx-07" src="assets/sfx/impact.wav" data-start="1.02" data-duration="0.4" data-track-index="13" data-volume="0.9"></audio>
+      <audio id="sfx-08" src="assets/sfx/pop.wav" data-start="1.16" data-duration="0.09" data-track-index="11" data-volume="0.8"></audio>
+      <audio id="sfx-09" src="assets/sfx/whoosh.wav" data-start="1.58" data-duration="0.32" data-track-index="10" data-volume="0.6"></audio>
+      <audio id="sfx-10" src="assets/sfx/click.wav" data-start="1.8" data-duration="0.03" data-track-index="12" data-volume="0.7"></audio>
+      <audio id="sfx-11" src="assets/sfx/tick.wav" data-start="2" data-duration="0.025" data-track-index="14" data-volume="0.6"></audio>
+      <audio id="sfx-12" src="assets/sfx/tick.wav" data-start="2.15" data-duration="0.025" data-track-index="14" data-volume="0.6"></audio>
+      <audio id="sfx-13" src="assets/sfx/pop.wav" data-start="2.2" data-duration="0.09" data-track-index="11" data-volume="0.7"></audio>
+      <audio id="sfx-14" src="assets/sfx/tick.wav" data-start="2.3" data-duration="0.025" data-track-index="14" data-volume="0.6"></audio>
+      <audio id="sfx-15" src="assets/sfx/tick.wav" data-start="2.45" data-duration="0.025" data-track-index="14" data-volume="0.6"></audio>
+      <audio id="sfx-16" src="assets/sfx/whoosh-fast.wav" data-start="2.6" data-duration="0.22" data-track-index="10" data-volume="0.7"></audio>
+      <audio id="sfx-17" src="assets/sfx/click.wav" data-start="2.76" data-duration="0.03" data-track-index="12" data-volume="0.7"></audio>
+      <audio id="sfx-18" src="assets/sfx/impact.wav" data-start="2.92" data-duration="0.4" data-track-index="13" data-volume="0.85"></audio>
+      <audio id="sfx-19" src="assets/sfx/pop.wav" data-start="3.1" data-duration="0.09" data-track-index="11" data-volume="0.75"></audio>
+      <audio id="sfx-20" src="assets/sfx/whoosh-fast.wav" data-start="3.24" data-duration="0.22" data-track-index="10" data-volume="0.5"></audio>
+      <audio id="sfx-21" src="assets/sfx/pop-high.wav" data-start="3.4" data-duration="0.07" data-track-index="11" data-volume="0.7"></audio>
+      <audio id="sfx-22" src="assets/sfx/pop.wav" data-start="3.58" data-duration="0.09" data-track-index="15" data-volume="0.8"></audio>
+      <audio id="sfx-23" src="assets/sfx/confirm.wav" data-start="3.72" data-duration="0.28" data-track-index="16" data-volume="0.8"></audio>
     </div>
 
     <script>
       const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
-      const q = (s) => document.querySelector(s);
 
       // ---------- initial states ----------
-      gsap.set(["#s2", "#s3", "#s4", "#bars"], { autoAlpha: 0 });
-      gsap.set(".sweep", { xPercent: -110, rotation: -24, transformOrigin: "50% 50%" });
-      gsap.set("#ring-fill", { attr: { r: 0 } });
-      gsap.set("#ring-line", { attr: { "stroke-dashoffset": 1 } });
-      gsap.set(".draw", { attr: { "stroke-dasharray": "1 1", "stroke-dashoffset": 1 } });
-      gsap.set(["#cursor", ".ripple"], { transformOrigin: "50% 50%" });
+      gsap.set(".iris", { scale: 0, transformOrigin: "50% 50%" });
+      gsap.set(".band", { xPercent: -115, rotation: -26, transformOrigin: "50% 50%" });
+      gsap.set(["#panel", "#panel-thin"], { x: -700, skewX: -14 });
+      gsap.set(["#s2-top", "#s2-big", "#s3", "#clock", "#s4a", "#s4b"], { autoAlpha: 0 });
+      gsap.set(["#coin", "#cross", "#clock", "#shield"], { transformOrigin: "50% 50%" });
+      gsap.set(["#hand-m", "#hand-h"], { svgOrigin: "75 75" });
 
-      // ---------- S1 · hook (0.00 – 1.05) ----------
-      tl.fromTo("#dots-a", { scale: 0, opacity: 0, transformOrigin: "0% 0%" }, { scale: 1, opacity: 1, duration: 0.6 }, 0)
-        .fromTo("#dots-b", { scale: 0, opacity: 0, transformOrigin: "100% 100%" }, { scale: 1, opacity: 1, duration: 0.6 }, 0.1)
-        .fromTo("#ring", { scale: 0.6, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.9, ease: "power3.out" }, 0)
-        .to("#ring-line", { attr: { "stroke-dashoffset": 0 }, duration: 0.8, ease: "power2.inOut" }, 0.05)
-        .fromTo("#s1-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.4 }, 0)
-        .fromTo("#s1-lbl", { yPercent: 110 }, { yPercent: 0, duration: 0.45 }, 0.06)
-        .fromTo("#s1-big", { yPercent: 105 }, { yPercent: 0, duration: 0.5 }, 0.2)
-        .fromTo("#s1-mas-t", { scale: 0.3, opacity: 0, transformOrigin: "50% 80%" }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2.4)" }, 0.42)
-        .fromTo("#s1-dot", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, 0.6)
-        ;
+      // =====================================================
+      // S1 · 0.00 – 0.80  "¿Y cómo" → "funcionan los aportes?"
+      // =====================================================
+      tl.fromTo("#s1", { y: 120 }, { y: 0, duration: 0.8, ease: "power2.out" }, 0)
+        .fromTo("#s1-a", { yPercent: 110 }, { yPercent: 0, duration: 0.32 }, 0.02)
+        .fromTo("#acc-dots", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.4 }, 0.04)
+        .fromTo("#coin", { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.42, ease: "back.out(2.6)" }, 0.14)
+        .fromTo("#s1-b", { yPercent: 110 }, { yPercent: 0, duration: 0.34 }, 0.24)
+        .fromTo("#s1-c", { scale: 0.55, x: -60, opacity: 0 }, { scale: 1, x: 0, opacity: 1, duration: 0.42, ease: "back.out(1.7)" }, 0.3)
+        // "¿Y cómo" steps back so "aportes?" becomes the focus
+        .to("#s1-a", { scale: 0.72, opacity: 0.6, duration: 0.35, ease: "power3.out" }, 0.32)
+        .fromTo("#acc-ring", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, 0.34);
 
-      // exit S1 — words leave in opposite directions, bands wipe across
-      tl.to("#s1-lbl", { yPercent: -110, duration: 0.18, ease: "power3.in" }, 0.88)
-        .to("#s1-big", { yPercent: -105, duration: 0.2, ease: "power3.in" }, 0.9)
-        .to("#s1-mas", { x: 900, duration: 0.22, ease: "power3.in" }, 0.9)
-        .to("#s1-bar", { scaleX: 0, transformOrigin: "100% 50%", duration: 0.2, ease: "power2.in" }, 0.92)
-        .to("#sweep-b", { xPercent: 110, duration: 0.42, ease: "power3.inOut" }, 0.9)
-        .to("#sweep-a", { xPercent: 110, duration: 0.42, ease: "power3.inOut" }, 0.94)
-        .to("#sweep-c", { xPercent: 110, duration: 0.42, ease: "power3.inOut" }, 0.98)
-        .set("#s1", { autoAlpha: 0 }, 1.12);
+      // exit S1 + iris mask from the coin
+      tl.to(["#s1-a", "#s1-b", "#s1-c"], { x: -1100, duration: 0.2, ease: "power3.in", stagger: 0.03 }, 0.64)
+        .to("#coin", { scale: 1.25, duration: 0.1, ease: "power2.out" }, 0.64)
+        .to("#coin", { scale: 0, duration: 0.12, ease: "power3.in" }, 0.74)
+        .to("#iris-blue", { scale: 1, duration: 0.2, ease: "power3.in" }, 0.68)
+        .to("#iris-white", { scale: 1, duration: 0.24, ease: "power3.out" }, 0.84)
+        .set("#s1", { autoAlpha: 0 }, 0.88);
 
-      // ring shrinks into a top-right accent
-      tl.to("#ring", { x: 360, y: -610, scale: 0.16, duration: 0.55, ease: "expo.inOut" }, 0.95)
-        .to("#ring-line", { attr: { stroke: "#1f4fff", "stroke-width": 40 }, duration: 0.4 }, 1.0)
-        .to("#dots-a", { x: -40, opacity: 0.4, duration: 0.5 }, 1.0);
+      // accents travel with the cut
+      tl.to("#acc-dots", { x: 650, y: 1240, duration: 0.5, ease: "expo.inOut" }, 0.7)
+        .to("#acc-ring", { x: -60, y: -1180, duration: 0.5, ease: "expo.inOut" }, 0.7);
 
-      // ---------- S2 · build (1.10 – 2.05) ----------
-      tl.set("#s2", { autoAlpha: 1 }, 1.12)
-        .fromTo("#s2-lbl", { yPercent: 110 }, { yPercent: 0, duration: 0.4 }, 1.13);
-      ["1", "2", "3"].forEach((n, i) => {
-        const t = 1.14 + i * 0.16;
-        tl.fromTo(`#i${n}`, { scale: 0, rotation: -35 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.2)" }, t)
-          .fromTo(`#w${n}`, { xPercent: -105 }, { xPercent: 0, duration: 0.45 }, t + 0.05)
-          .to(`#i${n} .draw`, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power2.out", stagger: 0.06 }, t + 0.1);
+      // =====================================================
+      // S2 · 0.80 – 1.70  EN SALUD → CERO PESOS
+      // =====================================================
+      tl.set(["#s2-top", "#s2-big"], { autoAlpha: 1 }, 0.84)
+        .fromTo("#s2-lbl", { yPercent: 110 }, { yPercent: 0, duration: 0.34 }, 0.86)
+        .fromTo("#cross", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2.8)" }, 0.9)
+        .fromTo("#cero", { scale: 1.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "expo.out" }, 1.0)
+        .fromTo("#s2-big", { y: 0 }, { y: 14, duration: 0.05, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.04)
+        .fromTo("#pesos", { yPercent: 100 }, { yPercent: 0, duration: 0.36 }, 1.14)
+        .fromTo("#pesos-bar", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.34 }, 1.22)
+        .to(["#cero", "#pesos"], { scale: 1.05, duration: 0.26, ease: "sine.inOut" }, 1.3);
+
+      // exit S2 — slide out in opposite directions
+      tl.to("#s2-top", { y: -260, opacity: 0, duration: 0.18, ease: "power3.in" }, 1.56)
+        .to("#cero", { x: -1200, duration: 0.2, ease: "power3.in" }, 1.58)
+        .to("#pesos", { x: 1200, duration: 0.2, ease: "power3.in" }, 1.6)
+        .to("#pesos-bar", { scaleX: 0, transformOrigin: "100% 50%", duration: 0.16, ease: "power2.in" }, 1.58)
+        .to("#band-b", { xPercent: 115, duration: 0.4, ease: "power3.inOut" }, 1.56)
+        .to("#band-a", { xPercent: 115, duration: 0.4, ease: "power3.inOut" }, 1.6)
+        .to("#band-c", { xPercent: 115, duration: 0.4, ease: "power3.inOut" }, 1.64)
+        .set(["#s2-top", "#s2-big"], { autoAlpha: 0 }, 1.8);
+
+      tl.to("#acc-dots", { x: 650, y: 60, duration: 0.45, ease: "expo.inOut" }, 1.6)
+        .to("#acc-ring", { x: 0, y: -40, duration: 0.45, ease: "expo.inOut" }, 1.6);
+
+      // =====================================================
+      // S3 · 1.70 – 2.70  En pensión … semanas trabajadas.
+      // =====================================================
+      tl.set(["#s3", "#clock"], { autoAlpha: 1 }, 1.74)
+        .fromTo("#pen", { x: -420 }, { x: 0, duration: 0.4 }, 1.76)
+        .fromTo("#clock", { scale: 0, rotation: 90 }, { scale: 1, rotation: 0, duration: 0.42, ease: "back.out(2.4)" }, 1.82)
+        .fromTo("#p-body .w", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.028 }, 1.9)
+        .fromTo("#sem", { yPercent: 105 }, { yPercent: 0, duration: 0.36 }, 2.16)
+        .fromTo("#trab", { yPercent: 105 }, { yPercent: 0, duration: 0.36 }, 2.24)
+        .fromTo("#hl", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.42, ease: "expo.inOut" }, 2.18);
+      // clock ticks (synced with tick SFX)
+      [2.0, 2.15, 2.3, 2.45].forEach((t, i) => {
+        tl.to("#hand-m", { rotation: 90 * (i + 1), duration: 0.1, ease: "back.out(3)" }, t)
+          .to("#hand-h", { rotation: 22 * (i + 1), duration: 0.1, ease: "back.out(3)" }, t);
       });
 
-      // exit S2 — rows slide out left, staggered
-      tl.to("#s2-lbl", { yPercent: -110, duration: 0.2, ease: "power3.in" }, 1.78)
-        .to(["#r1", "#r2", "#r3"], { x: -1150, duration: 0.3, ease: "power3.in", stagger: 0.04 }, 1.78)
-        .set("#s2", { autoAlpha: 0 }, 2.12);
+      // exit S3 — push up
+      tl.to("#s3", { y: -520, opacity: 0, duration: 0.2, ease: "power3.in" }, 2.58)
+        .to("#clock", { scale: 0, rotation: -90, duration: 0.16, ease: "power3.in" }, 2.58)
+        .to("#panel-thin", { x: 1300, duration: 0.36, ease: "power3.inOut" }, 2.56)
+        .to("#panel", { x: 1300, duration: 0.36, ease: "power3.inOut" }, 2.6)
+        .set(["#s3", "#clock"], { autoAlpha: 0 }, 2.8);
 
-      // ring returns to centre and becomes the progress gauge
-      tl.to("#ring", { x: 0, y: -10, scale: 0.97, duration: 0.5, ease: "expo.inOut" }, 1.85)
-        .to("#ring-line", { attr: { "stroke-width": 14, "stroke-dashoffset": 1 }, duration: 0.3, ease: "power2.in" }, 1.85)
-        .to("#ring-line", { attr: { "stroke-dashoffset": 0 }, duration: 0.65, ease: "power3.out" }, 2.22)
-        .to("#dots-a", { x: 0, opacity: 1, duration: 0.4 }, 2.0);
+      tl.to("#acc-dots", { x: 650, y: 1300, duration: 0.45, ease: "expo.inOut" }, 2.6)
+        .to("#acc-ring", { x: -780, y: 0, duration: 0.45, ease: "expo.inOut" }, 2.6);
 
-      // ---------- S3 · punch (2.10 – 3.00) ----------
-      const counter = { v: 0 };
-      tl.set("#s3", { autoAlpha: 1 }, 2.1)
-        .set("#bars", { autoAlpha: 1 }, 2.1)
-        .fromTo("#s3-lbl", { yPercent: 110 }, { yPercent: 0, duration: 0.4 }, 2.12)
-        .fromTo("#s3-num", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.8)" }, 2.16)
-        .fromTo(counter, { v: 0 }, {
-          v: 200,
-          duration: 0.6,
-          ease: "power3.out",
-          onUpdate: () => (q("#s3-count").textContent = Math.round(counter.v)),
+      // =====================================================
+      // S4 · 2.70 – 4.00  Y EN ARL → 30 DÍAS → mes completo → protegido → y listo
+      // =====================================================
+      tl.set("#s4a", { autoAlpha: 1, y: 330 }, 2.7)
+        .fromTo("#arl", { x: 520 }, { x: 0, duration: 0.34 }, 2.74)
+        .fromTo("#aportas", { yPercent: 110 }, { yPercent: 0, duration: 0.3 }, 2.86)
+        .fromTo("#dias", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2.2)" }, 2.9)
+        .fromTo("#mes", { x: -300, yPercent: 100 }, { x: 0, yPercent: 0, duration: 0.34 }, 3.08)
+        // regroup: the ARL block rises and yields the bottom to the closing line
+        .to("#s4a", { y: 0, scale: 0.8, duration: 0.36, ease: "expo.inOut" }, 3.24)
+        .set("#s4b", { autoAlpha: 1 }, 3.3)
+        .fromTo("#asi", { yPercent: 110 }, { yPercent: 0, duration: 0.3 }, 3.32)
+        .fromTo("#prot", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.34, ease: "back.out(2)" }, 3.38)
+        .fromTo("#tiempo", { yPercent: 105 }, { yPercent: 0, duration: 0.3 }, 3.46)
+        .fromTo("#shield", { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(3)" }, 3.56)
+        .to("#shield-check", { attr: { "stroke-dashoffset": 0 }, duration: 0.2, ease: "power2.out" }, 3.66)
+        .fromTo("#listo", { scale: 0, opacity: 0, transformOrigin: "0% 50%" }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2.4)" }, 3.72);
 
-        }, 2.2)
-        .fromTo("#s3-sub", { yPercent: 105 }, { yPercent: 0, duration: 0.45 }, 2.36)
-        .fromTo(".bar", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.07 }, 2.3)
-        .to("#s3-count", { scale: 1.08, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out" }, 2.8);
-
-      // exit S3
-      tl.to("#s3-lbl", { yPercent: -110, duration: 0.22, ease: "power3.in" }, 2.9)
-        .to("#s3-num", { scale: 0.5, opacity: 0, duration: 0.2, ease: "power3.in" }, 2.88)
-        .to("#s3-sub", { yPercent: 105, duration: 0.22, ease: "power3.in" }, 2.92)
-        .to(".bar", { scaleY: 0, duration: 0.2, ease: "power3.in", stagger: 0.04 }, 2.9)
-        .set(["#s3", "#bars"], { autoAlpha: 0 }, 3.1);
-
-      // ring collapses into the filled logo mark (mark centre sits at y = 960 - 330)
-      tl.to("#ring", { y: -190, scale: 0.25, duration: 0.45, ease: "expo.inOut" }, 2.95)
-        .to("#ring-fill", { attr: { r: 380 }, duration: 0.35, ease: "power3.out" }, 3.1)
-        .to("#ring-line", { attr: { stroke: "#1f4fff" }, duration: 0.2 }, 3.1)
-        .to(["#dots-a", "#dots-b"], { scale: 0.7, opacity: 0.5, duration: 0.5 }, 3.0);
-
-      // ---------- S4 · resolve (3.05 – 4.00) ----------
-      tl.set("#s4", { autoAlpha: 1 }, 3.05)
-        .fromTo("#cursor", { scale: 0, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2.6)" }, 3.22)
-        .to("#cursor", { scale: 0.86, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.inOut" }, 3.63)
-        .fromTo(".ripple", { scale: 1, opacity: 0.9 }, { scale: 2.1, opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.12 }, 3.66)
-        .fromTo("#wordmark", { yPercent: 105 }, { yPercent: 0, duration: 0.45 }, 3.3)
-        .fromTo("#wm-b", { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4 }, 3.42)
-        .fromTo("#underline", { scaleX: 0 }, { scaleX: 1, duration: 0.4 }, 3.5)
-        .fromTo("#tagline", { yPercent: 110 }, { yPercent: 0, duration: 0.4 }, 3.58);
-
-      gsap.set(".ripple", { opacity: 0 });
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>
