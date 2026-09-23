@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>clickone — motion vertical 9:16</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-italic.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/fonts/inter-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+
+      :root {
+        --white: #ffffff;
+        --blue: #1f4fff;
+        --navy: #0b1f66;
+        --sky: #7d9bff;
+        --mist: #e3eaff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--white);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--white);
+        font-family: "Montserrat", sans-serif;
+        color: var(--navy);
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- shared ---------- */
+      .scene {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 90px;
+      }
+      .mask {
+        display: block;
+        overflow: hidden;
+        padding: 0 24px;
+      }
+      .mask > span {
+        display: block;
+      }
+      .label {
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        font-size: 36px;
+        letter-spacing: 0.38em;
+        text-transform: uppercase;
+        color: var(--blue);
+      }
+
+      /* ---------- decor ---------- */
+      .dots {
+        position: absolute;
+        width: 220px;
+        height: 220px;
+      }
+      #dots-a {
+        left: 70px;
+        top: 250px;
+      }
+      #dots-b {
+        right: 70px;
+        bottom: 250px;
+      }
+      #ring {
+        position: absolute;
+        left: 140px;
+        top: 560px;
+        width: 800px;
+        height: 800px;
+      }
+      #ring svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .sweep {
+        position: absolute;
+        left: -400px;
+        width: 1880px;
+        height: 150px;
+        border-radius: 75px;
+      }
+      #sweep-a {
+        top: 780px;
+        background: var(--blue);
+      }
+      #sweep-b {
+        top: 960px;
+        background: var(--sky);
+      }
+      #sweep-c {
+        top: 870px;
+        height: 60px;
+        background: var(--navy);
+      }
+
+      /* ---------- scene 1 ---------- */
+      #s1 {
+        gap: 6px;
+      }
+      #s1-bar {
+        width: 120px;
+        height: 12px;
+        border-radius: 6px;
+        background: var(--blue);
+        margin-bottom: 34px;
+      }
+      #s1-big {
+        font-weight: 900;
+        font-size: 196px;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: var(--navy);
+      }
+      #s1-mas {
+        display: flex;
+        align-items: flex-end;
+        font-weight: 300;
+        font-style: italic;
+        font-size: 270px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: var(--blue);
+      }
+      #s1-dot {
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--blue);
+        margin: 0 0 42px 10px;
+      }
+
+      /* ---------- scene 2 ---------- */
+      #s2 {
+        align-items: flex-start;
+        padding-left: 110px;
+        gap: 44px;
+      }
+      #s2 .label {
+        margin-bottom: 20px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+      }
+      .icon {
+        flex: none;
+        width: 150px;
+        height: 150px;
+        border-radius: 40px;
+        background: var(--blue);
+        display: grid;
+        place-items: center;
+      }
+      .icon.alt {
+        background: var(--white);
+        border: 7px solid var(--blue);
+      }
+      .icon svg {
+        width: 82px;
+        height: 82px;
+        overflow: visible;
+      }
+      .word {
+        font-size: 112px;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+      }
+      #w1 {
+        font-weight: 900;
+        color: var(--navy);
+      }
+      #w2 {
+        font-weight: 300;
+        font-style: italic;
+        color: var(--blue);
+      }
+      #w3 {
+        font-weight: 800;
+        color: var(--blue);
+      }
+
+      /* ---------- scene 3 ---------- */
+      #s3 {
+        gap: 0;
+      }
+      #s3 .label {
+        margin-bottom: 30px;
+      }
+      #s3-num {
+        display: flex;
+        align-items: flex-start;
+        font-weight: 900;
+        font-size: 200px;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        color: var(--blue);
+      }
+      #s3-num small {
+        font-size: 120px;
+        font-weight: 600;
+        margin-top: 22px;
+        letter-spacing: 0;
+      }
+      #s3-sub {
+        font-weight: 300;
+        font-style: italic;
+        font-size: 84px;
+        color: var(--navy);
+        margin-top: 10px;
+      }
+      #bars {
+        position: absolute;
+        left: 50%;
+        margin-left: -150px;
+        top: 1420px;
+        width: 300px;
+        height: 170px;
+        display: flex;
+        align-items: flex-end;
+        gap: 30px;
+      }
+      .bar {
+        display: block;
+        flex: 1;
+        border-radius: 14px 14px 4px 4px;
+        background: var(--blue);
+      }
+      #b1 {
+        height: 70px;
+        background: var(--mist);
+      }
+      #b2 {
+        height: 115px;
+        background: var(--sky);
+      }
+      #b3 {
+        height: 170px;
+      }
+
+      /* ---------- scene 4 ---------- */
+      #s4 {
+        gap: 0;
+      }
+      #mark {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin-bottom: 60px;
+      }
+      #cursor {
+        position: absolute;
+        left: 54px;
+        top: 46px;
+        width: 100px;
+        height: 110px;
+      }
+      .ripple {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: 5px solid var(--blue);
+      }
+      #wordmark {
+        display: flex;
+        font-size: 170px;
+        line-height: 1;
+        letter-spacing: -0.045em;
+      }
+      #wm-a {
+        font-weight: 900;
+        color: var(--navy);
+      }
+      #wm-b {
+        font-weight: 300;
+        color: var(--blue);
+      }
+      #underline {
+        width: 560px;
+        height: 10px;
+        border-radius: 5px;
+        background: var(--blue);
+        margin: 44px 0 40px;
+      }
+      #tagline {
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 46px;
+        letter-spacing: 0.02em;
+        color: var(--navy);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="4"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div id="stage" class="clip" data-start="0" data-duration="4" data-track-index="0">
+        <!-- geometric decor -->
+        <svg id="dots-a" class="dots" viewBox="0 0 220 220" aria-hidden="true">
+          <g fill="#7d9bff">
+            <circle cx="10" cy="10" r="7" /><circle cx="60" cy="10" r="7" /><circle cx="110" cy="10" r="7" /><circle cx="160" cy="10" r="7" />
+            <circle cx="10" cy="60" r="7" /><circle cx="60" cy="60" r="7" /><circle cx="110" cy="60" r="7" />
+            <circle cx="10" cy="110" r="7" /><circle cx="60" cy="110" r="7" />
+            <circle cx="10" cy="160" r="7" />
+          </g>
+        </svg>
+        <svg id="dots-b" class="dots" viewBox="0 0 220 220" aria-hidden="true">
+          <g fill="#7d9bff">
+            <circle cx="210" cy="210" r="7" /><circle cx="160" cy="210" r="7" /><circle cx="110" cy="210" r="7" /><circle cx="60" cy="210" r="7" />
+            <circle cx="210" cy="160" r="7" /><circle cx="160" cy="160" r="7" /><circle cx="110" cy="160" r="7" />
+            <circle cx="210" cy="110" r="7" /><circle cx="160" cy="110" r="7" />
+            <circle cx="210" cy="60" r="7" />
+          </g>
+        </svg>
+
+        <!-- the travelling ring: S1 halo → S2 accent → S3 progress → S4 logo mark -->
+        <div id="ring" aria-hidden="true">
+          <svg viewBox="0 0 800 800">
+            <circle id="ring-fill" cx="400" cy="400" r="380" fill="#1f4fff" />
+            <circle
+              id="ring-line"
+              cx="400"
+              cy="400"
+              r="380"
+              fill="none"
+              stroke="#e3eaff"
+              stroke-width="10"
+              stroke-linecap="round"
+              pathLength="1"
+              stroke-dasharray="1 1"
+              transform="rotate(-90 400 400)"
+            />
+          </svg>
+        </div>
+
+        <!-- scene 1 — hook -->
+        <div id="s1" class="scene">
+          <div id="s1-bar"></div>
+          <div class="mask"><span id="s1-lbl" class="label">Tu marca</span></div>
+          <div class="mask"><span id="s1-big">MERECE</span></div>
+          <div id="s1-mas"><span id="s1-mas-t">más</span><span id="s1-dot"></span></div>
+        </div>
+
+        <!-- scene 2 — build -->
+        <div id="s2" class="scene">
+          <div class="mask"><span id="s2-lbl" class="label">Lo que hacemos</span></div>
+          <div class="row" id="r1">
+            <div class="icon" id="i1">
+              <svg viewBox="0 0 80 80" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round">
+                <circle class="draw" cx="40" cy="40" r="32" pathLength="1" />
+                <circle class="draw" cx="40" cy="40" r="16" pathLength="1" />
+                <circle cx="40" cy="40" r="4" fill="#fff" stroke="none" />
+              </svg>
+            </div>
+            <div class="mask"><span class="word" id="w1">Estrategia</span></div>
+          </div>
+          <div class="row" id="r2">
+            <div class="icon alt" id="i2">
+              <svg viewBox="0 0 80 80" fill="none" stroke="#1f4fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+                <path class="draw" d="M14 66 L20 46 L52 14 L66 28 L34 60 Z" pathLength="1" />
+                <path class="draw" d="M44 22 L58 36" pathLength="1" />
+              </svg>
+            </div>
+            <div class="mask"><span class="word" id="w2">Diseño</span></div>
+          </div>
+          <div class="row" id="r3">
+            <div class="icon" id="i3">
+              <svg viewBox="0 0 80 80" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+                <path class="draw" d="M8 62 L28 40 L42 52 L70 20" pathLength="1" />
+                <path class="draw" d="M52 20 L70 20 L70 38" pathLength="1" />
+              </svg>
+            </div>
+            <div class="mask"><span class="word" id="w3">Contenido</span></div>
+          </div>
+        </div>
+
+        <!-- scene 3 — punch -->
+        <div id="s3" class="scene">
+          <div class="mask"><span id="s3-lbl" class="label">Resultados</span></div>
+          <div id="s3-num"><span id="s3-plus">+</span><span id="s3-count">0</span><small>%</small></div>
+          <div class="mask"><span id="s3-sub">más alcance</span></div>
+        </div>
+        <div id="bars" aria-hidden="true">
+          <span class="bar" id="b1"></span><span class="bar" id="b2"></span><span class="bar" id="b3"></span>
+        </div>
+
+        <!-- scene 4 — resolve -->
+        <div id="s4" class="scene">
+          <div id="mark">
+            <span class="ripple" id="rp1"></span>
+            <span class="ripple" id="rp2"></span>
+            <svg id="cursor" viewBox="0 0 100 110">
+              <path d="M18 8 L18 88 L38 70 L52 100 L66 94 L52 64 L80 64 Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="mask">
+            <div id="wordmark"><span id="wm-a">click</span><span id="wm-b">one</span></div>
+          </div>
+          <div id="underline"></div>
+          <div class="mask"><span id="tagline">Marketing que conecta</span></div>
+        </div>
+
+        <!-- vector wipe bands -->
+        <div id="sweep-b" class="sweep"></div>
+        <div id="sweep-a" class="sweep"></div>
+        <div id="sweep-c" class="sweep"></div>
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+      const q = (s) => document.querySelector(s);
+
+      // ---------- initial states ----------
+      gsap.set(["#s2", "#s3", "#s4", "#bars"], { autoAlpha: 0 });
+      gsap.set(".sweep", { xPercent: -110, rotation: -24, transformOrigin: "50% 50%" });
+      gsap.set("#ring-fill", { attr: { r: 0 } });
+      gsap.set("#ring-line", { attr: { "stroke-dashoffset": 1 } });
+      gsap.set(".draw", { attr: { "stroke-dasharray": "1 1", "stroke-dashoffset": 1 } });
+      gsap.set(["#cursor", ".ripple"], { transformOrigin: "50% 50%" });
+
+      // ---------- S1 · hook (0.00 – 1.05) ----------
+      tl.fromTo("#dots-a", { scale: 0, opacity: 0, transformOrigin: "0% 0%" }, { scale: 1, opacity: 1, duration: 0.6 }, 0)
+        .fromTo("#dots-b", { scale: 0, opacity: 0, transformOrigin: "100% 100%" }, { scale: 1, opacity: 1, duration: 0.6 }, 0.1)
+        .fromTo("#ring", { scale: 0.6, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.9, ease: "power3.out" }, 0)
+        .to("#ring-line", { attr: { "stroke-dashoffset": 0 }, duration: 0.8, ease: "power2.inOut" }, 0.05)
+        .fromTo("#s1-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.4 }, 0)
+        .fromTo("#s1-lbl", { yPercent: 110 }, { yPercent: 0, duration: 0.45 }, 0.06)
+        .fromTo("#s1-big", { yPercent: 105 }, { yPercent: 0, duration: 0.5 }, 0.2)
+        .fromTo("#s1-mas-t", { scale: 0.3, opacity: 0, transformOrigin: "50% 80%" }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2.4)" }, 0.42)
+        .fromTo("#s1-dot", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, 0.6)
+        ;
+
+      // exit S1 — words leave in opposite directions, bands wipe across
+      tl.to("#s1-lbl", { yPercent: -110, duration: 0.18, ease: "power3.in" }, 0.88)
+        .to("#s1-big", { yPercent: -105, duration: 0.2, ease: "power3.in" }, 0.9)
+        .to("#s1-mas", { x: 900, duration: 0.22, ease: "power3.in" }, 0.9)
+        .to("#s1-bar", { scaleX: 0, transformOrigin: "100% 50%", duration: 0.2, ease: "power2.in" }, 0.92)
+        .to("#sweep-b", { xPercent: 110, duration: 0.42, ease: "power3.inOut" }, 0.9)
+        .to("#sweep-a", { xPercent: 110, duration: 0.42, ease: "power3.inOut" }, 0.94)
+        .to("#sweep-c", { xPercent: 110, duration: 0.42, ease: "power3.inOut" }, 0.98)
+        .set("#s1", { autoAlpha: 0 }, 1.12);
+
+      // ring shrinks into a top-right accent
+      tl.to("#ring", { x: 360, y: -610, scale: 0.16, duration: 0.55, ease: "expo.inOut" }, 0.95)
+        .to("#ring-line", { attr: { stroke: "#1f4fff", "stroke-width": 40 }, duration: 0.4 }, 1.0)
+        .to("#dots-a", { x: -40, opacity: 0.4, duration: 0.5 }, 1.0);
+
+      // ---------- S2 · build (1.10 – 2.05) ----------
+      tl.set("#s2", { autoAlpha: 1 }, 1.12)
+        .fromTo("#s2-lbl", { yPercent: 110 }, { yPercent: 0, duration: 0.4 }, 1.13);
+      ["1", "2", "3"].forEach((n, i) => {
+        const t = 1.14 + i * 0.16;
+        tl.fromTo(`#i${n}`, { scale: 0, rotation: -35 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.2)" }, t)
+          .fromTo(`#w${n}`, { xPercent: -105 }, { xPercent: 0, duration: 0.45 }, t + 0.05)
+          .to(`#i${n} .draw`, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power2.out", stagger: 0.06 }, t + 0.1);
+      });
+
+      // exit S2 — rows slide out left, staggered
+      tl.to("#s2-lbl", { yPercent: -110, duration: 0.2, ease: "power3.in" }, 1.78)
+        .to(["#r1", "#r2", "#r3"], { x: -1150, duration: 0.3, ease: "power3.in", stagger: 0.04 }, 1.78)
+        .set("#s2", { autoAlpha: 0 }, 2.12);
+
+      // ring returns to centre and becomes the progress gauge
+      tl.to("#ring", { x: 0, y: -10, scale: 0.97, duration: 0.5, ease: "expo.inOut" }, 1.85)
+        .to("#ring-line", { attr: { "stroke-width": 14, "stroke-dashoffset": 1 }, duration: 0.3, ease: "power2.in" }, 1.85)
+        .to("#ring-line", { attr: { "stroke-dashoffset": 0 }, duration: 0.65, ease: "power3.out" }, 2.22)
+        .to("#dots-a", { x: 0, opacity: 1, duration: 0.4 }, 2.0);
+
+      // ---------- S3 · punch (2.10 – 3.00) ----------
+      const counter = { v: 0 };
+      tl.set("#s3", { autoAlpha: 1 }, 2.1)
+        .set("#bars", { autoAlpha: 1 }, 2.1)
+        .fromTo("#s3-lbl", { yPercent: 110 }, { yPercent: 0, duration: 0.4 }, 2.12)
+        .fromTo("#s3-num", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.8)" }, 2.16)
+        .fromTo(counter, { v: 0 }, {
+          v: 200,
+          duration: 0.6,
+          ease: "power3.out",
+          onUpdate: () => (q("#s3-count").textContent = Math.round(counter.v)),
+
+        }, 2.2)
+        .fromTo("#s3-sub", { yPercent: 105 }, { yPercent: 0, duration: 0.45 }, 2.36)
+        .fromTo(".bar", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.07 }, 2.3)
+        .to("#s3-count", { scale: 1.08, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out" }, 2.8);
+
+      // exit S3
+      tl.to("#s3-lbl", { yPercent: -110, duration: 0.22, ease: "power3.in" }, 2.9)
+        .to("#s3-num", { scale: 0.5, opacity: 0, duration: 0.2, ease: "power3.in" }, 2.88)
+        .to("#s3-sub", { yPercent: 105, duration: 0.22, ease: "power3.in" }, 2.92)
+        .to(".bar", { scaleY: 0, duration: 0.2, ease: "power3.in", stagger: 0.04 }, 2.9)
+        .set(["#s3", "#bars"], { autoAlpha: 0 }, 3.1);
+
+      // ring collapses into the filled logo mark (mark centre sits at y = 960 - 330)
+      tl.to("#ring", { y: -190, scale: 0.25, duration: 0.45, ease: "expo.inOut" }, 2.95)
+        .to("#ring-fill", { attr: { r: 380 }, duration: 0.35, ease: "power3.out" }, 3.1)
+        .to("#ring-line", { attr: { stroke: "#1f4fff" }, duration: 0.2 }, 3.1)
+        .to(["#dots-a", "#dots-b"], { scale: 0.7, opacity: 0.5, duration: 0.5 }, 3.0);
+
+      // ---------- S4 · resolve (3.05 – 4.00) ----------
+      tl.set("#s4", { autoAlpha: 1 }, 3.05)
+        .fromTo("#cursor", { scale: 0, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2.6)" }, 3.22)
+        .to("#cursor", { scale: 0.86, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.inOut" }, 3.63)
+        .fromTo(".ripple", { scale: 1, opacity: 0.9 }, { scale: 2.1, opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.12 }, 3.66)
+        .fromTo("#wordmark", { yPercent: 105 }, { yPercent: 0, duration: 0.45 }, 3.3)
+        .fromTo("#wm-b", { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4 }, 3.42)
+        .fromTo("#underline", { scaleX: 0 }, { scaleX: 1, duration: 0.4 }, 3.5)
+        .fromTo("#tagline", { yPercent: 110 }, { yPercent: 0, duration: 0.4 }, 3.58);
+
+      gsap.set(".ripple", { opacity: 0 });
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
