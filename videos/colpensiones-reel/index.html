@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Colpensiones o fondo privado — reel editado</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Anton";
+        src: url("assets/fonts/anton-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/fonts/inter-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+
+      :root {
+        --white: #ffffff;
+        --blue: #1f4fff;
+        --navy: #0b1f66;
+        --sky: #7d9bff;
+        --mist: #e3eaff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      /* ---------- footage (camera wrapper carries all zoom / whip VFX) ---------- */
+      #cam {
+        position: absolute;
+        inset: 0;
+        transform-origin: 53% 27%;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+      .shadow {
+        filter: drop-shadow(0 22px 26px rgba(11, 31, 102, 0.3)) drop-shadow(0 4px 6px rgba(11, 31, 102, 0.15));
+      }
+      .anton {
+        font-family: "Anton", sans-serif;
+        font-weight: 400;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      /* ---------- top band ---------- */
+      .top-row {
+        position: absolute;
+        left: 50px;
+        right: 50px;
+        top: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+      }
+      .pill {
+        display: block;
+        height: 108px;
+        padding: 0 34px;
+        border-radius: 54px;
+        font-size: 66px;
+        line-height: 108px;
+      }
+      .pill.blue {
+        background: var(--blue);
+        color: #fff;
+      }
+      .pill.white {
+        background: #fff;
+        color: var(--blue);
+        border: 6px solid var(--blue);
+        line-height: 96px;
+      }
+      .pill.navy {
+        background: var(--navy);
+        color: #fff;
+      }
+      #or {
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: var(--navy);
+        color: #fff;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 800;
+        font-size: 40px;
+        line-height: 1;
+      }
+      #norma-doc {
+        width: 84px;
+        height: 104px;
+        flex: none;
+      }
+      .qm {
+        position: absolute;
+        font-family: "Anton", sans-serif;
+        font-size: 190px;
+        line-height: 1;
+        color: var(--blue);
+        -webkit-text-stroke: 10px #fff;
+        paint-order: stroke fill;
+      }
+      #antes {
+        font-family: "Inter", sans-serif;
+        font-weight: 800;
+        font-size: 44px;
+        letter-spacing: 0.14em;
+        height: 76px;
+        line-height: 76px;
+        padding: 0 26px;
+      }
+      #modelos {
+        font-size: 104px;
+        color: var(--blue);
+        -webkit-text-stroke: 12px #fff;
+        paint-order: stroke fill;
+      }
+      #fprivados {
+        font-size: 108px;
+        color: var(--blue);
+        -webkit-text-stroke: 12px #fff;
+        paint-order: stroke fill;
+      }
+      .mini {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 34px;
+        background: #fff;
+        display: grid;
+        place-items: center;
+      }
+      .mini svg {
+        width: 104px;
+        height: 104px;
+      }
+      #split-line {
+        position: absolute;
+        left: 538px;
+        top: 250px;
+        width: 6px;
+        height: 90px;
+        background: repeating-linear-gradient(to bottom, #fff 0 12px, transparent 12px 22px);
+      }
+
+      /* ---------- side cards ---------- */
+      .card {
+        position: absolute;
+        top: 730px;
+        width: 340px;
+        border-radius: 30px;
+        background: linear-gradient(180deg, #ffffff 0%, #eef2fa 100%);
+        overflow: hidden;
+      }
+      #card-l {
+        left: 36px;
+      }
+      #card-r {
+        right: 36px;
+      }
+      .card .hd {
+        height: 72px;
+        background: var(--blue);
+        color: #fff;
+        font-size: 46px;
+        line-height: 72px;
+        text-align: center;
+      }
+      #card-r .hd {
+        background: var(--navy);
+      }
+      .card .bd {
+        position: relative;
+        height: 400px;
+      }
+      .card svg.art {
+        position: absolute;
+        overflow: visible;
+      }
+
+      /* ---------- transitions ---------- */
+      .band {
+        position: absolute;
+        left: -500px;
+        width: 2080px;
+        border-radius: 999px;
+      }
+      #band-a {
+        top: 820px;
+        height: 170px;
+        background: var(--blue);
+      }
+      #band-b {
+        top: 1010px;
+        height: 90px;
+        background: var(--sky);
+      }
+      #band-c {
+        top: 730px;
+        height: 60px;
+        background: var(--navy);
+      }
+      #flash {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+      }
+
+      /* ---------- captions ---------- */
+      #caps {
+        position: absolute;
+        left: 70px;
+        right: 70px;
+        top: 1300px;
+        height: 260px;
+      }
+      .grp {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 20px;
+        row-gap: 0;
+      }
+      .w {
+        display: inline-block;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 800;
+        font-size: 72px;
+        line-height: 1.2;
+        color: #fff;
+        -webkit-text-stroke: 14px var(--navy);
+        paint-order: stroke fill;
+        text-shadow: 0 8px 18px rgba(11, 31, 102, 0.45);
+      }
+      .w.kw {
+        font-family: "Anton", sans-serif;
+        font-weight: 400;
+        font-size: 104px;
+        text-transform: uppercase;
+        color: #1233b8;
+        -webkit-text-stroke: 14px #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="20.15"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="20.15" data-track-index="0" muted playsinline></video>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="20.15" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="20.15" data-track-index="1">
+        <!-- ===== A · ¿En Colpensiones o fondo privado? ===== -->
+        <div id="topA" class="top-row">
+          <span id="pillL" class="pill blue anton shadow">Colpensiones</span>
+          <span id="or">o</span>
+          <span id="pillR" class="pill white anton shadow">Fondo privado</span>
+        </div>
+        <span id="qm1" class="qm" style="left: 830px; top: 400px">?</span>
+        <span id="qm2" class="qm" style="left: 130px; top: 520px">?</span>
+        <div id="topB" class="top-row">
+          <svg id="norma-doc" class="shadow" viewBox="0 0 84 104" aria-hidden="true">
+            <path d="M0 0 H62 L84 22 V104 H0 Z" fill="#fff" />
+            <path d="M62 0 V22 H84 Z" fill="#c9d3ea" />
+            <rect x="12" y="34" width="56" height="8" rx="4" fill="#1f4fff" />
+            <rect x="12" y="52" width="46" height="8" rx="4" fill="#c3cde6" />
+            <rect x="12" y="70" width="52" height="8" rx="4" fill="#c3cde6" />
+          </svg>
+          <span id="pillN" class="pill navy anton shadow">Nueva normativa</span>
+        </div>
+
+        <!-- ===== C · Antes: dos modelos / Colpensiones ===== -->
+        <div id="topC" class="top-row">
+          <span id="antes" class="pill blue shadow">ANTES</span>
+          <span id="modelos" class="anton">Dos modelos</span>
+        </div>
+        <div id="mini-l" class="mini shadow" style="left: 120px; top: 260px">
+          <svg viewBox="0 0 104 104" aria-hidden="true">
+            <path d="M52 8 L96 32 H8 Z" fill="#1f4fff" />
+            <rect x="16" y="38" width="10" height="42" rx="3" fill="#1f4fff" />
+            <rect x="37" y="38" width="10" height="42" rx="3" fill="#1f4fff" />
+            <rect x="57" y="38" width="10" height="42" rx="3" fill="#1f4fff" />
+            <rect x="78" y="38" width="10" height="42" rx="3" fill="#1f4fff" />
+            <rect x="8" y="84" width="88" height="12" rx="4" fill="#0b1f66" />
+          </svg>
+        </div>
+        <div id="mini-r" class="mini shadow" style="left: 810px; top: 260px">
+          <svg viewBox="0 0 104 104" aria-hidden="true">
+            <ellipse cx="52" cy="58" rx="40" ry="30" fill="#0b1f66" />
+            <circle cx="30" cy="30" r="10" fill="#0b1f66" />
+            <rect x="86" y="50" width="14" height="18" rx="5" fill="#0b1f66" />
+            <rect x="30" y="80" width="12" height="18" rx="4" fill="#0b1f66" />
+            <rect x="62" y="80" width="12" height="18" rx="4" fill="#0b1f66" />
+            <rect x="42" y="30" width="22" height="6" rx="3" fill="#7d9bff" />
+            <circle cx="70" cy="52" r="4" fill="#fff" />
+          </svg>
+        </div>
+        <div id="split-line"></div>
+
+        <div id="card-l" class="card shadow">
+          <div class="hd anton">Colpensiones</div>
+          <div class="bd">
+            <!-- public bank + coins -->
+            <svg id="art-bank" class="art" style="left: 90px; top: 26px; width: 160px; height: 150px" viewBox="0 0 160 150" aria-hidden="true">
+              <path d="M80 8 L150 46 H10 Z" fill="#1f4fff" />
+              <rect x="24" y="54" width="14" height="62" rx="4" fill="#1f4fff" />
+              <rect x="56" y="54" width="14" height="62" rx="4" fill="#1f4fff" />
+              <rect x="90" y="54" width="14" height="62" rx="4" fill="#1f4fff" />
+              <rect x="122" y="54" width="14" height="62" rx="4" fill="#1f4fff" />
+              <rect x="10" y="122" width="140" height="18" rx="6" fill="#0b1f66" />
+            </svg>
+            <svg class="art coin" id="coin-1" style="left: 60px; top: -10px; width: 46px; height: 46px" viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="21" fill="#7d9bff" stroke="#0b1f66" stroke-width="4" /><path d="M23 11 V35 M29 16 C23 12 15 14 17 21 C19 27 30 23 29 30 C28 35 20 36 15 31" fill="none" stroke="#0b1f66" stroke-width="3.5" stroke-linecap="round" /></svg>
+            <svg class="art coin" id="coin-2" style="left: 146px; top: -30px; width: 46px; height: 46px" viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="21" fill="#7d9bff" stroke="#0b1f66" stroke-width="4" /><path d="M23 11 V35 M29 16 C23 12 15 14 17 21 C19 27 30 23 29 30 C28 35 20 36 15 31" fill="none" stroke="#0b1f66" stroke-width="3.5" stroke-linecap="round" /></svg>
+            <svg class="art coin" id="coin-3" style="left: 232px; top: -10px; width: 46px; height: 46px" viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="21" fill="#7d9bff" stroke="#0b1f66" stroke-width="4" /><path d="M23 11 V35 M29 16 C23 12 15 14 17 21 C19 27 30 23 29 30 C28 35 20 36 15 31" fill="none" stroke="#0b1f66" stroke-width="3.5" stroke-linecap="round" /></svg>
+            <!-- common public fund: people -->
+            <svg id="art-people" class="art" style="left: 50px; top: 196px; width: 240px; height: 80px" viewBox="0 0 240 80" aria-hidden="true">
+              <g fill="#0b1f66"><circle cx="40" cy="22" r="16" /><path d="M12 76 C14 52 26 44 40 44 C54 44 66 52 68 76 Z" /></g>
+              <g fill="#1f4fff"><circle cx="120" cy="18" r="18" /><path d="M88 78 C90 50 104 40 120 40 C136 40 150 50 152 78 Z" /></g>
+              <g fill="#0b1f66"><circle cx="200" cy="22" r="16" /><path d="M172 76 C174 52 186 44 200 44 C214 44 226 52 228 76 Z" /></g>
+            </svg>
+            <!-- weeks -->
+            <div id="art-weeks" style="position: absolute; left: 40px; top: 300px; width: 260px; height: 80px"></div>
+          </div>
+        </div>
+
+        <!-- ===== D · Fondos privados ===== -->
+        <div id="topD" class="top-row">
+          <span id="fprivados" class="anton">Fondos privados</span>
+        </div>
+        <div id="card-r" class="card shadow">
+          <div class="hd anton">Fondo privado</div>
+          <div class="bd">
+            <svg id="art-piggy" class="art" style="left: 70px; top: 40px; width: 200px; height: 150px" viewBox="0 0 200 150" aria-hidden="true">
+              <ellipse cx="100" cy="84" rx="78" ry="56" fill="#1f4fff" />
+              <circle cx="56" cy="36" r="18" fill="#1f4fff" />
+              <rect x="170" y="70" width="24" height="30" rx="9" fill="#1f4fff" />
+              <rect x="50" y="124" width="22" height="26" rx="6" fill="#1f4fff" />
+              <rect x="128" y="124" width="22" height="26" rx="6" fill="#1f4fff" />
+              <rect x="78" y="34" width="44" height="10" rx="5" fill="#0b1f66" />
+              <circle cx="140" cy="70" r="7" fill="#fff" />
+            </svg>
+            <svg class="art pcoin" id="pcoin-1" style="left: 146px; top: -40px; width: 46px; height: 46px" viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="21" fill="#7d9bff" stroke="#0b1f66" stroke-width="4" /><path d="M23 11 V35 M29 16 C23 12 15 14 17 21 C19 27 30 23 29 30 C28 35 20 36 15 31" fill="none" stroke="#0b1f66" stroke-width="3.5" stroke-linecap="round" /></svg>
+            <svg class="art pcoin" id="pcoin-2" style="left: 146px; top: -40px; width: 46px; height: 46px" viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="21" fill="#7d9bff" stroke="#0b1f66" stroke-width="4" /><path d="M23 11 V35 M29 16 C23 12 15 14 17 21 C19 27 30 23 29 30 C28 35 20 36 15 31" fill="none" stroke="#0b1f66" stroke-width="3.5" stroke-linecap="round" /></svg>
+            <!-- individual account: one person badge -->
+            <svg id="art-me" class="art" style="left: 210px; top: 150px; width: 84px; height: 84px" viewBox="0 0 84 84" aria-hidden="true">
+              <circle cx="42" cy="42" r="40" fill="#fff" stroke="#0b1f66" stroke-width="5" />
+              <circle cx="42" cy="32" r="12" fill="#0b1f66" />
+              <path d="M20 66 C22 50 32 46 42 46 C52 46 62 50 64 66 Z" fill="#0b1f66" />
+            </svg>
+            <!-- returns chart -->
+            <svg id="art-chart" class="art" style="left: 36px; top: 240px; width: 270px; height: 150px" viewBox="0 0 270 150" aria-hidden="true">
+              <rect id="bar-1" x="14" y="100" width="40" height="40" rx="8" fill="#c3d1ff" />
+              <rect id="bar-2" x="74" y="78" width="40" height="62" rx="8" fill="#7d9bff" />
+              <rect id="bar-3" x="134" y="52" width="40" height="88" rx="8" fill="#4e75ff" />
+              <rect id="bar-4" x="194" y="22" width="40" height="118" rx="8" fill="#1f4fff" />
+              <polyline id="trend" points="20,92 90,70 150,46 226,10" fill="none" stroke="#0b1f66" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path id="trend-tip" d="M204 8 L228 8 L228 32" fill="none" stroke="#0b1f66" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- transitions -->
+        <div id="band-b" class="band"></div>
+        <div id="band-a" class="band"></div>
+        <div id="band-c" class="band"></div>
+        <div id="flash"></div>
+
+        <!-- captions -->
+        <div id="caps"></div>
+      </div>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+
+        // ---------- transcript (local Whisper small, word timestamps; proper nouns / punctuation fixed) ----------
+        // [text, start, end, keyword?]
+        const W = [
+          ["¿En", 0.12, 0.3], ["Colpensiones", 0.3, 0.88, 1], ["o", 0.88, 1.14], ["fondo", 1.14, 1.38, 1], ["privado?", 1.38, 1.7, 1],
+          ["si", 1.8, 2.0], ["aún", 2.0, 2.4], ["tienes", 2.4, 2.66], ["dudas", 2.66, 2.98, 1],
+          ["de", 2.98, 3.22], ["cómo", 3.22, 3.44], ["cambió", 3.44, 3.58, 1], ["el", 3.58, 3.92], ["sistema", 3.92, 4.16, 1],
+          ["te", 4.16, 4.4], ["explico", 4.4, 4.56],
+          ["con", 4.74, 4.86], ["la", 4.86, 4.98], ["nueva", 4.98, 5.24, 1], ["normativa.", 5.24, 5.68, 1],
+          ["Antes", 5.96, 6.32], ["eran", 6.32, 6.58], ["dos", 6.58, 6.8, 1], ["modelos", 6.8, 7.28, 1],
+          ["independientes,", 7.28, 7.9, 1],
+          ["en", 7.98, 8.1], ["Colpensiones,", 8.2, 8.94, 1],
+          ["tus", 8.98, 9.16], ["aportes", 9.16, 9.72, 1], ["iban", 9.72, 9.88],
+          ["a", 9.88, 10.04], ["un", 10.04, 10.32], ["fondo", 10.32, 10.74, 1], ["público", 10.74, 11.22, 1], ["común", 11.22, 11.46, 1],
+          ["y", 11.46, 11.58], ["la", 11.58, 11.8], ["pensión", 11.8, 12.1, 1], ["se", 12.1, 12.38], ["calculaba", 12.38, 12.66],
+          ["por", 12.98, 13.28], ["semanas.", 13.28, 13.72, 1],
+          ["En", 13.84, 13.98], ["los", 13.98, 14.28], ["fondos", 14.28, 14.66, 1], ["privados", 14.66, 15.18, 1],
+          ["tu", 15.18, 15.44], ["dinero", 15.44, 15.78, 1], ["entraba", 15.78, 16.24],
+          ["a", 16.24, 16.42], ["una", 16.42, 16.8], ["cuenta", 16.8, 17.02, 1],
+          ["de", 17.02, 17.24], ["ahorro", 17.24, 17.84, 1], ["individual", 17.84, 18.08, 1],
+          ["que", 18.08, 18.42], ["generaba", 18.42, 18.88], ["rendimientos.", 18.88, 19.64, 1],
+        ];
+        // caption groups: index of the first word of each group
+        const G = [0, 2, 5, 9, 14, 16, 20, 24, 25, 27, 30, 35, 40, 42, 46, 49, 52, 55];
+        const END = 20.1;
+
+        const caps = $("#caps");
+        const groups = G.map((g0, gi) => {
+          const g1 = gi + 1 < G.length ? G[gi + 1] : W.length;
+          const el = document.createElement("div");
+          el.className = "grp";
+          el.id = "grp-" + gi;
+          for (let k = g0; k < g1; k++) {
+            const s = document.createElement("span");
+            s.className = "w" + (W[k][3] ? " kw" : "");
+            s.id = "w-" + k;
+            s.textContent = W[k][0];
+            el.appendChild(s);
+          }
+          caps.appendChild(el);
+          return { el, g0, g1 };
+        });
+
+        // week grid for the Colpensiones card
+        for (let i = 0; i < 12; i++) {
+          const d = document.createElement("span");
+          d.className = "wk";
+          d.id = "wk-" + i;
+          Object.assign(d.style, {
+            position: "absolute",
+            left: (i % 6) * 44 + "px",
+            top: Math.floor(i / 6) * 42 + "px",
+            width: "34px",
+            height: "32px",
+            borderRadius: "8px",
+            background: "#e3eaff",
+          });
+          $("#art-weeks").appendChild(d);
+        }
+
+        // ---------- timeline ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+
+        gsap.set(["#topA", "#topB", "#topC", "#topD", "#card-l", "#card-r", "#mini-l", "#mini-r", "#split-line", ".qm"], { autoAlpha: 0 });
+        gsap.set(".grp", { autoAlpha: 0 });
+        gsap.set(".w", { opacity: 0 });
+        gsap.set(".band", { xPercent: -115, rotation: -26, transformOrigin: "50% 50%" });
+        gsap.set("#flash", { opacity: 0 });
+        gsap.set([".coin", ".pcoin", "#art-people", "#art-me"], { opacity: 0 });
+        gsap.set("#trend-tip", { opacity: 0 });
+
+        // ---- captions: group pops in, words ink in as they are spoken, keywords punch ----
+        groups.forEach(({ el, g0, g1 }, gi) => {
+          const s = W[g0][1] - 0.08;
+          const e = gi + 1 < groups.length ? W[G[gi + 1]][1] - 0.08 : END;
+          tl.set(el, { autoAlpha: 1 }, s)
+            .fromTo(el, { y: 36, scale: 0.9 }, { y: 0, scale: 1, duration: 0.26, ease: "back.out(2)" }, s)
+            .to(el, { autoAlpha: 0, y: -24, duration: 0.1, ease: "power2.in" }, Math.max(s + 0.2, e - 0.1));
+          for (let k = g0; k < g1; k++) {
+            const w = "#w-" + k;
+            if (W[k][3]) tl.fromTo(w, { opacity: 0, scale: 1.45, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(2.6)" }, W[k][1]);
+            else tl.fromTo(w, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, W[k][1]);
+          }
+        });
+
+        // ---- camera VFX ----
+        tl.fromTo("#cam", { scale: 1.14 }, { scale: 1.0, duration: 0.9, ease: "expo.out" }, 0) // open punch-out
+          .to("#cam", { scale: 1.13, duration: 0.18, ease: "power3.out" }, 4.16) // "te explico" punch-in
+          .to("#cam", { scale: 1.0, duration: 0.35, ease: "expo.inOut" }, 5.86)
+          .to("#cam", { scale: 1.1, duration: 0.18, ease: "power3.out" }, 13.28) // "semanas"
+          // whip into the private-fund section
+          .to("#cam", { x: -140, filter: "blur(10px)", duration: 0.12, ease: "power2.in" }, 13.7)
+          .set("#cam", { x: 140 }, 13.82)
+          .to("#cam", { x: 0, scale: 1.0, filter: "blur(0px)", duration: 0.22, ease: "power3.out" }, 13.82)
+          .to("#cam", { scale: 1.12, duration: 0.2, ease: "power3.out" }, 18.88) // "rendimientos"
+          .to("#cam", { scale: 1.16, duration: 1.1, ease: "sine.out" }, 19.08);
+
+        // =================== A · ¿En Colpensiones o fondo privado? ===================
+        tl.set("#topA", { autoAlpha: 1 }, 0.1)
+          .fromTo("#pillL", { x: -700, rotation: -8 }, { x: 0, rotation: 0, duration: 0.5, ease: "back.out(1.5)" }, 0.12)
+          .fromTo("#or", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, 0.86)
+          .fromTo("#pillR", { x: 700, rotation: 8 }, { x: 0, rotation: 0, duration: 0.5, ease: "back.out(1.5)" }, 1.12);
+        // "dudas": question marks around the head
+        tl.set(".qm", { autoAlpha: 1 }, 2.64)
+          .fromTo("#qm1", { scale: 0, rotation: 40 }, { scale: 1, rotation: 12, duration: 0.45, ease: "back.out(2.6)" }, 2.66)
+          .fromTo("#qm2", { scale: 0, rotation: -40 }, { scale: 0.8, rotation: -14, duration: 0.45, ease: "back.out(2.6)" }, 2.8)
+          .to(".qm", { y: -40, duration: 1.0, ease: "sine.inOut" }, 3.1);
+        // "cambió el sistema": the two options swap places
+        tl.to("#pillL", { x: 540, y: 20, rotation: 6, duration: 0.4, ease: "power3.inOut" }, 3.44)
+          .to("#pillR", { x: -520, y: -20, rotation: -6, duration: 0.4, ease: "power3.inOut" }, 3.44)
+          .to("#or", { rotation: 360, duration: 0.4, ease: "power3.inOut" }, 3.44)
+          .to(".qm", { scale: 0, duration: 0.2, ease: "power3.in" }, 4.1)
+          .to("#topA", { y: -260, opacity: 0, duration: 0.25, ease: "power3.in" }, 4.7)
+          // "nueva normativa"
+          .set("#topB", { autoAlpha: 1 }, 4.9)
+          .fromTo("#norma-doc", { y: -220, rotation: -30 }, { y: 0, rotation: -8, duration: 0.45, ease: "back.out(1.8)" }, 4.94)
+          .fromTo("#pillN", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" }, 4.98)
+          .to("#topB", { y: -260, opacity: 0, duration: 0.25, ease: "power3.in" }, 5.8);
+
+        // transition 1: band sweep + white flash
+        tl.to("#band-b", { xPercent: 115, duration: 0.42, ease: "power3.inOut" }, 5.76)
+          .to("#band-a", { xPercent: 115, duration: 0.42, ease: "power3.inOut" }, 5.8)
+          .to("#band-c", { xPercent: 115, duration: 0.42, ease: "power3.inOut" }, 5.84)
+          .fromTo("#flash", { opacity: 0 }, { opacity: 0.55, duration: 0.06, yoyo: true, repeat: 1, ease: "none" }, 5.94);
+
+        // =================== C · Antes eran dos modelos… Colpensiones… semanas ===================
+        tl.set("#topC", { autoAlpha: 1 }, 5.96)
+          .fromTo("#antes", { x: -300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4 }, 5.96)
+          .fromTo("#modelos", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2)" }, 6.58)
+          // "independientes": two model icons pull apart with a divider
+          .set(["#mini-l", "#mini-r", "#split-line"], { autoAlpha: 1 }, 7.26)
+          .fromTo("#mini-l", { x: 330, scale: 0.4 }, { x: 0, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, 7.28)
+          .fromTo("#mini-r", { x: -330, scale: 0.4 }, { x: 0, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, 7.28)
+          .fromTo("#split-line", { scaleY: 0 }, { scaleY: 1, duration: 0.35 }, 7.4)
+          // "en Colpensiones": left icon flies into the card
+          .to("#topC", { y: -260, opacity: 0, duration: 0.25, ease: "power3.in" }, 8.0)
+          .to(["#mini-r", "#split-line"], { opacity: 0, scale: 0.6, duration: 0.2, ease: "power2.in" }, 8.0)
+          .to("#mini-l", { x: 50, y: 520, scale: 1.4, opacity: 0, duration: 0.35, ease: "power3.in" }, 8.05)
+          .set("#card-l", { autoAlpha: 1 }, 8.18)
+          .fromTo("#card-l", { x: -420, rotation: -10 }, { x: 0, rotation: -2, duration: 0.5, ease: "back.out(1.5)" }, 8.2)
+          .fromTo("#art-bank", { scale: 0.3, opacity: 0, transformOrigin: "50% 100%" }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" }, 8.45);
+        // "tus aportes": coins drop into the public fund
+        [1, 2, 3].forEach((i) => {
+          tl.fromTo(`#coin-${i}`, { y: -180, opacity: 0 }, { y: 60, opacity: 1, duration: 0.3, ease: "power2.in" }, 9.16 + (i - 1) * 0.12)
+            .to(`#coin-${i}`, { scale: 0, opacity: 0, duration: 0.14, ease: "power2.in" }, 9.46 + (i - 1) * 0.12);
+        });
+        tl.to("#art-bank", { scale: 1.08, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out" }, 9.7)
+          // "fondo público común": the people it is shared with
+          .fromTo("#art-people", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }, 10.32)
+          // "la pensión se calculaba por semanas": week grid fills
+          .fromTo(".wk", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(2.4)", stagger: 0.03 }, 11.8)
+          .to(".wk", { backgroundColor: "#1f4fff", duration: 0.12, stagger: 0.05 }, 12.4)
+          .to("#card-l", { scale: 1.05, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out" }, 13.28);
+
+        // transition 2: whip + bands, card leaves
+        tl.to("#card-l", { x: -460, rotation: -12, duration: 0.3, ease: "power3.in" }, 13.62)
+          .set("#card-l", { autoAlpha: 0 }, 13.95)
+          .set(".band", { xPercent: -115 }, 13.5)
+          .to("#band-c", { xPercent: 115, duration: 0.4, ease: "power3.inOut" }, 13.66)
+          .to("#band-a", { xPercent: 115, duration: 0.4, ease: "power3.inOut" }, 13.7)
+          .to("#band-b", { xPercent: 115, duration: 0.4, ease: "power3.inOut" }, 13.74);
+
+        // =================== D · Fondos privados… cuenta individual… rendimientos ===================
+        tl.set("#topD", { autoAlpha: 1 }, 13.84)
+          .fromTo("#fprivados", { y: -200, scale: 1.4, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.6)" }, 14.28)
+          .set("#card-r", { autoAlpha: 1 }, 14.6)
+          .fromTo("#card-r", { x: 460, rotation: 10 }, { x: 0, rotation: 2, duration: 0.5, ease: "back.out(1.5)" }, 14.62)
+          .fromTo("#art-piggy", { scale: 0.3, opacity: 0, transformOrigin: "50% 100%" }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" }, 14.85);
+        // "tu dinero entraba": coins drop into the piggy's slot
+        [1, 2].forEach((i) => {
+          tl.fromTo(`#pcoin-${i}`, { y: -160, opacity: 0 }, { y: 70, opacity: 1, duration: 0.3, ease: "power2.in" }, 15.44 + (i - 1) * 0.22)
+            .to(`#pcoin-${i}`, { scale: 0, opacity: 0, duration: 0.12, ease: "power2.in" }, 15.74 + (i - 1) * 0.22);
+        });
+        tl.to("#art-piggy", { scale: 1.08, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out" }, 16.0)
+          // "cuenta de ahorro individual": one-person badge
+          .fromTo("#art-me", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(3)" }, 16.8)
+          .to("#art-me", { scale: 1.15, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 17.84)
+          // "generaba rendimientos": bars grow and the trend line climbs
+          .fromTo(["#bar-1", "#bar-2", "#bar-3", "#bar-4"], { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.1 }, 18.42)
+          .to("#trend", { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.inOut" }, 18.8)
+          .to("#trend-tip", { opacity: 1, duration: 0.1 }, 19.25)
+          .to("#card-r", { scale: 1.05, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out" }, 19.3);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      });
+    </script>
+  </body>
+</html>
