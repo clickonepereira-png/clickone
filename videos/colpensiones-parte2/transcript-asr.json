@@ -1,0 +1,376 @@
+{
+ "text": " ya no compiten de forma excluyente, sino que se complementan. Ahora, todos los trabajadores aportan a colpensiones sobre 2.3 salarios mínimos, y quienes tienen ingresos superiores aportan el valor restante a un fondo privado. La excepción aplica para quienes todavía están en el régimen de transición. Mujeres con 750 semanas o más",
+ "chunks": [
+  {
+   "text": " ya",
+   "timestamp": [
+    0.64,
+    0.84
+   ]
+  },
+  {
+   "text": " no",
+   "timestamp": [
+    0.84,
+    1.08
+   ]
+  },
+  {
+   "text": " compiten",
+   "timestamp": [
+    1.08,
+    1.44
+   ]
+  },
+  {
+   "text": " de",
+   "timestamp": [
+    1.44,
+    1.66
+   ]
+  },
+  {
+   "text": " forma",
+   "timestamp": [
+    1.66,
+    1.98
+   ]
+  },
+  {
+   "text": " excluyente,",
+   "timestamp": [
+    1.98,
+    2.58
+   ]
+  },
+  {
+   "text": " sino",
+   "timestamp": [
+    2.96,
+    3.18
+   ]
+  },
+  {
+   "text": " que",
+   "timestamp": [
+    3.18,
+    3.3
+   ]
+  },
+  {
+   "text": " se",
+   "timestamp": [
+    3.3,
+    3.72
+   ]
+  },
+  {
+   "text": " complementan.",
+   "timestamp": [
+    3.72,
+    4.22
+   ]
+  },
+  {
+   "text": " Ahora,",
+   "timestamp": [
+    4.52,
+    4.74
+   ]
+  },
+  {
+   "text": " todos",
+   "timestamp": [
+    4.92,
+    5.18
+   ]
+  },
+  {
+   "text": " los",
+   "timestamp": [
+    5.18,
+    5.46
+   ]
+  },
+  {
+   "text": " trabajadores",
+   "timestamp": [
+    5.46,
+    5.96
+   ]
+  },
+  {
+   "text": " aportan",
+   "timestamp": [
+    6.3,
+    6.74
+   ]
+  },
+  {
+   "text": " a",
+   "timestamp": [
+    6.74,
+    6.86
+   ]
+  },
+  {
+   "text": " colpensiones",
+   "timestamp": [
+    6.86,
+    7.84
+   ]
+  },
+  {
+   "text": " sobre",
+   "timestamp": [
+    7.84,
+    8.24
+   ]
+  },
+  {
+   "text": " 2",
+   "timestamp": [
+    8.24,
+    8.48
+   ]
+  },
+  {
+   "text": ".3",
+   "timestamp": [
+    8.48,
+    9.06
+   ]
+  },
+  {
+   "text": " salarios",
+   "timestamp": [
+    9.06,
+    9.56
+   ]
+  },
+  {
+   "text": " mínimos,",
+   "timestamp": [
+    9.56,
+    9.96
+   ]
+  },
+  {
+   "text": " y",
+   "timestamp": [
+    10,
+    10.34
+   ]
+  },
+  {
+   "text": " quienes",
+   "timestamp": [
+    10.34,
+    10.8
+   ]
+  },
+  {
+   "text": " tienen",
+   "timestamp": [
+    10.8,
+    11.08
+   ]
+  },
+  {
+   "text": " ingresos",
+   "timestamp": [
+    11.08,
+    11.78
+   ]
+  },
+  {
+   "text": " superiores",
+   "timestamp": [
+    11.78,
+    12.2
+   ]
+  },
+  {
+   "text": " aportan",
+   "timestamp": [
+    12.54,
+    13
+   ]
+  },
+  {
+   "text": " el",
+   "timestamp": [
+    13,
+    13.16
+   ]
+  },
+  {
+   "text": " valor",
+   "timestamp": [
+    13.16,
+    13.5
+   ]
+  },
+  {
+   "text": " restante",
+   "timestamp": [
+    13.5,
+    14.2
+   ]
+  },
+  {
+   "text": " a",
+   "timestamp": [
+    14.2,
+    14.36
+   ]
+  },
+  {
+   "text": " un",
+   "timestamp": [
+    14.36,
+    14.64
+   ]
+  },
+  {
+   "text": " fondo",
+   "timestamp": [
+    14.64,
+    14.92
+   ]
+  },
+  {
+   "text": " privado.",
+   "timestamp": [
+    14.92,
+    15.3
+   ]
+  },
+  {
+   "text": " La",
+   "timestamp": [
+    15.52,
+    15.78
+   ]
+  },
+  {
+   "text": " excepción",
+   "timestamp": [
+    15.78,
+    16.66
+   ]
+  },
+  {
+   "text": " aplica",
+   "timestamp": [
+    16.66,
+    17.14
+   ]
+  },
+  {
+   "text": " para",
+   "timestamp": [
+    17.14,
+    17.42
+   ]
+  },
+  {
+   "text": " quienes",
+   "timestamp": [
+    17.42,
+    17.98
+   ]
+  },
+  {
+   "text": " todavía",
+   "timestamp": [
+    17.98,
+    18.08
+   ]
+  },
+  {
+   "text": " están",
+   "timestamp": [
+    18.42,
+    18.74
+   ]
+  },
+  {
+   "text": " en",
+   "timestamp": [
+    18.74,
+    18.94
+   ]
+  },
+  {
+   "text": " el",
+   "timestamp": [
+    18.94,
+    19.14
+   ]
+  },
+  {
+   "text": " régimen",
+   "timestamp": [
+    19.14,
+    19.5
+   ]
+  },
+  {
+   "text": " de",
+   "timestamp": [
+    19.5,
+    19.74
+   ]
+  },
+  {
+   "text": " transición.",
+   "timestamp": [
+    19.74,
+    20.28
+   ]
+  },
+  {
+   "text": " Mujeres",
+   "timestamp": [
+    20.42,
+    21.08
+   ]
+  },
+  {
+   "text": " con",
+   "timestamp": [
+    21.08,
+    21.6
+   ]
+  },
+  {
+   "text": " 750",
+   "timestamp": [
+    21.6,
+    22.62
+   ]
+  },
+  {
+   "text": " semanas",
+   "timestamp": [
+    22.62,
+    22.92
+   ]
+  },
+  {
+   "text": " o",
+   "timestamp": [
+    22.92,
+    23.08
+   ]
+  },
+  {
+   "text": " más",
+   "timestamp": [
+    23.14,
+    25.6
+   ]
+  }
+ ]
+}

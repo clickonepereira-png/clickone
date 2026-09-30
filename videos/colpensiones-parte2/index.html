@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Colpensiones parte 2 — reel editado</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Anton";
+        src: url("assets/fonts/anton-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-italic.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/fonts/inter-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+
+      :root {
+        --white: #ffffff;
+        --blue: #1f4fff;
+        --navy: #0b1f66;
+        --sky: #7d9bff;
+        --mist: #e3eaff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      /* ---------- footage: the camera wrapper carries every zoom ---------- */
+      #cam {
+        position: absolute;
+        inset: 0;
+        transform-origin: 53% 27%;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+      #leak {
+        position: absolute;
+        right: -360px;
+        top: -360px;
+        width: 1100px;
+        height: 1100px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, rgba(255, 248, 235, 0.22) 38%, rgba(255, 255, 255, 0) 70%);
+      }
+
+      /* ---------- captions (same system as part 1) ---------- */
+      .cap {
+        position: absolute;
+        left: 70px;
+        right: 70px;
+        display: flex;
+        justify-content: center;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 16px;
+        text-align: center;
+      }
+      .inner.pill {
+        background: rgba(11, 31, 102, 0.9);
+        border-radius: 30px;
+        padding: 12px 36px 18px;
+        box-shadow: 0 18px 40px rgba(11, 31, 102, 0.35);
+      }
+      .cw {
+        position: relative;
+        display: inline-block;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 400;
+        font-size: 62px;
+        line-height: 1.28;
+        color: #ffffff;
+        text-shadow: 0 2px 8px rgba(11, 31, 102, 0.8), 0 0 26px rgba(11, 31, 102, 0.65), 0 0 60px rgba(11, 31, 102, 0.35);
+        white-space: nowrap;
+      }
+      .inner.pill .cw {
+        text-shadow: none;
+      }
+      .cap.dark .cw {
+        color: var(--navy);
+        text-shadow: 0 0 18px rgba(255, 255, 255, 0.85);
+      }
+      .cw.kw {
+        font-weight: 700;
+        font-style: italic;
+      }
+      .cw .ul {
+        position: absolute;
+        left: 4px;
+        right: 4px;
+        bottom: 4px;
+        height: 6px;
+        border-radius: 3px;
+        background: currentColor;
+      }
+      .cw.hero {
+        flex-basis: 100%;
+        font-weight: 800;
+        font-style: italic;
+        letter-spacing: 0.02em;
+        line-height: 1.02;
+      }
+
+      /* ---------- data chip ---------- */
+      .chip {
+        position: absolute;
+        left: 90px;
+        top: 1470px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 96px;
+        padding: 0 42px 0 16px;
+        border-radius: 48px;
+        background: rgba(11, 31, 102, 0.78);
+        box-shadow: 0 16px 36px rgba(11, 31, 102, 0.35);
+      }
+      .chip .dot {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: var(--blue);
+        box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.25);
+      }
+      .chip .lbl {
+        position: relative;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 600;
+        font-size: 46px;
+        color: #fff;
+        white-space: nowrap;
+      }
+      .chip .lbl .ul {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -6px;
+        height: 4px;
+        border-radius: 2px;
+        background: #fff;
+      }
+      .streak {
+        position: absolute;
+        left: 0;
+        top: 1478px;
+        width: 760px;
+        height: 80px;
+        border-radius: 40px;
+        background: rgba(31, 79, 255, 0.7);
+        filter: blur(14px);
+      }
+      #rings {
+        position: absolute;
+        left: 390px;
+        top: 150px;
+        width: 300px;
+        height: 180px;
+        overflow: visible;
+      }
+
+      /* ---------- cutaway: contribution bar (house style) ---------- */
+      .cut {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 42%, #ffffff 0%, #f8f9fd 55%, #e8edf8 100%);
+        overflow: hidden;
+      }
+      .barcode {
+        position: absolute;
+        left: 450px;
+        top: 130px;
+        width: 180px;
+        height: 54px;
+      }
+      .grid {
+        position: absolute;
+        background-image: linear-gradient(to right, rgba(31, 79, 255, 0.16) 2px, transparent 2px),
+          linear-gradient(to bottom, rgba(31, 79, 255, 0.16) 2px, transparent 2px);
+        background-size: 56px 56px;
+      }
+      .shadow {
+        filter: drop-shadow(0 30px 34px rgba(11, 31, 102, 0.24)) drop-shadow(0 5px 8px rgba(11, 31, 102, 0.12));
+      }
+      .layer {
+        position: absolute;
+        left: 110px;
+        right: 110px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .line {
+        display: block;
+        overflow: hidden;
+        padding: 0 10px;
+        margin: 0 -10px;
+      }
+      .disp {
+        font-family: "Anton", sans-serif;
+        text-transform: uppercase;
+        line-height: 1.12;
+        white-space: nowrap;
+      }
+      .ch {
+        display: inline-block;
+      }
+      .sans {
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 72px;
+        line-height: 1.25;
+        white-space: nowrap;
+        color: var(--navy);
+      }
+      .rw {
+        display: inline-block;
+        margin-right: 0.24em;
+      }
+      #bar {
+        position: absolute;
+        left: 150px;
+        top: 860px;
+        width: 250px;
+        height: 760px;
+        border-radius: 40px;
+        background: #eef2fb;
+        border: 6px solid #c9d3ea;
+        overflow: hidden;
+      }
+      #fillA,
+      #fillB {
+        position: absolute;
+        left: 0;
+        right: 0;
+      }
+      #fillA {
+        bottom: 0;
+        height: 60%;
+        background: linear-gradient(180deg, #3a68ff 0%, #1f4fff 100%);
+      }
+      #fillB {
+        bottom: 60%;
+        height: 40%;
+        background: linear-gradient(180deg, #1c3494 0%, #0b1f66 100%);
+      }
+      #mk {
+        position: absolute;
+        left: 120px;
+        top: 1161px;
+        width: 860px;
+        height: 6px;
+        background: repeating-linear-gradient(to right, #0b1f66 0 22px, transparent 22px 36px);
+      }
+      .lbl-r {
+        position: absolute;
+        left: 470px;
+      }
+      #num {
+        font-family: "Anton", sans-serif;
+        font-size: 230px;
+        line-height: 1;
+        color: var(--navy);
+        white-space: nowrap;
+        transform-origin: 0% 100%;
+      }
+      #wash {
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="23.28"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="23.28" data-track-index="0" muted playsinline></video>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="23.28" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="23.28" data-track-index="1">
+        <div id="leak"></div>
+        <svg id="rings" viewBox="0 0 300 180" aria-hidden="true">
+          <circle id="ring-a" cx="80" cy="90" r="72" fill="rgba(31,79,255,0.12)" stroke="#1f4fff" stroke-width="14" />
+          <circle id="ring-b" cx="220" cy="90" r="72" fill="rgba(11,31,102,0.1)" stroke="#0b1f66" stroke-width="14" />
+        </svg>
+        <div id="caps"></div>
+
+        <div id="chip-a" class="chip"><span class="dot"></span><span class="lbl">+2,3 salarios mínimos<span class="ul"></span></span></div>
+        <div id="streak-a" class="streak"></div>
+
+        <!-- ============ cutaway: who pays what (used twice) ============ -->
+        <div id="cutC" class="cut">
+          <svg class="barcode" viewBox="0 0 180 54" aria-hidden="true"><g class="bars" fill="#0b1f66"></g></svg>
+          <div id="t1" class="layer" style="top: 280px">
+            <span class="line"><span id="t1-ahora" class="sans words"><span class="rw">ahora,</span></span></span>
+            <span class="line"><span id="t1-todos" class="disp split" style="font-size: 190px; color: #0b1f66">todos</span></span>
+            <span class="line"><span id="t1-trab" class="disp split" style="font-size: 118px; color: #1f4fff">los trabajadores</span></span>
+          </div>
+          <div id="t2" class="layer" style="top: 280px">
+            <span class="line"><span id="t2-aportan" class="sans words"><span class="rw">aportan</span><span class="rw">el</span><span class="rw">valor</span></span></span>
+            <span class="line"><span id="t2-rest" class="disp split" style="font-size: 200px; color: #0b1f66">restante</span></span>
+          </div>
+          <div class="grid" id="c-grid" style="left: 90px; top: 830px; width: 900px; height: 820px"></div>
+          <div id="bar" class="shadow"><div id="fillA"></div><div id="fillB"></div></div>
+          <div id="mk"></div>
+          <div class="lbl-r" style="top: 905px"><div id="num">2,3</div></div>
+          <div class="lbl-r" style="top: 1180px"><span class="line"><span id="c-smin" class="sans words" style="font-size: 62px"><span class="rw">salarios</span><span class="rw">mínimos</span></span></span></div>
+          <div class="lbl-r" style="top: 1310px"><span class="line"><span id="c-aportan" class="sans words" style="font-size: 58px"><span class="rw">aportan</span><span class="rw">a</span></span></span></div>
+          <div class="lbl-r" style="top: 1380px"><span class="line"><span id="c-colp" class="disp split" style="font-size: 100px; color: #1f4fff">Colpensiones</span></span></div>
+          <div class="lbl-r" id="grp-aun" style="top: 880px"><span class="line"><span id="c-aun" class="sans words" style="font-size: 58px"><span class="rw">a</span><span class="rw">un</span></span></span></div>
+          <div class="lbl-r" id="grp-fp" style="top: 950px"><span class="line"><span id="c-fp" class="disp split" style="font-size: 100px; color: #0b1f66">fondo privado</span></span></div>
+        </div>
+
+        <div id="wash"></div>
+      </div>
+
+      <!-- ============ SFX: simple and quiet, under the voice (tools/make_sfx.py) ============ -->
+      <audio id="sfx-01" src="assets/sfx/click.wav" data-start="1.98" data-duration="0.03" data-track-index="20" data-volume="0.3"></audio>
+      <audio id="sfx-02" src="assets/sfx/pop.wav" data-start="3.72" data-duration="0.09" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="sfx-03" src="assets/sfx/whoosh.wav" data-start="4.2" data-duration="0.32" data-track-index="22" data-volume="0.3"></audio>
+      <audio id="sfx-04" src="assets/sfx/pop-up-3.wav" data-start="6.86" data-duration="0.1" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="sfx-05" src="assets/sfx/tick.wav" data-start="8.3" data-duration="0.025" data-track-index="23" data-volume="0.25"></audio>
+      <audio id="sfx-06" src="assets/sfx/tick.wav" data-start="8.5" data-duration="0.025" data-track-index="23" data-volume="0.25"></audio>
+      <audio id="sfx-07" src="assets/sfx/tick.wav" data-start="8.7" data-duration="0.025" data-track-index="23" data-volume="0.25"></audio>
+      <audio id="sfx-08" src="assets/sfx/pop-high.wav" data-start="8.9" data-duration="0.07" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="sfx-09" src="assets/sfx/whoosh.wav" data-start="9.84" data-duration="0.32" data-track-index="22" data-volume="0.3"></audio>
+      <audio id="sfx-10" src="assets/sfx/pop.wav" data-start="10.3" data-duration="0.09" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="sfx-11" src="assets/sfx/whoosh.wav" data-start="12.26" data-duration="0.32" data-track-index="22" data-volume="0.3"></audio>
+      <audio id="sfx-12" src="assets/sfx/pop-up-5.wav" data-start="13.5" data-duration="0.1" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="sfx-13" src="assets/sfx/whoosh.wav" data-start="15.26" data-duration="0.32" data-track-index="22" data-volume="0.3"></audio>
+      <audio id="sfx-14" src="assets/sfx/click.wav" data-start="15.78" data-duration="0.03" data-track-index="20" data-volume="0.3"></audio>
+      <audio id="sfx-15" src="assets/sfx/pop.wav" data-start="18.42" data-duration="0.09" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="sfx-16" src="assets/sfx/tick.wav" data-start="21.7" data-duration="0.025" data-track-index="23" data-volume="0.25"></audio>
+      <audio id="sfx-17" src="assets/sfx/tick.wav" data-start="21.9" data-duration="0.025" data-track-index="23" data-volume="0.25"></audio>
+      <audio id="sfx-18" src="assets/sfx/tick.wav" data-start="22.1" data-duration="0.025" data-track-index="23" data-volume="0.25"></audio>
+      <audio id="sfx-19" src="assets/sfx/tick.wav" data-start="22.3" data-duration="0.025" data-track-index="23" data-volume="0.25"></audio>
+      <audio id="sfx-20" src="assets/sfx/pop-high.wav" data-start="22.5" data-duration="0.07" data-track-index="21" data-volume="0.35"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+
+        // ---------- transcript (local Whisper small word timestamps; numbers / proper nouns fixed) ----------
+        const W = [
+          ["ya", 0.64, 0.84], ["no", 0.84, 1.08], ["compiten", 1.08, 1.44], ["de", 1.44, 1.66], ["forma", 1.66, 1.98], ["excluyente,", 1.98, 2.58],
+          ["sino", 2.96, 3.18], ["que", 3.18, 3.3], ["se", 3.3, 3.72], ["complementan.", 3.72, 4.22],
+          ["Ahora,", 4.52, 4.74], ["todos", 4.92, 5.18], ["los", 5.18, 5.46], ["trabajadores", 5.46, 5.96], ["aportan", 6.3, 6.74], ["a", 6.74, 6.86],
+          ["Colpensiones", 6.86, 7.84], ["sobre", 7.84, 8.24], ["2,3", 8.24, 9.06], ["salarios", 9.06, 9.56], ["mínimos,", 9.56, 9.96],
+          ["y", 10.0, 10.34], ["quienes", 10.34, 10.8], ["tienen", 10.8, 11.08], ["ingresos", 11.08, 11.78], ["superiores", 11.78, 12.2],
+          ["aportan", 12.54, 13.0], ["el", 13.0, 13.16], ["valor", 13.16, 13.5], ["restante", 13.5, 14.2], ["a", 14.2, 14.36], ["un", 14.36, 14.64],
+          ["fondo", 14.64, 14.92], ["privado.", 14.92, 15.3],
+          ["La", 15.52, 15.78], ["excepción", 15.78, 16.66], ["aplica", 16.66, 17.14], ["para", 17.14, 17.42], ["quienes", 17.42, 17.98], ["todavía", 17.98, 18.42],
+          ["están", 18.42, 18.74], ["en", 18.74, 18.94], ["el", 18.94, 19.14], ["régimen", 19.14, 19.5], ["de", 19.5, 19.74], ["transición.", 19.74, 20.28],
+          ["Mujeres", 20.42, 21.08], ["con", 21.08, 21.6], ["750", 21.6, 22.62], ["semanas", 22.62, 22.92], ["o", 22.92, 23.14], ["más", 23.14, 23.28],
+        ];
+        // on-camera caption groups: [first, last, top(px), style, keyword indices, hero {index: font-size}]
+        const CAPS = [
+          [0, 2, 1300, "pill", [2]],
+          [3, 5, 170, "dark", [], { 5: 124 }],
+          [6, 9, 1370, "", [9]],
+          [21, 23, 1290, "", [23]],
+          [24, 25, 1260, "", [24, 25]],
+          [34, 35, 170, "dark", [], { 35: 140 }],
+          [36, 39, 1290, "", [36]],
+          [40, 45, 1290, "pill", [43, 44, 45]],
+          [46, 51, 1120, "pill", [46, 49], { 48: 176 }],
+        ];
+        const CUTS = [[4.35, 9.98], [12.4, 15.4]];
+        const END = 23.28;
+
+        const caps = $("#caps");
+        const groups = CAPS.map(([a, b, top, style, kws, hero = {}], gi) => {
+          const cap = document.createElement("div");
+          cap.className = "cap" + (style === "dark" ? " dark" : "");
+          cap.id = "cap-" + gi;
+          cap.style.top = top + "px";
+          const inner = document.createElement("div");
+          inner.className = "inner" + (style === "pill" ? " pill" : "");
+          for (let k = a; k <= b; k++) {
+            const s = document.createElement("span");
+            const isHero = k in hero;
+            s.className = "cw" + (kws.includes(k) ? " kw" : "") + (isHero ? " hero" : "");
+            s.id = "cw-" + k;
+            s.textContent = W[k][0];
+            if (isHero) s.style.fontSize = hero[k] + "px";
+            if (kws.includes(k)) {
+              const u = document.createElement("span");
+              u.className = "ul";
+              u.id = "ul-" + k;
+              s.appendChild(u);
+            }
+            inner.appendChild(s);
+          }
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          return { cap, inner, a, b, style };
+        });
+
+        document.querySelectorAll(".split").forEach((el) => {
+          const t = el.textContent;
+          el.textContent = "";
+          for (const c of t) {
+            const s = document.createElement("span");
+            s.className = "ch";
+            s.textContent = c === " " ? " " : c;
+            el.appendChild(s);
+          }
+        });
+        const BARS = [3, 1, 2, 1, 4, 1, 1, 3, 2, 1, 1, 2, 3, 1, 2, 4, 1, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 1, 1, 4, 2, 1, 3, 1];
+        document.querySelectorAll(".bars").forEach((g) => {
+          let bx = 0;
+          BARS.forEach((w, i) => {
+            if (i % 2 === 0) {
+              const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+              r.setAttribute("x", bx * 2.2);
+              r.setAttribute("y", 0);
+              r.setAttribute("width", w * 2.2);
+              r.setAttribute("height", 54);
+              g.appendChild(r);
+            }
+            bx += w;
+          });
+        });
+
+        // ---------- timeline ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+        const GHOST = "#8390b3";
+        const ink = (sel, t, color = "#0b1f66", step = 0.12) => {
+          document.querySelectorAll(sel + " .rw").forEach((w, i) => {
+            const ti = Array.isArray(t) ? t[i] : t + i * step;
+            tl.fromTo(w, { opacity: 0, y: 26, color: GHOST }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, ti)
+              .to(w, { color, duration: 0.25, ease: "power1.out" }, ti + 0.14);
+          });
+        };
+        const letters = (sel, t, from, stagger = 0.03, dur = 0.42) =>
+          tl.fromTo(sel + " .ch", from, { yPercent: 0, scale: 1, opacity: 1, filter: "blur(0px)", duration: dur, stagger, ease: "expo.out" }, t);
+
+        gsap.set([".cap", "#cutC", "#t2", ".chip", ".streak", "#rings"], { autoAlpha: 0 });
+        gsap.set(".cw", { opacity: 0 });
+        gsap.set(".cw .ul, .chip .ul", { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set("#wash", { opacity: 0 });
+        gsap.set(["#fillA", "#fillB"], { scaleY: 0, transformOrigin: "50% 100%" });
+        gsap.set("#mk", { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set("#num", { opacity: 0 });
+        gsap.set(["#grp-aun", "#grp-fp"], { autoAlpha: 0 });
+
+        tl.fromTo("#leak", { opacity: 0.55, x: 0, y: 0 }, { opacity: 0.9, x: -60, y: 40, duration: 5.5, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0);
+
+        // ---- captions ----
+        const nextStart = (gi) => {
+          const e = gi + 1 < groups.length ? W[groups[gi + 1].a][1] - 0.06 : END;
+          const cut = CUTS.find(([c0]) => c0 > W[groups[gi].b][1] - 0.01 && c0 < e);
+          return cut ? cut[0] - 0.05 : e;
+        };
+        groups.forEach(({ cap, inner, a, b, style }, gi) => {
+          const s = W[a][1] - 0.06;
+          const e = nextStart(gi);
+          tl.set(cap, { autoAlpha: 1 }, s);
+          if (style === "pill") tl.fromTo(inner, { scaleX: 0.6, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.3, ease: "back.out(1.8)" }, s);
+          for (let k = a; k <= b; k++) {
+            const el = "#cw-" + k;
+            if (document.querySelector(el).classList.contains("hero"))
+              tl.fromTo(el, { opacity: 0, scale: 1.35, scaleX: 1.6, filter: "blur(16px)" }, { opacity: 1, scale: 1, scaleX: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, W[k][1]);
+            else tl.fromTo(el, { opacity: 0, y: 14, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, W[k][1]);
+            if (document.querySelector("#ul-" + k)) tl.to("#ul-" + k, { scaleX: 1, duration: 0.3, ease: "power2.inOut" }, W[k][1] + 0.12);
+          }
+          tl.to(cap, { opacity: 0, filter: "blur(10px)", duration: 0.14, ease: "power2.in" }, Math.max(s + 0.3, e - 0.14)).set(cap, { autoAlpha: 0 }, e);
+        });
+        // "750": count up while it is said
+        const n750 = { v: 0 };
+        tl.fromTo(n750, { v: 0 }, { v: 750, duration: 0.9, ease: "power2.out", onUpdate: () => ($("#cw-48").firstChild.nodeValue = Math.round(n750.v)) }, 21.6);
+
+        // ---- "se complementan": two circles slide into each other ----
+        tl.set("#rings", { autoAlpha: 1 }, 3.3)
+          .fromTo("#rings", { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 3.3)
+          .to("#ring-a", { attr: { cx: 118 }, duration: 0.45, ease: "back.out(2)" }, 3.72)
+          .to("#ring-b", { attr: { cx: 182 }, duration: 0.45, ease: "back.out(2)" }, 3.72);
+
+        // ---- data chip ----
+        tl.set(["#streak-a", "#chip-a"], { autoAlpha: 1 }, 10.3)
+          .fromTo("#streak-a", { x: -800, opacity: 0.9 }, { x: 400, opacity: 0, duration: 0.45, ease: "power2.out" }, 10.3)
+          .fromTo("#chip-a", { x: -700, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 10.35)
+          .fromTo("#chip-a .dot", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, 10.5)
+          .to("#chip-a .ul", { scaleX: 1, duration: 0.35, ease: "power2.inOut" }, 10.65)
+          .to("#chip-a", { x: -700, filter: "blur(12px)", duration: 0.3, ease: "power3.in" }, 12.05)
+          .set(["#chip-a", "#streak-a"], { autoAlpha: 0 }, 12.36);
+
+        // ---- camera ----
+        tl.fromTo("#cam", { scale: 1.1 }, { scale: 1.0, duration: 1.0, ease: "expo.out" }, 0)
+          .to("#cam", { scale: 1.1, duration: 0.2, ease: "power3.out" }, 1.98)
+          .to("#cam", { scale: 1.02, duration: 0.8, ease: "sine.inOut" }, 3.2)
+          .set("#cam", { scale: 1.2 }, 9.98)
+          .to("#cam", { scale: 1.05, duration: 0.7, ease: "expo.out" }, 9.98)
+          .to("#cam", { scale: 1.14, duration: 0.2, ease: "power3.out" }, 11.08)
+          .set("#cam", { scale: 1.2 }, 15.4)
+          .to("#cam", { scale: 1.04, duration: 0.7, ease: "expo.out" }, 15.4)
+          .to("#cam", { scale: 1.12, duration: 0.2, ease: "power3.out" }, 15.78)
+          .to("#cam", { scale: 1.02, duration: 0.8, ease: "sine.inOut" }, 16.6)
+          .to("#cam", { scale: 1.16, duration: 2.8, ease: "sine.inOut" }, 20.42);
+
+        // ---- white-wash cut in / out ----
+        const washIn = (t) => tl.to("#wash", { opacity: 1, duration: 0.18, ease: "power2.in" }, t - 0.18).set("#cutC", { autoAlpha: 1 }, t).to("#wash", { opacity: 0, duration: 0.3, ease: "power2.out" }, t);
+        const washOut = (t) => tl.to("#wash", { opacity: 1, duration: 0.16, ease: "power2.in" }, t - 0.16).set("#cutC", { autoAlpha: 0 }, t).to("#wash", { opacity: 0, duration: 0.32, ease: "power2.out" }, t);
+        tl.set("#rings", { autoAlpha: 0 }, 4.35);
+
+        // =========== cutaway 1 (4.35 – 9.98): everybody pays Colpensiones up to 2,3 minimum wages ===========
+        washIn(4.35);
+        ink("#t1-ahora", 4.52);
+        letters("#t1-todos", 4.92, { yPercent: 110 }, 0.035);
+        letters("#t1-trab", 5.3, { yPercent: 110 }, 0.02);
+        tl.fromTo("#c-grid", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.7, ease: "expo.inOut" }, 4.6)
+          .fromTo("#bar", { y: 820, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.3)" }, 5.4);
+        ink("#c-aportan", [6.3, 6.74]);
+        tl.to("#fillA", { scaleY: 1, duration: 0.8, ease: "power3.inOut" }, 6.6);
+        letters("#c-colp", 6.86, { yPercent: 110 }, 0.025);
+        tl.to("#mk", { scaleX: 1, duration: 0.45, ease: "power2.inOut" }, 7.84);
+        const wage = { v: 0 };
+        tl.set("#num", { opacity: 1 }, 8.24)
+          .fromTo("#num", { scale: 0.6 }, { scale: 1, duration: 0.45, ease: "back.out(2)" }, 8.24)
+          .fromTo(wage, { v: 0 }, { v: 2.3, duration: 0.7, ease: "power2.out", onUpdate: () => ($("#num").textContent = wage.v.toFixed(1).replace(".", ",")) }, 8.24);
+        ink("#c-smin", [9.06, 9.56]);
+        washOut(9.98);
+
+        // =========== cutaway 2 (12.40 – 15.40): the remaining value goes to a private fund ===========
+        tl.set("#t1", { autoAlpha: 0 }, 12.3)
+          .set("#t2", { autoAlpha: 1 }, 12.3)
+          .set(["#grp-aun", "#grp-fp"], { autoAlpha: 1 }, 12.3)
+          .set(["#c-aportan", "#c-colp"], { autoAlpha: 0.4 }, 12.3)
+          .set(["#num", "#c-smin"], { autoAlpha: 0 }, 12.3);
+        washIn(12.4);
+        ink("#t2-aportan", [12.54, 13.0, 13.16]);
+        letters("#t2-rest", 13.5, { scale: 1.8, opacity: 0, filter: "blur(10px)" }, 0.035, 0.45);
+        tl.to("#fillB", { scaleY: 1, duration: 0.7, ease: "power3.inOut" }, 13.5);
+        ink("#c-aun", [14.2, 14.36]);
+        letters("#c-fp", 14.64, { yPercent: 110 }, 0.025);
+        tl.to("#bar", { scale: 1.04, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 14.92);
+        washOut(15.4);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      });
+    </script>
+  </body>
+</html>
