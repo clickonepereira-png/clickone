@@ -329,9 +329,9 @@
       }
       .ring {
         position: absolute;
-        top: -34px;
+        top: -40px;
         width: 34px;
-        height: 84px;
+        height: 66px;
         border-radius: 17px;
         background: linear-gradient(90deg, #6b768e 0%, #eef1f7 45%, #8a94a8 100%);
       }
@@ -590,7 +590,7 @@
 
         // ---------- timeline ----------
         const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
-        const GHOST = "#c5cde2";
+        const GHOST = "#8390b3";
         // reference move: words land light grey, then ink in
         const ink = (sel, t, color, step = 0.12) => {
           document.querySelectorAll(sel + " .rw").forEach((w, i) => {
