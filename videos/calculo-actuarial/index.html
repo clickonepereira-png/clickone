@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Cálculo actuarial — motion vertical 9:16</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Anton";
+        src: url("assets/fonts/anton-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/fonts/inter-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+
+      :root {
+        --white: #ffffff;
+        --blue: #1f4fff;
+        --navy: #0b1f66;
+        --sky: #7d9bff;
+        --mist: #e3eaff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--white);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 42%, #ffffff 0%, #f8f9fd 55%, #e8edf8 100%);
+        font-family: "Inter", sans-serif;
+        color: var(--navy);
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+      }
+      .layer {
+        position: absolute;
+        left: 110px;
+        right: 110px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ---------- type system ---------- */
+      .disp {
+        font-family: "Anton", sans-serif;
+        font-weight: 400;
+        text-transform: uppercase;
+        line-height: 1.12;
+        letter-spacing: 0.005em;
+        white-space: nowrap;
+      }
+      .line {
+        display: block;
+        overflow: hidden;
+        padding: 0 10px;
+        margin: 0 -10px;
+      }
+      .ch {
+        display: inline-block;
+      }
+      .sans {
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 74px;
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+      }
+      .rw {
+        display: inline-block;
+        margin-right: 0.24em;
+      }
+      .rw.hi {
+        font-weight: 800;
+      }
+      .tex .ch {
+        color: transparent;
+        background: repeating-linear-gradient(to right, rgba(255, 255, 255, 0.22) 0 3px, transparent 3px 26px),
+          repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0 3px, transparent 3px 26px),
+          linear-gradient(180deg, #3a68ff 0%, #1f4fff 45%, #0b1f66 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      /* ---------- recurring details ---------- */
+      #barcode {
+        position: absolute;
+        left: 450px;
+        top: 130px;
+        width: 180px;
+        height: 54px;
+      }
+      .grid {
+        position: absolute;
+        background-image: linear-gradient(to right, rgba(31, 79, 255, 0.16) 2px, transparent 2px),
+          linear-gradient(to bottom, rgba(31, 79, 255, 0.16) 2px, transparent 2px);
+        background-size: 56px 56px;
+      }
+      .shadow {
+        filter: drop-shadow(0 34px 38px rgba(11, 31, 102, 0.26)) drop-shadow(0 6px 8px rgba(11, 31, 102, 0.12));
+      }
+      .block {
+        position: absolute;
+        background: var(--blue);
+      }
+
+      /* ---------- B1 · existe una ALTERNATIVA que se llama ---------- */
+      #b1-text {
+        top: 300px;
+        align-items: flex-start;
+      }
+      #alternativa {
+        font-size: 176px;
+        color: var(--blue);
+        line-height: 1.08;
+      }
+      #grid1 {
+        left: 110px;
+        top: 900px;
+        width: 700px;
+        height: 700px;
+      }
+      #sign {
+        position: absolute;
+        left: 290px;
+        top: 860px;
+        width: 560px;
+        height: 820px;
+        overflow: visible;
+      }
+
+      /* ---------- B2 · CÁLCULO ACTUARIAL ---------- */
+      #b2-text {
+        top: 330px;
+        align-items: flex-start;
+      }
+      #calculo,
+      #actuarial {
+        font-size: 220px;
+        line-height: 1.12;
+      }
+      #grid2 {
+        left: 110px;
+        top: 1000px;
+        width: 520px;
+        height: 620px;
+      }
+      #blk2 {
+        left: 470px;
+        top: 1330px;
+        width: 330px;
+        height: 330px;
+      }
+      #calc {
+        position: absolute;
+        left: 540px;
+        top: 960px;
+        width: 420px;
+        height: 600px;
+      }
+      .sym {
+        position: absolute;
+        width: 120px;
+        text-align: center;
+        font-family: "Anton", sans-serif;
+        font-size: 120px;
+        line-height: 1;
+        color: var(--blue);
+      }
+
+      /* ---------- B3 · el cálculo actuarial permite RECONOCER LAS SEMANAS ---------- */
+      #b3-text {
+        top: 280px;
+        align-items: flex-end;
+        text-align: right;
+      }
+      #b3-a {
+        font-size: 66px;
+      }
+      #reconocer {
+        font-size: 214px;
+        color: var(--blue);
+        line-height: 1.08;
+      }
+      #lassemanas {
+        font-size: 160px;
+        color: var(--navy);
+        line-height: 1.1;
+      }
+      #slots {
+        position: absolute;
+        left: 120px;
+        top: 1010px;
+        width: 840px;
+        height: 430px;
+      }
+      #grid3 {
+        left: 90px;
+        top: 960px;
+        width: 900px;
+        height: 540px;
+      }
+      .slot,
+      .fill {
+        position: absolute;
+        width: 150px;
+        height: 128px;
+        border-radius: 20px;
+      }
+      .slot.rec {
+        background: linear-gradient(180deg, #eef2fb 0%, #dce4f7 100%);
+      }
+      .slot.gap {
+        border: 6px dashed #9fb0db;
+        background: rgba(255, 255, 255, 0.6);
+      }
+      .fill {
+        background: linear-gradient(180deg, #3a68ff 0%, #1f4fff 100%);
+        display: grid;
+        place-items: center;
+      }
+      .fill svg {
+        width: 64px;
+        height: 64px;
+        overflow: visible;
+      }
+
+      /* ---------- B4 · que tu empleador OMITIÓ tu afiliación al SISTEMA DE SEGURIDAD SOCIAL ---------- */
+      #bluebg {
+        position: absolute;
+        left: -200px;
+        right: -200px;
+        top: 0;
+        height: 2200px;
+        background: var(--blue);
+        border-radius: 50% 50% 0 0 / 260px 260px 0 0;
+      }
+      #b4-text {
+        top: 250px;
+        align-items: center;
+        text-align: center;
+      }
+      #b4 .sans {
+        color: #ffffff;
+      }
+      #omit-wrap {
+        position: relative;
+        margin: 6px 0 10px;
+      }
+      #omitio {
+        font-size: 236px;
+        color: #ffffff;
+        line-height: 1.26;
+      }
+      #omit-box {
+        position: absolute;
+        left: -34px;
+        right: -34px;
+        top: -4px;
+        bottom: 4px;
+        border: 7px dashed rgba(255, 255, 255, 0.85);
+        border-radius: 24px;
+      }
+      #sistema,
+      #seguridad {
+        font-size: 134px;
+        color: #ffffff;
+        line-height: 1.1;
+      }
+      #card {
+        position: absolute;
+        left: 260px;
+        top: 1210px;
+        width: 560px;
+        height: 340px;
+      }
+      #stamp {
+        position: absolute;
+        left: 690px;
+        top: 1400px;
+        width: 210px;
+        height: 210px;
+        overflow: visible;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="11"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div id="stage" class="clip" data-start="0" data-duration="11" data-track-index="0">
+        <!-- ================= B1 · 0.0 – 2.4 ================= -->
+        <div id="b1" class="scene">
+          <div id="grid1" class="grid"></div>
+          <div id="b1-text" class="layer">
+            <span class="line"><span id="existe" class="sans words"><span class="rw">existe</span><span class="rw">una</span></span></span>
+            <span class="line"><span id="alternativa" class="disp split">alternativa</span></span>
+            <span class="line"><span id="llama" class="sans words"><span class="rw">que</span><span class="rw">se</span><span class="rw">llama</span></span></span>
+          </div>
+          <svg id="sign" class="shadow" viewBox="0 0 560 820" aria-hidden="true">
+            <defs>
+              <linearGradient id="pole" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#6b768e" />
+                <stop offset="0.45" stop-color="#eef1f7" />
+                <stop offset="1" stop-color="#8a94a8" />
+              </linearGradient>
+              <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#3a68ff" />
+                <stop offset="1" stop-color="#1a43d9" />
+              </linearGradient>
+            </defs>
+            <rect id="pole-r" x="262" y="60" width="30" height="760" rx="10" fill="url(#pole)" />
+            <g id="sign2">
+              <path d="M262 300 H70 L14 364 L70 428 H262 Z" fill="#dfe5f2" />
+              <path d="M210 364 H90 M126 330 L90 364 L126 398" fill="none" stroke="#9fb0db" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+            <g id="sign1">
+              <path d="M292 90 H486 L546 160 L486 230 H292 Z" fill="url(#plate)" />
+              <path d="M330 160 H470 M430 120 L470 160 L430 200" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+            <circle cx="277" cy="80" r="16" fill="url(#pole)" />
+          </svg>
+        </div>
+
+        <!-- ================= B2 · 2.4 – 4.6 ================= -->
+        <div id="b2" class="scene">
+          <div id="grid2" class="grid"></div>
+          <div id="blk2" class="block"></div>
+          <div id="b2-text" class="layer">
+            <span class="line"><span id="calculo" class="disp split tex">cálculo</span></span>
+            <span class="line"><span id="actuarial" class="disp split tex">actuarial</span></span>
+          </div>
+          <span class="sym" id="sym-0" style="left: 140px; top: 1060px">+</span>
+          <span class="sym" id="sym-1" style="left: 330px; top: 1180px">%</span>
+          <span class="sym" id="sym-2" style="left: 150px; top: 1320px">×</span>
+          <span class="sym" id="sym-3" style="left: 340px; top: 1450px">÷</span>
+          <span class="sym" id="sym-4" style="left: 170px; top: 1560px">=</span>
+          <svg id="calc" class="shadow" viewBox="0 0 420 600" aria-hidden="true">
+            <defs>
+              <linearGradient id="cbody" x1="0" y1="0" x2="0.4" y2="1">
+                <stop offset="0" stop-color="#1c3494" />
+                <stop offset="1" stop-color="#0b1f66" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="420" height="600" rx="46" fill="url(#cbody)" />
+            <rect x="6" y="6" width="408" height="588" rx="42" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3" />
+            <rect x="36" y="40" width="348" height="132" rx="20" fill="#e3eaff" />
+            <g id="scr" fill="#0b1f66"></g>
+            <g id="keys"></g>
+          </svg>
+        </div>
+
+        <!-- ================= B3 · 4.6 – 7.6 ================= -->
+        <div id="b3" class="scene">
+          <div id="grid3" class="grid"></div>
+          <div id="slots"></div>
+          <div id="b3-text" class="layer">
+            <span class="line"
+              ><span id="b3-a" class="sans words"
+                ><span class="rw">el</span><span class="rw hi" data-ink="#1f4fff">cálculo</span><span class="rw hi" data-ink="#1f4fff">actuarial</span></span
+              ></span
+            >
+            <span class="line"><span id="permite" class="sans words"><span class="rw">permite</span></span></span>
+            <span class="line"><span id="reconocer" class="disp split">reconocer</span></span>
+            <span class="line"><span id="lassemanas" class="disp split">las semanas</span></span>
+          </div>
+        </div>
+
+        <!-- ================= B4 · 7.6 – 11.0 ================= -->
+        <div id="bluebg"></div>
+        <div id="b4" class="scene">
+          <div id="b4-text" class="layer">
+            <span class="line"><span id="empleador" class="sans words"><span class="rw">que</span><span class="rw">tu</span><span class="rw">empleador</span></span></span>
+            <div id="omit-wrap">
+              <div id="omit-box"></div>
+              <span class="line"><span id="omitio" class="disp split">omitió</span></span>
+            </div>
+            <span class="line"><span id="afiliacion" class="sans words"><span class="rw">tu</span><span class="rw">afiliación</span><span class="rw">al</span></span></span>
+            <span class="line"><span id="sistema" class="disp split">sistema de</span></span>
+            <span class="line"><span id="seguridad" class="disp split">seguridad social</span></span>
+          </div>
+          <svg id="card" class="shadow" viewBox="0 0 560 340" aria-hidden="true">
+            <defs>
+              <linearGradient id="cardg" x1="0" y1="0" x2="0.3" y2="1">
+                <stop offset="0" stop-color="#ffffff" />
+                <stop offset="1" stop-color="#eef2f9" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="560" height="340" rx="30" fill="url(#cardg)" />
+            <path d="M30 0 H530 A30 30 0 0 1 560 30 V76 H0 V30 A30 30 0 0 1 30 0 Z" fill="#0b1f66" />
+            <rect x="34" y="28" width="170" height="20" rx="10" fill="#ffffff" opacity="0.85" />
+            <path d="M494 18 L520 28 V46 C520 60 508 70 494 76 C480 70 468 60 468 46 V28 Z" fill="#1f4fff" />
+            <circle cx="120" cy="200" r="72" fill="#e3eaff" />
+            <circle cx="120" cy="180" r="28" fill="#1f4fff" />
+            <path d="M70 250 C74 222 96 212 120 212 C144 212 166 222 170 250 Z" fill="#1f4fff" />
+            <rect x="230" y="130" width="250" height="22" rx="11" fill="#c3cde6" />
+            <rect x="230" y="172" width="190" height="18" rx="9" fill="#d5dcec" />
+            <rect x="230" y="208" width="220" height="18" rx="9" fill="#d5dcec" />
+            <rect x="230" y="256" width="130" height="34" rx="10" fill="#1f4fff" />
+          </svg>
+          <svg id="stamp" viewBox="0 0 210 210" aria-hidden="true">
+            <circle cx="105" cy="105" r="92" fill="rgba(255,255,255,0.92)" stroke="#0b1f66" stroke-width="12" />
+            <circle cx="105" cy="105" r="72" fill="none" stroke="#0b1f66" stroke-width="4" stroke-dasharray="10 8" />
+            <path d="M66 108 L94 136 L146 80" fill="none" stroke="#1f4fff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+
+        <svg id="barcode" viewBox="0 0 180 54" aria-hidden="true">
+          <g id="bars" fill="#0b1f66"></g>
+        </svg>
+      </div>
+
+      <!-- ============ SFX (synthesized: tools/make_sfx.py) ============ -->
+      <!-- B1 -->
+      <audio id="sfx-01" src="assets/sfx/whoosh.wav" data-start="0" data-duration="0.32" data-track-index="10" data-volume="0.5"></audio>
+      <audio id="sfx-02" src="assets/sfx/click.wav" data-start="0.1" data-duration="0.03" data-track-index="12" data-volume="0.7"></audio>
+      <audio id="sfx-03" src="assets/sfx/impact.wav" data-start="0.36" data-duration="0.4" data-track-index="13" data-volume="0.75"></audio>
+      <audio id="sfx-04" src="assets/sfx/click.wav" data-start="0.8" data-duration="0.03" data-track-index="12" data-volume="0.6"></audio>
+      <audio id="sfx-05" src="assets/sfx/whoosh-fast.wav" data-start="1.05" data-duration="0.22" data-track-index="10" data-volume="0.55"></audio>
+      <audio id="sfx-06" src="assets/sfx/pop.wav" data-start="1.2" data-duration="0.09" data-track-index="11" data-volume="0.75"></audio>
+      <audio id="sfx-07" src="assets/sfx/pop-high.wav" data-start="1.42" data-duration="0.07" data-track-index="11" data-volume="0.6"></audio>
+      <audio id="sfx-08" src="assets/sfx/whoosh.wav" data-start="2.1" data-duration="0.32" data-track-index="10" data-volume="0.6"></audio>
+      <!-- B2 -->
+      <audio id="sfx-09" src="assets/sfx/impact.wav" data-start="2.5" data-duration="0.4" data-track-index="13" data-volume="0.85"></audio>
+      <audio id="sfx-10" src="assets/sfx/whoosh-fast.wav" data-start="2.98" data-duration="0.22" data-track-index="10" data-volume="0.55"></audio>
+      <audio id="sfx-11" src="assets/sfx/pop-high.wav" data-start="3.25" data-duration="0.07" data-track-index="11" data-volume="0.55"></audio>
+      <audio id="sfx-12" src="assets/sfx/pop-high.wav" data-start="3.4" data-duration="0.07" data-track-index="11" data-volume="0.55"></audio>
+      <audio id="sfx-13" src="assets/sfx/click.wav" data-start="3.5" data-duration="0.03" data-track-index="12" data-volume="0.8"></audio>
+      <audio id="sfx-14" src="assets/sfx/click.wav" data-start="3.65" data-duration="0.03" data-track-index="12" data-volume="0.8"></audio>
+      <audio id="sfx-15" src="assets/sfx/click.wav" data-start="3.8" data-duration="0.03" data-track-index="12" data-volume="0.8"></audio>
+      <audio id="sfx-16" src="assets/sfx/click.wav" data-start="3.95" data-duration="0.03" data-track-index="12" data-volume="0.8"></audio>
+      <audio id="sfx-17" src="assets/sfx/pop.wav" data-start="4.1" data-duration="0.09" data-track-index="11" data-volume="0.75"></audio>
+      <audio id="sfx-18" src="assets/sfx/whoosh.wav" data-start="4.3" data-duration="0.32" data-track-index="10" data-volume="0.6"></audio>
+      <!-- B3 -->
+      <audio id="sfx-19" src="assets/sfx/click.wav" data-start="4.7" data-duration="0.03" data-track-index="12" data-volume="0.7"></audio>
+      <audio id="sfx-20" src="assets/sfx/click.wav" data-start="5.05" data-duration="0.03" data-track-index="12" data-volume="0.6"></audio>
+      <audio id="sfx-21" src="assets/sfx/impact.wav" data-start="5.22" data-duration="0.4" data-track-index="13" data-volume="0.8"></audio>
+      <audio id="sfx-22" src="assets/sfx/flip.wav" data-start="5.55" data-duration="0.11" data-track-index="11" data-volume="0.8"></audio>
+      <audio id="sfx-23" src="assets/sfx/riser.wav" data-start="5.9" data-duration="1.2" data-track-index="14" data-volume="0.4"></audio>
+      <audio id="sfx-24" src="assets/sfx/pop-up-1.wav" data-start="6.2" data-duration="0.1" data-track-index="15" data-volume="0.8"></audio>
+      <audio id="sfx-25" src="assets/sfx/pop-up-2.wav" data-start="6.34" data-duration="0.1" data-track-index="15" data-volume="0.8"></audio>
+      <audio id="sfx-26" src="assets/sfx/pop-up-3.wav" data-start="6.48" data-duration="0.1" data-track-index="15" data-volume="0.8"></audio>
+      <audio id="sfx-27" src="assets/sfx/pop-up-4.wav" data-start="6.62" data-duration="0.1" data-track-index="15" data-volume="0.8"></audio>
+      <audio id="sfx-28" src="assets/sfx/pop-up-5.wav" data-start="6.76" data-duration="0.1" data-track-index="15" data-volume="0.8"></audio>
+      <audio id="sfx-29" src="assets/sfx/pop-up-6.wav" data-start="6.9" data-duration="0.1" data-track-index="15" data-volume="0.85"></audio>
+      <audio id="sfx-30" src="assets/sfx/whoosh.wav" data-start="7.35" data-duration="0.32" data-track-index="10" data-volume="0.65"></audio>
+      <!-- B4 -->
+      <audio id="sfx-31" src="assets/sfx/click.wav" data-start="7.85" data-duration="0.03" data-track-index="12" data-volume="0.7"></audio>
+      <audio id="sfx-32" src="assets/sfx/impact.wav" data-start="8.1" data-duration="0.4" data-track-index="13" data-volume="0.85"></audio>
+      <audio id="sfx-33" src="assets/sfx/whoosh-fast.wav" data-start="8.35" data-duration="0.22" data-track-index="10" data-volume="0.45"></audio>
+      <audio id="sfx-34" src="assets/sfx/click.wav" data-start="8.65" data-duration="0.03" data-track-index="12" data-volume="0.6"></audio>
+      <audio id="sfx-35" src="assets/sfx/flip.wav" data-start="8.95" data-duration="0.11" data-track-index="11" data-volume="0.7"></audio>
+      <audio id="sfx-36" src="assets/sfx/flip.wav" data-start="9.15" data-duration="0.11" data-track-index="11" data-volume="0.7"></audio>
+      <audio id="sfx-37" src="assets/sfx/whoosh-fast.wav" data-start="9.45" data-duration="0.22" data-track-index="10" data-volume="0.55"></audio>
+      <audio id="sfx-38" src="assets/sfx/impact.wav" data-start="10.1" data-duration="0.4" data-track-index="13" data-volume="0.9"></audio>
+      <audio id="sfx-39" src="assets/sfx/confirm.wav" data-start="10.25" data-duration="0.5" data-track-index="16" data-volume="0.75"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const NS = "http://www.w3.org/2000/svg";
+        const rect = (parent, a) => {
+          const r = document.createElementNS(NS, "rect");
+          for (const k in a) r.setAttribute(k, a[k]);
+          parent.appendChild(r);
+          return r;
+        };
+
+        // ---------- static builds (deterministic) ----------
+        document.querySelectorAll(".split").forEach((el) => {
+          const t = el.textContent;
+          el.textContent = "";
+          for (const c of t) {
+            const s = document.createElement("span");
+            s.className = "ch";
+            s.textContent = c === " " ? " " : c;
+            el.appendChild(s);
+          }
+        });
+        // barcode
+        const BARS = [3, 1, 2, 1, 4, 1, 1, 3, 2, 1, 1, 2, 3, 1, 2, 4, 1, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 1, 1, 4, 2, 1, 3, 1];
+        let bx = 0;
+        BARS.forEach((w, i) => {
+          if (i % 2 === 0) rect($("#bars"), { x: bx * 2.2, y: 0, width: w * 2.2, height: 54 });
+          bx += w;
+        });
+        // calculator: screen digits (bars) + key grid
+        [[250, 96], [296, 96], [342, 96]].forEach(([x, y], i) => rect($("#scr"), { id: "scr-" + i, x, y, width: 34, height: 52, rx: 6 }));
+        rect($("#scr"), { x: 62, y: 70, width: 120, height: 14, rx: 7, fill: "#9fb0db" });
+        for (let r = 0; r < 5; r++)
+          for (let c = 0; c < 4; c++) {
+            const op = c === 3;
+            rect($("#keys"), {
+              id: `key-${r}-${c}`,
+              x: 36 + c * 88,
+              y: 206 + r * 76,
+              width: 72,
+              height: 60,
+              rx: 16,
+              fill: op ? "#1f4fff" : r === 4 && c === 0 ? "#7d9bff" : "#2a3f96",
+            });
+          }
+        // week slots: recorded weeks vs. gaps the employer left
+        const GAPS = [1, 4, 7, 8, 11, 13];
+        for (let k = 0; k < 15; k++) {
+          const c = k % 5, r = Math.floor(k / 5);
+          const s = document.createElement("div");
+          s.className = "slot " + (GAPS.includes(k) ? "gap" : "rec");
+          s.id = "slot-" + k;
+          s.style.left = c * 172 + "px";
+          s.style.top = r * 150 + "px";
+          $("#slots").appendChild(s);
+        }
+        GAPS.forEach((k, i) => {
+          const c = k % 5, r = Math.floor(k / 5);
+          const f = document.createElement("div");
+          f.className = "fill shadow";
+          f.id = "fill-" + i;
+          f.style.left = c * 172 + "px";
+          f.style.top = r * 150 + "px";
+          f.innerHTML = '<svg viewBox="0 0 64 64"><path d="M14 34 L27 47 L51 19" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          $("#slots").appendChild(f);
+        });
+
+        // ---------- timeline ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+        const GHOST = "#8390b3";
+        const ink = (sel, t, color, step = 0.12, ghost = GHOST) => {
+          document.querySelectorAll(sel + " .rw").forEach((w, i) => {
+            const c = w.dataset.ink || color;
+            tl.fromTo(w, { opacity: 0, y: 26, color: ghost }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, t + i * step)
+              .to(w, { color: c, duration: 0.25, ease: "power1.out" }, t + i * step + 0.14);
+          });
+        };
+        const letters = (sel, t, from, stagger = 0.035, dur = 0.42) =>
+          tl.fromTo(sel + " .ch", from, { yPercent: 0, scale: 1, opacity: 1, filter: "blur(0px)", duration: dur, stagger, ease: "expo.out" }, t);
+
+        gsap.set(["#b2", "#b3", "#b4"], { autoAlpha: 0 });
+        gsap.set("#bluebg", { yPercent: 100 });
+        gsap.set(".fill", { opacity: 0 });
+        gsap.set(".sym", { opacity: 0 });
+        gsap.set("#sign1", { svgOrigin: "277 160" });
+        gsap.set("#sign2", { svgOrigin: "277 364" });
+        gsap.set("#omit-box", { clipPath: "inset(0% 100% 0% 0%)" });
+
+        // =============== B1 · existe una ALTERNATIVA que se llama ===============
+        tl.fromTo("#barcode", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5 }, 0)
+          .fromTo("#grid1", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.8, ease: "expo.inOut" }, 0.1);
+        ink("#existe", 0.1, "#0b1f66");
+        letters("#alternativa", 0.36, { scale: 1.8, opacity: 0, filter: "blur(10px)" }, 0.035, 0.45);
+        ink("#llama", 0.8, "#0b1f66");
+        tl.fromTo("#pole-r", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.45, ease: "expo.out" }, 0.95)
+          .fromTo("#sign", { y: 260, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.4)" }, 0.95)
+          .fromTo("#sign1", { rotation: 70, opacity: 0 }, { rotation: -8, opacity: 1, duration: 0.55, ease: "back.out(2.2)" }, 1.2)
+          .fromTo("#sign2", { rotation: -70, opacity: 0 }, { rotation: 6, opacity: 1, duration: 0.55, ease: "back.out(2.2)" }, 1.42)
+          .to("#sign1", { rotation: -14, duration: 0.18, yoyo: true, repeat: 1, ease: "sine.inOut" }, 1.8);
+        tl.to("#b1", { scale: 1.14, opacity: 0, filter: "blur(18px)", duration: 0.32, ease: "power2.in" }, 2.1)
+          .set("#b1", { autoAlpha: 0 }, 2.44);
+
+        // =============== B2 · CÁLCULO ACTUARIAL ===============
+        tl.set("#b2", { autoAlpha: 1 }, 2.38)
+          .fromTo("#b2", { scale: 0.92, filter: "blur(18px)" }, { scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power2.out" }, 2.38);
+        letters("#calculo", 2.46, { yPercent: 110 }, 0.035);
+        letters("#actuarial", 2.66, { yPercent: 110 }, 0.03);
+        tl.fromTo("#grid2", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.6, ease: "expo.inOut" }, 2.8)
+          .fromTo("#blk2", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.45 }, 2.95)
+          .fromTo("#calc", { x: 620, rotation: 30 }, { x: 0, rotation: 7, duration: 0.6, ease: "back.out(1.4)" }, 3.0);
+        [0, 1, 2, 3, 4].forEach((i) => {
+          tl.fromTo(`#sym-${i}`, { scale: 0, rotation: -60, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.35, ease: "back.out(3)" }, 3.2 + i * 0.1)
+            .to(`#sym-${i}`, { y: -60, duration: 1.0, ease: "sine.inOut" }, 3.4 + i * 0.1);
+        });
+        // key presses + digits appearing on the screen
+        [[1, 1], [2, 2], [3, 0], [0, 3]].forEach(([r, c], i) => {
+          const t = 3.5 + i * 0.15;
+          tl.to(`#key-${r}-${c}`, { attr: { fill: "#7d9bff" }, duration: 0.05, yoyo: true, repeat: 1 }, t);
+          if (i < 3) tl.fromTo(`#scr-${i}`, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.14, ease: "back.out(3)" }, t);
+        });
+        tl.to("#calc", { scale: 1.05, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.out" }, 4.1);
+        tl.to("#b2", { y: -300, opacity: 0, filter: "blur(14px)", duration: 0.3, ease: "power3.in" }, 4.3)
+          .set("#b2", { autoAlpha: 0 }, 4.64);
+
+        // =============== B3 · el cálculo actuarial permite RECONOCER LAS SEMANAS ===============
+        tl.set("#b3", { autoAlpha: 1 }, 4.62);
+        ink("#b3-a", 4.68, "#0b1f66");
+        ink("#permite", 5.05, "#0b1f66");
+        letters("#reconocer", 5.2, { yPercent: 110 }, 0.035);
+        letters("#lassemanas", 5.5, { yPercent: 110 }, 0.03);
+        tl.fromTo("#grid3", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.7, ease: "expo.inOut" }, 5.45)
+          .fromTo(".slot", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2)", stagger: 0.025 }, 5.55)
+          // the gaps blink: these are the omitted weeks
+          .to(".slot.gap", { borderColor: "#1f4fff", duration: 0.12, yoyo: true, repeat: 3, ease: "none" }, 5.95);
+        for (let i = 0; i < 6; i++) {
+          tl.fromTo(`#fill-${i}`, { y: -220, scale: 1.3, rotation: i % 2 ? 12 : -12, opacity: 0 }, { y: 0, scale: 1, rotation: 0, opacity: 1, duration: 0.36, ease: "back.out(2)" }, 6.2 + i * 0.14);
+        }
+        tl.to("#slots", { scale: 1.03, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out" }, 7.08);
+
+        tl.to("#bluebg", { yPercent: -8, duration: 0.45, ease: "power3.inOut" }, 7.35)
+          .to("#b3", { y: -220, filter: "blur(10px)", duration: 0.4, ease: "power3.in" }, 7.37)
+          .set("#b3", { autoAlpha: 0 }, 7.82)
+          .to("#bars", { attr: { fill: "#ffffff" }, duration: 0.3 }, 7.55);
+
+        // =============== B4 · que tu empleador OMITIÓ tu afiliación al SISTEMA DE SEGURIDAD SOCIAL ===============
+        tl.set("#b4", { autoAlpha: 1 }, 7.72);
+        ink("#empleador", 7.82, "#ffffff", 0.12, "#c3d0ff");
+        letters("#omitio", 8.08, { scale: 1.8, opacity: 0, filter: "blur(10px)" }, 0.045, 0.45);
+        tl.to("#omit-box", { clipPath: "inset(0% 0% 0% 0%)", duration: 0.45, ease: "power2.inOut" }, 8.35);
+        ink("#afiliacion", 8.62, "#ffffff", 0.12, "#c3d0ff");
+        letters("#sistema", 8.95, { yPercent: 110 }, 0.03);
+        letters("#seguridad", 9.15, { yPercent: 110 }, 0.03);
+        tl.fromTo("#card", { y: 900, rotation: -18, scale: 0.8 }, { y: 0, rotation: -3, scale: 1, duration: 0.6, ease: "back.out(1.5)" }, 9.45)
+          .fromTo("#stamp", { scale: 2.4, rotation: -40, opacity: 0 }, { scale: 1, rotation: -12, opacity: 1, duration: 0.3, ease: "power4.in" }, 9.8)
+          .to("#card", { y: 10, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.out" }, 10.1)
+          .to("#stamp", { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 10.2)
+          .to("#card", { y: -14, rotation: -1, duration: 0.7, ease: "sine.inOut" }, 10.3);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      });
+    </script>
+  </body>
+</html>
