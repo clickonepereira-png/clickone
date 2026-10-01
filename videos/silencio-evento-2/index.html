@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Silencio para escuchar la vida — parte 2</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-normal.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-italic.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-italic.woff2") format("woff2");
+        font-weight: 500;
+        font-style: italic;
+      }
+
+      /* brand: Silencio para escuchar la vida */
+      :root {
+        --violet: #3b1f6e;
+        --violet-2: #4b2a85;
+        --ink: #2b1052;
+        --lilac: #b9a3e3;
+        --lilac-2: #e8defa;
+        --glow: #c58bff;
+        --gold: #e6b35a;
+        --gold-2: #f7d58b;
+        --gold-ink: #a8741f;
+        --cream: #f8f1e7;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #cam {
+        display: none;
+      }
+      #cam {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions (same system as part 1) ---------- */
+      .cap {
+        position: absolute;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: center;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 18px;
+        text-align: center;
+      }
+      .cw {
+        position: relative;
+        display: inline-block;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 60px;
+        line-height: 1.3;
+        color: #ffffff;
+        -webkit-text-stroke: 12px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      .cw.kw {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 72px;
+        color: var(--gold-2);
+      }
+      .cw.hero {
+        flex-basis: 100%;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        color: var(--gold-2);
+        line-height: 1.05;
+        -webkit-text-stroke: 16px var(--ink);
+      }
+
+      /* ---------- pillars (continued from part 1) ---------- */
+      #pillars {
+        position: absolute;
+        left: 80px;
+        top: 1150px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 22px;
+      }
+      .pl {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 124px;
+        padding: 0 44px 0 18px;
+        border-radius: 62px;
+        background: var(--cream);
+        border: 4px solid var(--gold);
+      }
+      .pl .ic {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: var(--violet);
+        display: grid;
+        place-items: center;
+        flex: none;
+      }
+      .pl .ic svg {
+        width: 56px;
+        height: 56px;
+      }
+      .pl .t {
+        font-family: "Playfair", serif;
+        font-size: 58px;
+        color: var(--violet);
+        white-space: nowrap;
+      }
+      .pl .t b {
+        font-weight: 700;
+      }
+      .pl .t i {
+        font-weight: 500;
+      }
+
+      /* ---------- stimulus pulse ---------- */
+      #pulse {
+        position: absolute;
+        left: 290px;
+        top: 1190px;
+        width: 500px;
+        height: 500px;
+        overflow: visible;
+      }
+
+      /* ---------- guest card ---------- */
+      #guest {
+        position: absolute;
+        left: 80px;
+        top: 1230px;
+        width: 920px;
+        height: 380px;
+        border-radius: 44px;
+        background: var(--cream);
+        border: 5px solid var(--gold);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 56px;
+      }
+      #g-lbl {
+        font-family: "Poppins", sans-serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 38px;
+        color: var(--violet-2);
+        letter-spacing: 0.02em;
+      }
+      #g-nick {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 64px;
+        line-height: 1.1;
+        color: var(--gold-ink);
+      }
+      #g-name {
+        font-family: "Playfair", serif;
+        font-weight: 800;
+        font-size: 92px;
+        line-height: 1.04;
+        color: var(--violet);
+        white-space: nowrap;
+      }
+      #g-from {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 14px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+        font-size: 40px;
+        color: var(--violet-2);
+        white-space: nowrap;
+      }
+      #g-from svg {
+        width: 44px;
+        height: 44px;
+        flex: none;
+      }
+      .spark {
+        position: absolute;
+        overflow: visible;
+      }
+
+      /* ---------- Colombia -> Houston route ---------- */
+      #route {
+        position: absolute;
+        left: 0;
+        top: 150px;
+        width: 1080px;
+        height: 300px;
+        overflow: visible;
+      }
+      .rlbl {
+        position: absolute;
+        top: 330px;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 50px;
+        color: #fff;
+        -webkit-text-stroke: 10px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+
+      /* ---------- expert pill ---------- */
+      #expert {
+        position: absolute;
+        left: 50%;
+        top: 1420px;
+      }
+
+      /* ---------- calm waves ---------- */
+      #waves {
+        position: absolute;
+        left: 0;
+        top: 1080px;
+        width: 1080px;
+        height: 300px;
+        overflow: visible;
+      }
+
+      /* ---------- event pill (poster) ---------- */
+      #pill {
+        position: absolute;
+        left: 50%;
+        top: 230px;
+        height: 156px;
+        display: flex;
+        align-items: center;
+        border-radius: 78px;
+        background: var(--cream);
+        border: 5px solid var(--gold);
+        white-space: nowrap;
+      }
+      .pi {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 0 40px;
+        height: 100%;
+      }
+      .pi svg {
+        width: 64px;
+        height: 64px;
+        flex: none;
+      }
+      .pi .t {
+        font-family: "Playfair", serif;
+        font-weight: 600;
+        font-size: 44px;
+        line-height: 1.08;
+        color: var(--violet);
+      }
+      .pi .t i {
+        font-style: italic;
+        font-weight: 500;
+      }
+      #pdiv {
+        width: 4px;
+        height: 90px;
+        border-radius: 2px;
+        background: var(--lilac);
+        flex: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="24.45"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="24.45" data-track-index="0" muted playsinline></video>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="24.45" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="24.45" data-track-index="1">
+        <!-- pillars continue: Sonido + Autoobservación -->
+        <div id="pillars">
+          <div class="pl" id="pl-son">
+            <span class="ic">
+              <svg viewBox="0 0 56 56" aria-hidden="true">
+                <path d="M8 26 H48 C48 36 40 44 28 44 C16 44 8 36 8 26 Z" fill="none" stroke="#fff" stroke-width="3.5" stroke-linejoin="round" />
+                <path d="M20 18 C20 14 24 14 24 10 M30 18 C30 14 34 14 34 10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="t"><b>Sonido</b></span>
+          </div>
+          <div class="pl" id="pl-obs">
+            <span class="ic">
+              <svg viewBox="0 0 56 56" aria-hidden="true">
+                <path d="M4 28 C12 16 20 12 28 12 C36 12 44 16 52 28 C44 40 36 44 28 44 C20 44 12 40 4 28 Z" fill="none" stroke="#fff" stroke-width="3.5" stroke-linejoin="round" />
+                <circle cx="28" cy="28" r="8" fill="none" stroke="#fff" stroke-width="3.5" />
+              </svg>
+            </span>
+            <span class="t"><b>Auto</b><i>observación</i></span>
+          </div>
+        </div>
+
+        <svg id="pulse" viewBox="0 0 500 500" aria-hidden="true">
+          <circle class="ring" cx="250" cy="250" r="80" fill="none" stroke="#c58bff" stroke-width="8" />
+          <circle class="ring" cx="250" cy="250" r="80" fill="none" stroke="#e8defa" stroke-width="6" />
+          <circle class="ring" cx="250" cy="250" r="80" fill="none" stroke="#b9a3e3" stroke-width="5" />
+        </svg>
+
+        <!-- Colombia -> Houston -->
+        <svg id="route" viewBox="0 0 1080 300" aria-hidden="true">
+          <path id="r-arc" d="M250 230 C 380 30, 700 30, 830 230" fill="none" stroke="#f7d58b" stroke-width="8" stroke-linecap="round" stroke-dasharray="4 20" />
+          <g id="pin-a" transform="translate(250 230)">
+            <path d="M0 0 C0 0 -26 -26 -26 -46 C-26 -62 -14 -72 0 -72 C14 -72 26 -62 26 -46 C26 -26 0 0 0 0 Z" fill="#3b1f6e" stroke="#f8f1e7" stroke-width="5" />
+            <circle cx="0" cy="-46" r="9" fill="#f7d58b" />
+          </g>
+          <g id="pin-b" transform="translate(830 230)">
+            <path d="M0 0 C0 0 -26 -26 -26 -46 C-26 -62 -14 -72 0 -72 C14 -72 26 -62 26 -46 C26 -26 0 0 0 0 Z" fill="#3b1f6e" stroke="#f8f1e7" stroke-width="5" />
+            <circle cx="0" cy="-46" r="9" fill="#f7d58b" />
+          </g>
+          <circle id="r-dot" cx="0" cy="0" r="13" fill="#f7d58b" stroke="#3b1f6e" stroke-width="4" />
+        </svg>
+        <span class="rlbl" id="lbl-a" style="left: 150px">Colombia</span>
+        <span class="rlbl" id="lbl-b" style="left: 740px">Houston</span>
+
+        <!-- guest card -->
+        <div id="guest">
+          <span id="g-lbl">invitado muy especial</span>
+          <span id="g-nick">@sebmillas</span>
+          <span id="g-name">Sebastián Romero</span>
+          <span id="g-from">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M32 58 C32 58 12 38 12 24 C12 13 21 6 32 6 C43 6 52 13 52 24 C52 38 32 58 32 58 Z" fill="none" stroke="#4b2a85" stroke-width="5" stroke-linejoin="round" />
+              <circle cx="32" cy="24" r="7" fill="none" stroke="#4b2a85" stroke-width="5" />
+            </svg>
+            colombiano radicado en Houston
+          </span>
+          <svg class="spark" id="sp-1" style="left: 820px; top: 30px; width: 56px; height: 56px" viewBox="-32 -32 64 64" aria-hidden="true"><path d="M0 -30 C4 -4 4 -4 30 0 C4 4 4 4 0 30 C-4 4 -4 4 -30 0 C-4 -4 -4 -4 0 -30 Z" fill="#e6b35a" /></svg>
+          <svg class="spark" id="sp-2" style="left: 770px; top: 90px; width: 30px; height: 30px" viewBox="-32 -32 64 64" aria-hidden="true"><path d="M0 -30 C4 -4 4 -4 30 0 C4 4 4 4 0 30 C-4 4 -4 4 -30 0 C-4 -4 -4 -4 0 -30 Z" fill="#b9a3e3" /></svg>
+        </div>
+
+        <!-- expert pill -->
+        <div class="pl" id="expert">
+          <span class="ic">
+            <svg viewBox="0 0 56 56" aria-hidden="true">
+              <path d="M6 22 C14 14 22 14 30 22 S 44 30 50 22 M6 34 C14 26 22 26 30 34 S 44 42 50 34" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+            </svg>
+          </span>
+          <span class="t" style="font-size: 50px"><b>Experto</b> en <i>respiración consciente</i></span>
+        </div>
+
+        <!-- calm waves -->
+        <svg id="waves" viewBox="0 0 1080 300" aria-hidden="true">
+          <path id="wv-1" d="M-40 150 C 120 40, 260 40, 400 150 S 680 260, 820 150 S 1040 40, 1120 120" fill="none" stroke="#c58bff" stroke-width="12" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <path id="wv-2" d="M-40 190 C 140 100, 280 110, 420 190 S 700 280, 840 190 S 1040 100, 1120 160" fill="none" stroke="#e8defa" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <path id="wv-3" d="M-40 110 C 100 20, 250 10, 380 110 S 660 220, 800 110 S 1040 10, 1120 80" fill="none" stroke="#b9a3e3" stroke-width="6" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+        </svg>
+
+        <div id="caps"></div>
+
+        <!-- event pill reminder at the close -->
+        <div id="pill">
+          <div class="pi">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="8" y="12" width="48" height="44" rx="8" fill="none" stroke="#3b1f6e" stroke-width="4" />
+              <path d="M8 26 H56 M20 6 V16 M44 6 V16" stroke="#3b1f6e" stroke-width="4" stroke-linecap="round" />
+            </svg>
+            <div class="t">24 de<br /><i>octubre</i></div>
+          </div>
+          <div id="pdiv"></div>
+          <div class="pi">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M32 58 C32 58 12 38 12 24 C12 13 21 6 32 6 C43 6 52 13 52 24 C52 38 32 58 32 58 Z" fill="none" stroke="#3b1f6e" stroke-width="4" stroke-linejoin="round" />
+              <circle cx="32" cy="24" r="7" fill="none" stroke="#3b1f6e" stroke-width="4" />
+            </svg>
+            <div class="t">Hotel Sonesta,<br /><i>Pereira</i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SFX: few and soft (tools/make_sfx.py) ============ -->
+      <audio id="sfx-01" src="assets/sfx/whoosh-soft.wav" data-start="1.7" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sfx-02" src="assets/sfx/whoosh.wav" data-start="9.75" data-duration="0.32" data-track-index="20" data-volume="0.28"></audio>
+      <audio id="sfx-03" src="assets/sfx/whoosh-soft.wav" data-start="12.2" data-duration="0.55" data-track-index="20" data-volume="0.2"></audio>
+      <audio id="sfx-04" src="assets/sfx/whoosh-soft.wav" data-start="15.2" data-duration="0.55" data-track-index="20" data-volume="0.2"></audio>
+      <audio id="sfx-05" src="assets/sfx/riser.wav" data-start="20.45" data-duration="1.4" data-track-index="21" data-volume="0.18"></audio>
+      <audio id="sfx-06" src="assets/sfx/bowl.wav" data-start="21.82" data-duration="2.6" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="sfx-07" src="assets/sfx/bowl-high.wav" data-start="23.28" data-duration="1.17" data-track-index="23" data-volume="0.3"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+
+        // ---------- transcript (local Whisper small, merged overlapping windows; spelling fixed) ----------
+        const W = [
+          ["Sonido", 0.92, 1.52], ["y", 1.52, 1.8], ["autoobservación", 1.8, 3.14], ["para", 3.14, 3.44], ["explorar", 3.44, 3.98], ["cómo", 3.98, 4.42],
+          ["responde", 4.42, 4.72], ["tu", 4.72, 5.05], ["cuerpo", 5.05, 5.44], ["ante", 5.44, 5.9], ["diferentes", 5.9, 6.22], ["estímulos.", 6.22, 6.7],
+          ["Y", 6.72, 6.86], ["nos", 6.86, 7.24], ["acompañará", 7.24, 7.9], ["un", 7.9, 8.22], ["invitado", 8.22, 8.85], ["muy", 8.85, 9.2], ["especial,", 9.2, 9.7],
+          ["@sebmillas,", 9.88, 10.44], ["Sebastián", 10.64, 11.18], ["Romero,", 11.18, 11.58], ["colombiano", 11.68, 12.27], ["radicado", 12.27, 12.9], ["en", 12.9, 13.31],
+          ["Houston", 13.31, 13.62], ["desde", 13.62, 13.88], ["hace", 13.88, 14.29], ["muchos", 14.29, 14.68], ["años,", 14.68, 15.2],
+          ["experto", 15.32, 15.8], ["en", 15.8, 16.03], ["respiración", 16.03, 16.66], ["consciente,", 16.66, 17.2],
+          ["quien", 17.24, 17.49], ["nos", 17.49, 17.68], ["guiará", 17.68, 18.38], ["en", 18.38, 18.69], ["técnicas", 18.69, 19.32], ["para", 19.32, 19.58],
+          ["liberar", 19.58, 20.02], ["tensión", 20.02, 20.44], ["y", 20.44, 20.66], ["llevarte", 20.66, 21.16], ["de", 21.16, 21.3], ["nuevo", 21.3, 21.45],
+          ["a", 21.45, 21.54], ["la", 21.54, 21.82], ["calma.", 21.82, 22.2], ["Una", 22.22, 22.74], ["experiencia", 22.74, 23.02], ["de", 23.02, 23.28],
+          ["inmersión", 23.28, 24.0], ["total.", 24.0, 24.45],
+        ];
+        // captions: [first, last, top(px), keyword indices, hero {index: font-size}] — words 0-2 and 19-33 are carried by the pills / guest card
+        const CAPS = [
+          [3, 6, 1400, [4]],
+          [7, 11, 1380, [8, 11]],
+          [12, 15, 1400, [14]],
+          [16, 18, 1380, [16, 18]],
+          [34, 37, 1400, [36]],
+          [38, 41, 1380, [38, 40, 41]],
+          [42, 46, 1400, [45]],
+          [47, 48, 1360, [], { 48: 140 }],
+          [49, 53, 1330, [], { 52: 116, 53: 116 }],
+        ];
+        const ENDS = { 3: 9.8 };
+
+        const caps = $("#caps");
+        const groups = CAPS.map(([a, b, top, kws, hero = {}], gi) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          cap.id = "cap-" + gi;
+          cap.style.top = top + "px";
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          for (let k = a; k <= b; k++) {
+            const s = document.createElement("span");
+            s.className = "cw" + (kws.includes(k) ? " kw" : "") + (k in hero ? " hero" : "");
+            s.id = "cw-" + k;
+            s.textContent = W[k][0];
+            if (k in hero) s.style.fontSize = hero[k] + "px";
+            inner.appendChild(s);
+          }
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          return { cap, a, b, gi };
+        });
+        // "inmersión total." sits on one hero line
+        ["#cw-52", "#cw-53"].forEach((id) => ($(id).style.flexBasis = "auto"));
+
+        // ---------- timeline ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+        gsap.set([".cap", "#pillars", "#guest", "#expert", "#pill", "#route", ".rlbl", "#pulse"], { autoAlpha: 0 });
+        gsap.set(".cw", { opacity: 0 });
+        gsap.set(["#pill", "#expert"], { xPercent: -50 });
+        gsap.set(".pl", { autoAlpha: 0 });
+        gsap.set(".ring", { scale: 0.4, opacity: 0, transformOrigin: "250px 250px" });
+        gsap.set(["#g-lbl", "#g-nick", "#g-name", "#g-from"], { opacity: 0 });
+        gsap.set("#r-arc", { attr: { "stroke-dashoffset": 0 } });
+
+        // ---- captions ----
+        groups.forEach(({ cap, a, b, gi }) => {
+          const s = W[a][1] - 0.06;
+          const e = ENDS[gi] ?? (gi + 1 < groups.length ? W[groups[gi + 1].a][1] - 0.06 : 24.45);
+          tl.set(cap, { autoAlpha: 1 }, s);
+          for (let k = a; k <= b; k++) {
+            const el = $("#cw-" + k);
+            if (el.classList.contains("hero"))
+              tl.fromTo(el, { opacity: 0, scale: 1.25, y: 18, filter: "blur(12px)" }, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, W[k][1]);
+            else if (el.classList.contains("kw"))
+              tl.fromTo(el, { opacity: 0, y: 16, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, W[k][1]);
+            else tl.fromTo(el, { opacity: 0, y: 12, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, W[k][1]);
+          }
+          tl.to(cap, { opacity: 0, y: -10, filter: "blur(8px)", duration: 0.16, ease: "power2.in" }, Math.max(s + 0.3, e - 0.16)).set(cap, { autoAlpha: 0 }, e);
+        });
+
+        // ---- pillars continue: Sonido, then Autoobservación joins ----
+        tl.set(["#pillars", "#pl-son"], { autoAlpha: 1 }, 0.86)
+          .fromTo("#pl-son", { x: -700, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.55 }, 0.86)
+          .set("#pl-obs", { autoAlpha: 1 }, 1.74)
+          .fromTo("#pl-obs", { x: -700, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.55 }, 1.74)
+          .fromTo("#pl-obs .ic", { scale: 0, rotation: -60 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.6)" }, 1.9)
+          .to(["#pl-son", "#pl-obs"], { x: -760, filter: "blur(10px)", duration: 0.3, ease: "power3.in", stagger: 0.06 }, 2.86)
+          .set("#pillars", { autoAlpha: 0 }, 3.3);
+
+        // ---- "estímulos": soft pulse rings behind the caption ----
+        tl.set("#pulse", { autoAlpha: 1 }, 6.2);
+        document.querySelectorAll(".ring").forEach((r, i) => {
+          tl.fromTo(r, { scale: 0.4, opacity: 0.9 }, { scale: 2.6, opacity: 0, duration: 1.1, ease: "power2.out" }, 6.22 + i * 0.18);
+        });
+
+        // ---- guest card: invitado muy especial · Semillas · Sebastián Romero · colombiano radicado en Houston ----
+        tl.set("#guest", { autoAlpha: 1 }, 9.74)
+          .fromTo("#guest", { y: 120, scale: 0.92, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.6)" }, 9.74)
+          .fromTo("#g-lbl", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4 }, 9.8)
+          .fromTo("#g-nick", { opacity: 0, y: 14, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45 }, 9.88)
+          .fromTo("#g-name", { opacity: 0, scale: 1.12, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.6, transformOrigin: "0% 50%" }, 10.64)
+          .fromTo("#g-from", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 11.68)
+          .fromTo(".spark", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(3)", stagger: 0.12 }, 10.9)
+          .to(".spark", { rotation: 45, duration: 2, ease: "sine.inOut" }, 11.5)
+          .to("#guest", { y: 120, opacity: 0, filter: "blur(10px)", duration: 0.35, ease: "power3.in" }, 15.0)
+          .set("#guest", { autoAlpha: 0 }, 15.36);
+
+        // ---- route: Colombia -> Houston (radicado en Houston desde hace muchos años) ----
+        const arc = $("#r-arc");
+        const L = arc.getTotalLength();
+        const dot = { p: 0 };
+        const placeDot = () => {
+          const pt = arc.getPointAtLength(dot.p * L);
+          $("#r-dot").setAttribute("cx", pt.x);
+          $("#r-dot").setAttribute("cy", pt.y);
+        };
+        placeDot();
+        tl.set(["#route", ".rlbl"], { autoAlpha: 1 }, 12.2)
+          .fromTo("#route", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.9, ease: "power2.inOut" }, 12.2)
+          .fromTo("#pin-a", { scale: 0, transformOrigin: "50% 100%" }, { scale: 1, duration: 0.4, ease: "back.out(3)" }, 12.27)
+          .fromTo("#lbl-a", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.35 }, 12.35)
+          .fromTo(dot, { p: 0 }, { p: 1, duration: 1.0, ease: "power2.inOut", onUpdate: placeDot }, 12.4)
+          .fromTo("#pin-b", { scale: 0, transformOrigin: "50% 100%" }, { scale: 1, duration: 0.45, ease: "back.out(3)" }, 13.31)
+          .fromTo("#lbl-b", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.35 }, 13.36)
+          .to(["#route", ".rlbl"], { opacity: 0, y: -40, duration: 0.35, ease: "power3.in" }, 14.85)
+          .set(["#route", ".rlbl"], { autoAlpha: 0 }, 15.2);
+
+        // ---- expert pill: experto en respiración consciente ----
+        tl.set("#expert", { autoAlpha: 1 }, 15.28)
+          .fromTo("#expert", { x: -900, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.6 }, 15.28)
+          .fromTo("#expert .ic", { scale: 0, rotation: -60 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.6)" }, 15.45)
+          .to("#expert", { x: 900, filter: "blur(10px)", duration: 0.3, ease: "power3.in" }, 17.0)
+          .set("#expert", { autoAlpha: 0 }, 17.32);
+
+        // ---- "la calma": light waves breathe in ----
+        tl.to("#wv-3", { attr: { "stroke-dashoffset": 0 }, duration: 1.1, ease: "power2.inOut" }, 21.5)
+          .to("#wv-1", { attr: { "stroke-dashoffset": 0 }, duration: 1.2, ease: "power2.inOut" }, 21.6)
+          .to("#wv-2", { attr: { "stroke-dashoffset": 0 }, duration: 1.2, ease: "power2.inOut" }, 21.75)
+          .fromTo("#waves", { y: 0, scaleY: 1 }, { y: -14, scaleY: 1.18, transformOrigin: "50% 50%", duration: 1.1, ease: "sine.inOut", yoyo: true, repeat: 1 }, 22.0);
+
+        // ---- close: event pill reminder ----
+        tl.set("#pill", { autoAlpha: 1 }, 22.6).fromTo("#pill", { y: -60, scale: 0.75, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.8)" }, 22.6);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      });
+    </script>
+  </body>
+</html>
