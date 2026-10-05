@@ -68,6 +68,12 @@
         position: absolute;
         inset: 0;
       }
+      .low {
+        position: absolute;
+        inset: 0;
+        transform: scale(0.72);
+        transform-origin: 50% 1790px;
+      }
       .g {
         position: absolute;
         inset: 0;
@@ -645,7 +651,8 @@
         </div>
 
         <!-- ===== G3 · Unidad de Gestión Pensional y Parafiscales (6.55 – 10.78) ===== -->
-        <div id="g3" class="card" style="top: 880px; height: 600px">
+        <div class="low">
+<div id="g3" class="card" style="top: 880px; height: 600px">
           <div class="lbl" style="position: absolute; left: 48px; top: 36px">La <b style="font-weight: 800; color: #0b1f66">UGPP</b> es la…</div>
           <div class="arow" id="ar-0" style="top: 110px"><span class="sq">U</span><span class="aw"><b>U</b>nidad</span></div>
           <div class="arow" id="ar-1" style="top: 210px"><span class="sq">G</span><span class="aw">de <b>G</b>estión</span></div>
@@ -704,6 +711,7 @@
           <div class="emo" id="e-ok2" style="left: 800px; top: 404px; width: 92px; height: 92px"><img src="assets/img/check-mark-button.svg" alt="" /></div>
         </div>
 
+        </div>
         <!-- ===== G7 · ¿cuándo prestarle atención? (29.3 – 32.8) ===== -->
         <div id="g7" class="g">
           <div id="att" class="pill blue" style="left: 50%; top: 90px; height: 130px; font-size: 66px">¡Atención!</div>
@@ -711,7 +719,8 @@
         </div>
 
         <!-- ===== G9 · the three situations (34.2 – 47.35) ===== -->
-        <div id="g9" class="card" style="top: 900px; height: 580px">
+        <div class="low">
+<div id="g9" class="card" style="top: 900px; height: 580px">
           <div id="pdots"><span id="pd-0"></span><span id="pd-1"></span><span id="pd-2"></span></div>
           <!-- 1 · omisión -->
           <div class="pane" id="s1">
@@ -747,6 +756,7 @@
           </div>
         </div>
 
+        </div>
         <!-- ===== G10 · más que miedo → entender (47.45 – 54.5) ===== -->
         <div id="g10" class="g">
           <div class="emo" id="e-fear" style="left: 800px; top: 400px; width: 210px; height: 210px"><img src="assets/img/fearful-face.svg" alt="" /></div>
@@ -757,15 +767,18 @@
             </g>
           </svg>
           <div class="emo" id="e-bulb" style="left: 800px; top: 400px; width: 210px; height: 210px"><img src="assets/img/light-bulb.svg" alt="" /></div>
-          <div id="k-0" class="pill blue" style="left: 50%; top: 990px; height: 130px; font-size: 70px">Entender</div>
+          <div class="low">
+<div id="k-0" class="pill blue" style="left: 50%; top: 990px; height: 130px; font-size: 70px">Entender</div>
           <div id="k-1" class="pill white" style="left: 50%; top: 1150px"><img src="assets/img/check-mark-button.svg" alt="" />Tus <b>obligaciones</b></div>
           <div id="k-2" class="pill white" style="left: 50%; top: 1290px"><img src="assets/img/check-mark-button.svg" alt="" />Cómo haces tus <b>aportes</b></div>
-        </div>
+</div>
+                </div>
 
         <!-- ===== G11 · ¿dudas? comenta UGPP (54.6 – end) ===== -->
         <div id="g11" class="g">
           <div class="emo" id="e-think" style="left: 800px; top: 400px; width: 210px; height: 210px"><img src="assets/img/thinking-face.svg" alt="" /></div>
-          <div id="cta" class="card" style="top: 1000px; height: 320px">
+          <div class="low">
+<div id="cta" class="card" style="top: 1000px; height: 320px">
             <div style="position: absolute; left: 44px; top: 34px; display: flex; align-items: center; gap: 18px">
               <img src="assets/img/speech-balloon.svg" alt="" style="width: 72px; height: 72px" />
               <span class="ttl" style="font-size: 54px">Comenta</span>
@@ -782,7 +795,8 @@
             </div>
           </div>
           <div id="ases" class="pill blue" style="left: 50%; top: 1370px; height: 120px; font-size: 56px"><img src="assets/img/handshake.svg" alt="" />Te asesoramos</div>
-        </div>
+</div>
+                </div>
 
         <div id="caps"></div>
 
@@ -847,7 +861,7 @@
           ["cuando", 43.75], ["existen", 44.13], ["pagos", 44.58], ["realizados", 44.95], ["fuera", 45.6], ["de", 45.78], ["los", 45.91], ["tiempos", 46.07], ["correspondientes.", 46.63], ["Por", 47.46],
           ["eso,", 47.72], ["más", 48.17], ["que", 48.36], ["tenerle", 48.63], ["miedo", 49.06], ["a", 49.22], ["la", 49.3], ["UGPP,", 49.46], ["lo", 50.22], ["importante", 50.68],
           ["es", 50.93], ["entender", 51.29], ["tus", 51.66], ["obligaciones", 52.0], ["y", 52.69], ["cómo", 53.01], ["estás", 53.22], ["realizando", 53.46], ["tus", 53.91], ["aportes.", 54.12],
-          ["¿Tienes", 54.68], ["dudas", 55.08], ["sobre", 55.54], ["esta", 55.99], ["situación?", 56.56], ["Comenta", 56.93], ["UGPP", 57.53], ["y", 58.25], ["en", 58.37], ["Cornavis", 58.6],
+          ["¿Tienes", 54.68], ["dudas", 55.08], ["sobre", 55.54], ["esta", 55.99], ["situación?", 56.56], ["Comenta", 56.93], ["UGPP", 57.53], ["y", 58.25], ["en", 58.37], ["CORNABIS", 58.6],
           ["te", 59.0], ["asesoramos.", 59.12],
         ];
         const T = (k) => W[k][1];
@@ -862,7 +876,7 @@
           [138, 141, [141]], [142, 143, [143]], [144, 149, [149]], [150, 154, [151]], [155, 156, [156]], [157, 161, [161]],
         ];
         const ENDS = { 22: 32.76 };
-        const CAP_TOP = 1560;
+        const CAP_TOP = 1600;
 
         const caps = $("#caps");
         const groups = CAPS.map(([a, b, kws], gi) => {
@@ -927,11 +941,11 @@
           for (let k = a; k <= b; k++) {
             const el = $("#cw-" + k);
             if (el.classList.contains("kw")) {
-              tl.fromTo(el, { opacity: 0, scale: 0.6, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "back.out(2.6)" }, T(k));
+              tl.set(el, { opacity: 1 }, T(k)).fromTo(el, { scale: 0.6, y: 10 }, { scale: 1, y: 0, duration: 0.35, ease: "back.out(2.6)" }, T(k));
               tl.fromTo(`#cw-${k} .hl`, { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.3, ease: "expo.out" }, T(k) + 0.04);
-            } else tl.fromTo(el, { opacity: 0, y: 22, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.26, ease: "back.out(2)" }, T(k));
+            } else tl.set(el, { opacity: 1 }, T(k)).fromTo(el, { y: 22, scale: 0.9 }, { y: 0, scale: 1, duration: 0.26, ease: "back.out(2)" }, T(k));
           }
-          if (e < 59.7) tl.to(cap, { opacity: 0, y: -14, duration: 0.12, ease: "power2.in" }, Math.max(s + 0.3, e - 0.12)).set(cap, { autoAlpha: 0 }, e);
+          if (e < 59.7) tl.set(cap, { autoAlpha: 0 }, e); // hard cut out: captions stay 100% solid
         });
 
         // ===== G1 (1.0 – 4.26): UGPP + dolor de cabeza =====
