@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="es" data-mode="green">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Cocoa — experiencia sonora en eventos</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-normal.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-italic.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-italic.woff2") format("woff2");
+        font-weight: 500;
+        font-style: italic;
+      }
+
+      /* brand: Silencio para escuchar la vida */
+      :root {
+        --violet: #3b1f6e;
+        --violet-2: #4b2a85;
+        --ink: #2b1052;
+        --lilac: #b9a3e3;
+        --lilac-2: #e8defa;
+        --glow: #c58bff;
+        --gold: #e6b35a;
+        --gold-2: #f7d58b;
+        --cream: #f8f1e7;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #cam {
+        display: none;
+      }
+      #cam {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions (series system) ---------- */
+      .cap {
+        position: absolute;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: center;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 18px;
+        text-align: center;
+      }
+      .cw {
+        position: relative;
+        display: inline-block;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 60px;
+        line-height: 1.3;
+        color: #ffffff;
+        -webkit-text-stroke: 12px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      .cw.kw {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 72px;
+        color: var(--gold-2);
+      }
+      .cw.hero {
+        flex-basis: 100%;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        color: var(--gold-2);
+        line-height: 1.05;
+        -webkit-text-stroke: 16px var(--ink);
+      }
+
+      /* ---------- pillars ---------- */
+      #pillars {
+        position: absolute;
+        left: 80px;
+        top: 1080px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 22px;
+      }
+      #p-label {
+        font-family: "Poppins", sans-serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 50px;
+        color: #fff;
+        -webkit-text-stroke: 10px var(--ink);
+        paint-order: stroke fill;
+        margin-left: 12px;
+      }
+      .pl {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 124px;
+        padding: 0 44px 0 18px;
+        border-radius: 62px;
+        background: var(--cream);
+        border: 4px solid var(--gold);
+      }
+      .pl .ic {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: var(--violet);
+        display: grid;
+        place-items: center;
+        flex: none;
+      }
+      .pl .ic svg {
+        width: 56px;
+        height: 56px;
+      }
+      .pl .t {
+        font-family: "Playfair", serif;
+        font-size: 58px;
+        color: var(--violet);
+        white-space: nowrap;
+      }
+      .pl .t b {
+        font-weight: 700;
+      }
+      .pl .t i {
+        font-weight: 500;
+      }
+
+      /* ---------- calm waves ---------- */
+      .waves {
+        position: absolute;
+        left: 0;
+        width: 1080px;
+        height: 300px;
+        overflow: visible;
+      }
+
+      /* ---------- event pill (poster) ---------- */
+      .epill {
+        position: absolute;
+        left: 50%;
+        height: 156px;
+        display: flex;
+        align-items: center;
+        border-radius: 78px;
+        background: var(--cream);
+        border: 5px solid var(--gold);
+        white-space: nowrap;
+      }
+      .pi {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 0 40px;
+        height: 100%;
+      }
+      .pi svg {
+        width: 64px;
+        height: 64px;
+        flex: none;
+      }
+      .pi .t {
+        font-family: "Playfair", serif;
+        font-weight: 600;
+        font-size: 44px;
+        line-height: 1.08;
+        color: var(--violet);
+      }
+      .pi .t i {
+        font-style: italic;
+        font-weight: 500;
+      }
+      .pdiv {
+        width: 4px;
+        height: 90px;
+        border-radius: 2px;
+        background: var(--lilac);
+        flex: none;
+      }
+
+      /* ---------- CTA button ---------- */
+      .cta {
+        position: absolute;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 132px;
+        padding: 0 60px 0 30px;
+        border-radius: 66px;
+        background: linear-gradient(180deg, #5a35a0 0%, #3b1f6e 100%);
+        border: 5px solid var(--gold);
+        white-space: nowrap;
+      }
+      .cta .dot {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--gold);
+        display: grid;
+        place-items: center;
+      }
+      .cta .dot svg {
+        width: 44px;
+        height: 44px;
+      }
+      .cta span {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 62px;
+        color: #fff;
+      }
+
+
+      /* ---------- zen white cards (full-frame cutaways) ---------- */
+      .card {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 44%, #ffffff 0%, #fdfbf8 48%, #f3ecf9 100%);
+      }
+      .cin {
+        position: absolute;
+        inset: 0;
+      }
+      .vec {
+        position: absolute;
+        overflow: visible;
+      }
+      .tl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .lbl {
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+        font-size: 50px;
+        color: #5b4a7d;
+      }
+      .lbl.it {
+        font-style: italic;
+      }
+      .big {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        color: var(--violet);
+        line-height: 1;
+      }
+      .mid {
+        font-family: "Playfair", serif;
+        font-weight: 600;
+        color: var(--violet-2);
+        line-height: 1.05;
+      }
+      .mid i {
+        font-weight: 700;
+      }
+      .wd {
+        display: inline-block;
+      }
+      .lock {
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .lw {
+        display: block;
+        font-family: "Playfair", serif;
+        color: var(--violet-2);
+      }
+      .l-sil {
+        font-weight: 800;
+        font-size: 200px;
+        line-height: 1;
+        color: var(--violet);
+      }
+      .l-para {
+        font-style: italic;
+        font-weight: 500;
+        font-size: 64px;
+        line-height: 1.1;
+      }
+      .l-esc {
+        font-style: italic;
+        font-weight: 600;
+        font-size: 118px;
+        line-height: 1.02;
+      }
+      .spark {
+        position: absolute;
+        overflow: visible;
+      }
+      .badge {
+        position: absolute;
+        left: 50%;
+        top: 250px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 0 50px 0 20px;
+        border-radius: 60px;
+        background: var(--cream);
+        border: 4px solid var(--gold);
+        white-space: nowrap;
+      }
+      .badge .ic {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        background: var(--violet);
+        display: grid;
+        place-items: center;
+      }
+      .badge .ic svg {
+        width: 50px;
+        height: 50px;
+      }
+      .badge .t {
+        font-family: "Playfair", serif;
+        font-size: 54px;
+        color: var(--violet);
+      }
+      .badge .t i {
+        font-weight: 700;
+      }
+
+      /* ---------- cocoa extras ---------- */
+      .irow {
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+      }
+      .itm {
+        width: 250px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      .itm .ic {
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+        background: var(--violet);
+        border: 5px solid var(--gold);
+        display: grid;
+        place-items: center;
+      }
+      .itm .ic svg {
+        width: 96px;
+        height: 96px;
+      }
+      .itm .t {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: 56px;
+        color: var(--violet-2);
+      }
+      .dm {
+        position: absolute;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 150px;
+        padding: 0 50px 0 26px;
+        border-radius: 75px 75px 75px 18px;
+        background: linear-gradient(180deg, #5a35a0 0%, #3b1f6e 100%);
+        border: 5px solid var(--gold);
+        white-space: nowrap;
+      }
+      .dm .dot {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: var(--gold);
+        display: grid;
+        place-items: center;
+      }
+      .dm .dot svg {
+        width: 54px;
+        height: 54px;
+      }
+      #dm-txt {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 76px;
+        letter-spacing: 0.06em;
+        color: #fff;
+      }
+      #dm-txt span {
+        display: inline-block;
+      }
+      #dm-caret {
+        display: inline-block;
+        width: 6px;
+        height: 70px;
+        margin-left: 8px;
+        background: var(--gold-2);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="54.46" data-width="1080" data-height="1920">
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="54.46" data-track-index="0" muted playsinline></video>
+      </div>
+
+      <div id="stage" class="clip" data-start="0" data-duration="54.46" data-track-index="1">
+        <!-- event pill over footage: cumpleaños de Papá Jaime (8.4 – 12.9) -->
+        <div id="pill" class="epill" style="top: 230px">
+          <div class="pi" id="pi-a">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="10" y="30" width="44" height="26" rx="6" fill="none" stroke="#3b1f6e" stroke-width="4" />
+              <path d="M10 40 C 18 46, 24 34, 32 40 S 46 46, 54 40 M22 30 V20 M32 30 V18 M42 30 V20" fill="none" stroke="#3b1f6e" stroke-width="4" stroke-linecap="round" />
+              <path d="M22 14 C 20 11, 24 9, 22 6 M32 12 C 30 9, 34 7, 32 4 M42 14 C 40 11, 44 9, 42 6" fill="none" stroke="#e6b35a" stroke-width="3.5" stroke-linecap="round" />
+            </svg>
+            <div class="t">Cumpleaños de<br /><i>Papá Jaime</i></div>
+          </div>
+        </div>
+
+        <!-- pillars over footage: sound healing en… (35.6 – 41.85) -->
+        <div id="pillars" style="top: 940px">
+          <span id="p-label">sound healing en</span>
+          <div class="pl" id="pl-0">
+            <span class="ic"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="12" y="26" width="32" height="20" rx="4" fill="none" stroke="#fff" stroke-width="3.5" /><path d="M20 26 V18 M28 26 V16 M36 26 V18" stroke="#fff" stroke-width="3.5" stroke-linecap="round" /></svg></span>
+            <span class="t"><b>Cumpleaños</b></span>
+          </div>
+          <div class="pl" id="pl-1">
+            <span class="ic"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="12" y="24" width="32" height="22" rx="4" fill="none" stroke="#fff" stroke-width="3.5" /><path d="M18 24 V18 C18 12 38 12 38 18 V24" fill="none" stroke="#fff" stroke-width="3.5" /></svg></span>
+            <span class="t"><b>Eventos</b> <i>privados</i></span>
+          </div>
+          <div class="pl" id="pl-2">
+            <span class="ic"><svg viewBox="0 0 56 56" aria-hidden="true"><path d="M28 8 L32 22 L46 22 L35 31 L39 45 L28 37 L17 45 L21 31 L10 22 L24 22 Z" fill="none" stroke="#fff" stroke-width="3.5" stroke-linejoin="round" /></svg></span>
+            <span class="t"><b>Celebraciones</b></span>
+          </div>
+          <div class="pl" id="pl-3">
+            <span class="ic"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="10" y="20" width="36" height="26" rx="5" fill="none" stroke="#fff" stroke-width="3.5" /><path d="M21 20 V15 H35 V20 M10 30 H46" fill="none" stroke="#fff" stroke-width="3.5" stroke-linejoin="round" /></svg></span>
+            <span class="t"><b>Encuentros</b> <i>empresariales</i></span>
+          </div>
+        </div>
+
+        <div id="caps"></div>
+
+        <!-- ===== C1 · una experiencia de bienestar (3.86 – 7.86) ===== -->
+        <div id="c1" class="card">
+          <div class="cin">
+            <svg class="vec" style="left: 0; top: 0; width: 1080px; height: 1920px" viewBox="0 0 1080 1920" aria-hidden="true">
+              <circle id="c1-glow" cx="540" cy="900" r="360" fill="#f0e8fb" />
+              <circle class="c1r" cx="540" cy="900" r="420" fill="none" stroke="#d6c6f1" stroke-width="3" />
+              <circle class="c1r" cx="540" cy="900" r="500" fill="none" stroke="#e8defa" stroke-width="3" />
+            </svg>
+            <div class="tl lbl it" id="c1-a" style="top: 650px">una experiencia de</div>
+            <div class="tl big" id="c1-b" style="top: 760px; font-size: 200px">bienestar</div>
+            <div class="tl mid" id="c1-c" style="top: 1030px; font-size: 64px">que tus invitados</div>
+            <div class="tl mid" id="c1-d" style="top: 1110px; font-size: 76px"><i>jamás olvidarán</i></div>
+          </div>
+        </div>
+
+        <!-- ===== C2 · no solo comida, música y fotos (21.95 – 25.0) ===== -->
+        <div id="c2" class="card">
+          <div class="cin">
+            <div class="tl lbl it" id="c2-a" style="top: 560px">una celebración no tiene que ser</div>
+            <div class="tl big" id="c2-b" style="top: 650px; font-size: 150px">solamente…</div>
+            <div class="irow" style="top: 920px">
+              <div class="itm" id="it-0">
+                <span class="ic"><svg viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="52" r="30" fill="none" stroke="#fff" stroke-width="5" /><circle cx="48" cy="52" r="18" fill="none" stroke="#f7d58b" stroke-width="4" /><path d="M10 18 V40 M10 30 H16 M86 18 C 78 24, 78 36, 86 40 V74" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" /></svg></span>
+                <span class="t">comida</span>
+              </div>
+              <div class="itm" id="it-1">
+                <span class="ic"><svg viewBox="0 0 96 96" aria-hidden="true"><path d="M36 70 V22 L74 14 V62" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round" /><circle cx="28" cy="70" r="9" fill="#f7d58b" /><circle cx="66" cy="62" r="9" fill="#f7d58b" /></svg></span>
+                <span class="t">música</span>
+              </div>
+              <div class="itm" id="it-2">
+                <span class="ic"><svg viewBox="0 0 96 96" aria-hidden="true"><rect x="12" y="30" width="72" height="48" rx="10" fill="none" stroke="#fff" stroke-width="5" /><path d="M34 30 L40 20 H56 L62 30" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round" /><circle cx="48" cy="54" r="13" fill="none" stroke="#f7d58b" stroke-width="5" /></svg></span>
+                <span class="t">fotos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== C3 · una pausa para respirar, relajarse (25.0 – 29.0) ===== -->
+        <div id="c3" class="card">
+          <div class="cin">
+            <svg class="vec" style="left: 0; top: 0; width: 1080px; height: 1920px" viewBox="0 0 1080 1920" aria-hidden="true">
+              <circle id="c3-breath" cx="540" cy="880" r="330" fill="#f0e8fb" />
+              <circle id="c3-ring" cx="540" cy="880" r="380" fill="none" stroke="#d6c6f1" stroke-width="3" />
+            </svg>
+            <div class="tl lbl it" id="c3-a" style="top: 600px">también puede ser</div>
+            <div class="tl mid" id="c3-b" style="top: 700px; font-size: 104px">una <i>pausa</i></div>
+            <div class="tl big" id="c3-c" style="top: 840px; font-size: 168px">respirar</div>
+            <div class="tl mid" id="c3-d" style="top: 1060px; font-size: 96px"><i>relajarse</i></div>
+            <svg class="vec" id="c3-lotus" style="left: 330px; top: 1300px; width: 420px; height: 280px" viewBox="0 0 300 200" aria-hidden="true">
+              <path class="lot" d="M150 30 C 120 70, 120 130, 150 160 C 180 130, 180 70, 150 30 Z" fill="none" stroke="#e6b35a" stroke-width="3.5" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path class="lot" d="M150 160 C 100 150, 60 110, 50 70 C 95 80, 130 110, 150 160 Z" fill="none" stroke="#4b2a85" stroke-width="3" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path class="lot" d="M150 160 C 200 150, 240 110, 250 70 C 205 80, 170 110, 150 160 Z" fill="none" stroke="#4b2a85" stroke-width="3" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path class="lot" d="M150 166 C 90 172, 30 142, 8 112 C 60 110, 112 132, 150 166" fill="none" stroke="#b9a3e3" stroke-width="3" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path class="lot" d="M150 166 C 210 172, 270 142, 292 112 C 240 110, 188 132, 150 166" fill="none" stroke="#b9a3e3" stroke-width="3" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path class="lot" d="M70 188 H230" fill="none" stroke="#b9a3e3" stroke-width="3" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- ===== C4 · sound healing (35.4 – 36.66) ===== -->
+        <div id="c4" class="card">
+          <div class="cin">
+            <svg class="waves" style="top: 1260px" viewBox="0 0 1080 300" aria-hidden="true">
+              <path class="c4w" d="M-40 150 C 120 40, 260 40, 400 150 S 680 260, 820 150 S 1040 40, 1120 120" fill="none" stroke="#c58bff" stroke-width="10" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path class="c4w" d="M-40 190 C 140 100, 280 110, 420 190 S 700 280, 840 190 S 1040 100, 1120 160" fill="none" stroke="#b9a3e3" stroke-width="7" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path class="c4w" d="M-40 110 C 100 20, 250 10, 380 110 S 660 220, 800 110 S 1040 10, 1120 80" fill="none" stroke="#e6b35a" stroke-width="4" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+            </svg>
+            <div class="tl lbl it" id="c4-a" style="top: 680px">nuestra experiencia de</div>
+            <div class="tl big" id="c4-b" style="top: 790px; font-size: 168px">sound</div>
+            <div class="tl big" id="c4-c" style="top: 960px; font-size: 168px">healing</div>
+          </div>
+        </div>
+
+        <!-- ===== C5 · mucho más que una celebración (43.95 – 46.3) ===== -->
+        <div id="c5" class="card">
+          <div class="cin">
+            <svg class="vec" style="left: 0; top: 0; width: 1080px; height: 1920px" viewBox="0 0 1080 1920" aria-hidden="true">
+              <circle class="c5r" cx="540" cy="900" r="300" fill="none" stroke="#c9b6ec" stroke-width="3" />
+              <circle class="c5r" cx="540" cy="900" r="400" fill="none" stroke="#dccff3" stroke-width="3" />
+              <circle class="c5r" cx="540" cy="900" r="500" fill="none" stroke="#ebe3f8" stroke-width="3" />
+            </svg>
+            <div class="tl lbl it" id="c5-a" style="top: 700px">tu próximo evento,</div>
+            <div class="tl mid" id="c5-b" style="top: 800px; font-size: 96px"><i>mucho más</i> que</div>
+            <div class="tl big" id="c5-c" style="top: 940px; font-size: 118px">una celebración</div>
+          </div>
+        </div>
+
+        <!-- ===== C6 · guarda · escríbenos EVENTO (46.3 – 49.9) ===== -->
+        <div id="c6" class="card">
+          <div class="cin">
+            <div id="c6-save" class="badge" style="top: 560px">
+              <span class="ic"><svg viewBox="0 0 50 50" aria-hidden="true"><path d="M14 8 H36 V42 L25 33 L14 42 Z" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" /></svg></span>
+              <span class="t">Guarda este <i>video</i></span>
+            </div>
+            <div class="tl lbl it" id="c6-a" style="top: 830px; font-size: 58px">y escríbenos</div>
+            <div id="dm" class="dm" style="top: 950px">
+              <span class="dot"><svg viewBox="0 0 54 54" aria-hidden="true"><path d="M8 27 L46 8 L36 46 L26 30 Z M26 30 L46 8" fill="none" stroke="#3b1f6e" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round" /></svg></span>
+              <span id="dm-txt"><span>E</span><span>V</span><span>E</span><span>N</span><span>T</span><span>O</span></span><i id="dm-caret"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== C7 · llevar Cocoa hasta ti (49.9 – end) ===== -->
+        <div id="c7" class="card">
+          <div class="cin">
+            <svg class="waves" style="top: 1460px" viewBox="0 0 1080 300" aria-hidden="true">
+              <path class="c7w" d="M-40 150 C 120 40, 260 40, 400 150 S 680 260, 820 150 S 1040 40, 1120 120" fill="none" stroke="#c58bff" stroke-width="10" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path class="c7w" d="M-40 190 C 140 100, 280 110, 420 190 S 700 280, 840 190 S 1040 100, 1120 160" fill="none" stroke="#b9a3e3" stroke-width="7" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+            </svg>
+            <div class="tl lbl it" id="c7-a" style="top: 620px">te contamos cómo podemos llevar</div>
+            <div class="tl" id="c7-b" style="top: 720px; font-family: Playfair, serif; font-weight: 800; font-size: 230px; line-height: 1; color: #3b1f6e">Cocoa</div>
+            <div class="tl mid" id="c7-c" style="top: 980px; font-size: 104px"><i>hasta ti</i></div>
+            <div id="c7-dm" class="cta" style="top: 1200px">
+              <span class="dot"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M8 22 L36 8 L28 38 L21 25 Z M21 25 L36 8" fill="none" stroke="#3b1f6e" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" /></svg></span>
+              <span>Escríbenos “EVENTO”</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SFX: cuencos + few soft whooshes (tools/make_sfx.py) ============ -->
+      <audio id="sfx-01" src="assets/sfx/bowl.wav" data-start="0.1" data-duration="3.2" data-track-index="22" data-volume="0.42"></audio>
+      <audio id="sfx-02" src="assets/sfx/bowl-high.wav" data-start="4.7" data-duration="2.4" data-track-index="23" data-volume="0.38"></audio>
+      <audio id="sfx-03" src="assets/sfx/whoosh-soft.wav" data-start="8.3" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sfx-04" src="assets/sfx/whoosh-soft.wav" data-start="21.85" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sfx-05" src="assets/sfx/bowl.wav" data-start="27.05" data-duration="3.2" data-track-index="22" data-volume="0.42"></audio>
+      <audio id="sfx-06" src="assets/sfx/bowl-high.wav" data-start="35.62" data-duration="2.4" data-track-index="23" data-volume="0.38"></audio>
+      <audio id="sfx-07" src="assets/sfx/bowl.wav" data-start="43.95" data-duration="3.2" data-track-index="22" data-volume="0.38"></audio>
+      <audio id="sfx-08" src="assets/sfx/riser.wav" data-start="47.45" data-duration="1.4" data-track-index="21" data-volume="0.16"></audio>
+      <audio id="sfx-09" src="assets/sfx/pop-high.wav" data-start="48.86" data-duration="0.07" data-track-index="24" data-volume="0.35"></audio>
+      <audio id="sfx-10" src="assets/sfx/bowl-high.wav" data-start="51.95" data-duration="2.4" data-track-index="23" data-volume="0.4"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+
+        // ---------- transcript (local Whisper small, sliding windows; spelling fixed by context) ----------
+        const W = [
+          ["Te", 0.16], ["mostramos", 0.36], ["cómo", 1.36], ["convertir", 1.82], ["un", 2.18], ["evento", 2.54], ["especial", 3.08], ["en", 3.56], ["una", 3.76], ["experiencia", 3.95],
+          ["de", 4.58], ["bienestar", 4.74], ["que", 5.52], ["tus", 5.73], ["invitados", 6.06], ["jamás", 6.68], ["olvidarán.", 7.39], ["Cocoa", 8.42], ["fue", 9.1], ["invitada", 9.35],
+          ["al", 9.68], ["cumpleaños", 9.92], ["de", 10.61], ["Jaime", 11.0], ["Jaramillo,", 11.3], ["Papá", 12.0], ["Jaime,", 12.55], ["y", 12.94], ["llevamos", 13.06], ["nuestra", 13.64],
+          ["experiencia", 14.13], ["sonora", 14.5], ["para", 15.14], ["crear", 15.42], ["un", 15.64], ["evento", 16.07], ["diferente", 16.9], ["dentro", 17.86], ["de", 18.13], ["una", 18.28],
+          ["celebración,", 18.6], ["porque", 19.64], ["una", 19.84], ["celebración", 20.1], ["no", 20.98], ["tiene", 21.2], ["que", 21.4], ["ser", 21.64], ["solamente", 22.1], ["comida,", 22.98],
+          ["música", 23.84], ["y", 24.01], ["fotos.", 24.42], ["También", 25.07], ["puede", 25.38], ["ser", 25.64], ["una", 25.88], ["pausa", 26.18], ["para", 26.64], ["respirar,", 27.09],
+          ["relajarse", 27.94], ["y", 29.03], ["compartir", 29.6], ["una", 29.9], ["experiencia", 30.32], ["que", 30.76], ["conecte", 31.09], ["a", 31.41], ["todos", 31.67], ["desde", 32.06],
+          ["otro", 32.44], ["lugar.", 32.85], ["En", 33.24], ["Cocoa", 33.44], ["llevamos", 34.14], ["nuestra", 34.67], ["experiencia", 35.08], ["de", 35.43], ["sound", 35.67], ["healing", 36.14],
+          ["a", 36.48], ["cumpleaños,", 36.72], ["eventos", 37.92], ["privados,", 38.38], ["celebraciones", 39.23], ["y", 40.16], ["encuentros", 40.49], ["empresariales.", 41.08], ["Si", 41.92], ["quieres", 42.26],
+          ["que", 42.44], ["tu", 42.62], ["próximo", 42.84], ["evento", 43.34], ["sea", 43.72], ["mucho", 44.06], ["más", 44.42], ["que", 44.66], ["una", 44.82], ["celebración,", 45.14],
+          ["guarda", 46.38], ["este", 46.72], ["video", 47.02], ["y", 47.34], ["escríbenos", 47.6], ["EVENTO.", 48.86], ["Te", 50.02], ["contamos", 50.22], ["cómo", 50.92], ["podemos", 51.32],
+          ["llevar", 51.62], ["Cocoa", 51.99], ["hasta", 52.7], ["ti.", 53.01],
+        ];
+        const T = (k) => W[k][1];
+        // captions over footage: [first, last, top(px), keyword indices, hero {index: size}]
+        // words inside the white cards are set by the cards themselves
+        const CAPS = [
+          [0, 2, 1380, [1]],
+          [3, 6, 1380, [5, 6]],
+          [17, 21, 1380, [17, 21]],
+          [22, 26, 1380, [23, 24, 25, 26]],
+          [27, 31, 1380, [31]],
+          [32, 36, 1380, [36]],
+          [37, 40, 1380, [40]],
+          [41, 43, 1380, [43]],
+          [61, 65, 1380, [62, 65]],
+          [66, 71, 1380, [66, 68, 71]],
+          [72, 74, 1380, [73], { 73: 120 }],
+          [75, 77, 1380, [76]],
+          [88, 94, 1300, [92, 93]],
+        ];
+        // a caption that hands off to a white card ends where the card begins
+        const ENDS = { 1: 3.86, 7: 21.95, 11: 35.4, 12: 43.95 };
+
+        const caps = $("#caps");
+        const groups = CAPS.map(([a, b, top, kws, hero = {}], gi) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          cap.id = "cap-" + gi;
+          cap.style.top = top + "px";
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          for (let k = a; k <= b; k++) {
+            const s = document.createElement("span");
+            s.className = "cw" + (kws.includes(k) ? " kw" : "") + (k in hero ? " hero" : "");
+            s.id = "cw-" + k;
+            s.textContent = W[k][0];
+            if (k in hero) s.style.fontSize = hero[k] + "px";
+            inner.appendChild(s);
+          }
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          return { cap, a, b, gi };
+        });
+
+        // gold / lilac sparkles on the cards
+        const SPARK = '<path d="M0 -30 C4 -4 4 -4 30 0 C4 4 4 4 0 30 C-4 4 -4 4 -30 0 C-4 -4 -4 -4 0 -30 Z" fill="FILL" />';
+        const sparks = (card, list) =>
+          list.forEach(([x, y, s, c]) => {
+            const ns = "http://www.w3.org/2000/svg";
+            const el = document.createElementNS(ns, "svg");
+            el.setAttribute("class", "spark");
+            el.setAttribute("viewBox", "-32 -32 64 64");
+            el.setAttribute("aria-hidden", "true");
+            el.style.cssText = `left:${x}px;top:${y}px;width:${s}px;height:${s}px`;
+            el.innerHTML = SPARK.replace("FILL", c);
+            $(card + " .cin").appendChild(el);
+          });
+        sparks("#c1", [[860, 640, 70, "#e6b35a"], [160, 720, 42, "#b9a3e3"], [820, 1220, 50, "#e6b35a"]]);
+        sparks("#c3", [[880, 760, 62, "#e6b35a"], [150, 820, 40, "#b9a3e3"]]);
+        sparks("#c4", [[860, 760, 66, "#e6b35a"], [170, 960, 42, "#b9a3e3"]]);
+        sparks("#c5", [[880, 860, 60, "#e6b35a"], [140, 760, 40, "#b9a3e3"]]);
+        sparks("#c7", [[880, 680, 72, "#e6b35a"], [140, 760, 44, "#b9a3e3"], [800, 1060, 48, "#e6b35a"]]);
+
+        // ---------- timeline ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+        gsap.set([".cap", "#pillars", "#pill", ".card"], { autoAlpha: 0 });
+        gsap.set(".cw", { opacity: 0 });
+        gsap.set([".epill", ".cta", ".badge", ".dm"], { xPercent: -50 });
+        gsap.set(".pl", { autoAlpha: 0 });
+
+        // white cards: soft iris in, slow drift, gentle dissolve out
+        const card = (id, a, b, from = "50% 50%") => {
+          tl.set(id, { autoAlpha: 1 }, a)
+            .fromTo(id, { clipPath: `circle(0% at ${from})` }, { clipPath: `circle(${from === "50% 50%" ? 80 : 130}% at ${from})`, duration: 0.7, ease: "sine.inOut" }, a)
+            .fromTo(`${id} .cin`, { scale: 1.06 }, { scale: 1, duration: b - a, ease: "sine.out" }, a);
+          if (b < 54.4) tl.to(id, { opacity: 0, filter: "blur(10px)", duration: 0.32, ease: "sine.in" }, b - 0.32).set(id, { autoAlpha: 0, filter: "blur(0px)" }, b);
+        };
+        const soft = (sel, t, d = 0.6, from = {}) =>
+          tl.fromTo(sel, { opacity: 0, y: 24, filter: "blur(10px)", ...from }, { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: d, ease: "power3.out" }, t);
+        const twinkle = (sel, t) =>
+          tl.fromTo(sel, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(2.6)", stagger: 0.12 }, t)
+            .to(sel, { rotation: 45, duration: 1.6, ease: "sine.inOut" }, t + 0.7);
+
+        // ---- captions ----
+        groups.forEach(({ cap, a, b, gi }) => {
+          const s = T(a) - 0.06;
+          const e = ENDS[gi] ?? (gi + 1 < groups.length ? T(groups[gi + 1].a) - 0.06 : 54.4);
+          tl.set(cap, { autoAlpha: 1 }, s);
+          for (let k = a; k <= b; k++) {
+            const el = $("#cw-" + k);
+            if (el.classList.contains("hero"))
+              tl.fromTo(el, { opacity: 0, scale: 1.2, y: 18, filter: "blur(12px)" }, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "expo.out" }, T(k));
+            else if (el.classList.contains("kw"))
+              tl.fromTo(el, { opacity: 0, y: 16, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, T(k));
+            else tl.fromTo(el, { opacity: 0, y: 12, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.35, ease: "power2.out" }, T(k));
+          }
+          tl.to(cap, { opacity: 0, y: -10, filter: "blur(8px)", duration: 0.18, ease: "power2.in" }, Math.max(s + 0.3, e - 0.18)).set(cap, { autoAlpha: 0 }, e);
+        });
+
+        // ===== C1 (3.86 – 7.86): una experiencia de bienestar =====
+        card("#c1", 3.86, 7.86);
+        soft("#c1-a", 3.9, 0.5);
+        soft("#c1-b", T(11), 0.9, { scale: 1.12, y: 0 });
+        soft("#c1-c", T(12), 0.5);
+        soft("#c1-d", T(15), 0.6);
+        tl.fromTo("#c1-glow", { scale: 0.7, transformOrigin: "540px 900px" }, { scale: 1.05, duration: 2.2, ease: "sine.inOut" }, 4.0)
+          .to("#c1-glow", { scale: 0.9, duration: 1.6, ease: "sine.inOut" }, 6.2)
+          .fromTo(".c1r", { scale: 0.6, opacity: 0, transformOrigin: "540px 900px" }, { scale: 1, opacity: 1, duration: 1.4, ease: "sine.out", stagger: 0.18 }, 4.0);
+        twinkle("#c1 .spark", 4.9);
+
+        // ===== pill over footage: cumpleaños de Papá Jaime =====
+        tl.set("#pill", { autoAlpha: 1 }, T(21) - 0.04)
+          .fromTo("#pill", { y: -50, scale: 0.8, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.6)" }, T(21) - 0.04)
+          .to("#pill", { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.3, ease: "power2.in" }, 15.0)
+          .set("#pill", { autoAlpha: 0 }, 15.3);
+
+        // ===== C2 (21.95 – 25.0): solamente comida, música y fotos =====
+        card("#c2", 21.95, 25.0);
+        soft("#c2-a", 21.98, 0.5);
+        soft("#c2-b", T(48), 0.7, { scale: 1.1, y: 0 });
+        [T(49), T(50), T(52)].forEach((t, i) => {
+          soft(`#it-${i}`, t - 0.04, 0.5, { y: 40 });
+          tl.fromTo(`#it-${i} .ic`, { scale: 0, rotation: -60 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.4)" }, t);
+        });
+
+        // ===== C3 (25.0 – 29.0): una pausa para respirar, relajarse =====
+        card("#c3", 25.0, 29.0);
+        soft("#c3-a", T(53) - 0.04, 0.5);
+        soft("#c3-b", T(57) - 0.1, 0.6);
+        soft("#c3-c", T(59), 0.9, { scale: 1.12, y: 0 });
+        soft("#c3-d", T(60), 0.6);
+        tl.fromTo("#c3-breath", { scale: 0.72, transformOrigin: "540px 880px" }, { scale: 0.8, duration: 2.0, ease: "sine.inOut" }, 25.0)
+          .to("#c3-breath", { scale: 1.1, duration: 0.9, ease: "sine.inOut" }, 27.05) // inhale on "respirar"
+          .to("#c3-breath", { scale: 0.9, duration: 0.9, ease: "sine.inOut" }, 27.98) // exhale on "relajarse"
+          .fromTo("#c3-ring", { scale: 0.9, opacity: 0, transformOrigin: "540px 880px" }, { scale: 1.12, opacity: 1, duration: 1.0, ease: "sine.out" }, 27.09)
+          .to("#c3-ring", { opacity: 0, duration: 0.5, ease: "sine.in" }, 28.2)
+          .to(".lot", { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "power2.inOut", stagger: 0.14 }, 25.6);
+        twinkle("#c3 .spark", 27.2);
+
+        // ===== C4 (35.4 – 36.66): sound healing =====
+        card("#c4", 35.4, 36.66);
+        soft("#c4-a", 35.42, 0.4);
+        soft("#c4-b", T(78), 0.6, { scale: 1.15, y: 0 });
+        soft("#c4-c", T(79), 0.5, { scale: 1.15, y: 0 });
+        tl.to(".c4w", { attr: { "stroke-dashoffset": 0 }, duration: 1.0, ease: "power2.inOut", stagger: 0.1 }, 35.5);
+        twinkle("#c4 .spark", 35.7);
+
+        // ===== pillars over footage: cumpleaños · eventos privados · celebraciones · empresariales =====
+        tl.set("#pillars", { autoAlpha: 1 }, 36.6).fromTo("#p-label", { opacity: 0, x: -40, filter: "blur(6px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 36.62);
+        [T(81), T(82), T(84), T(86)].forEach((t, i) => {
+          tl.set(`#pl-${i}`, { autoAlpha: 1 }, t - 0.02)
+            .fromTo(`#pl-${i}`, { x: -820, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.65, ease: "expo.out" }, t - 0.02)
+            .fromTo(`#pl-${i} .ic`, { scale: 0, rotation: -60 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.4)" }, t + 0.12);
+        });
+        tl.to(["#p-label", ".pl"], { x: -860, filter: "blur(10px)", duration: 0.36, ease: "power3.in", stagger: 0.05 }, 41.6).set("#pillars", { autoAlpha: 0 }, 42.2);
+
+        // ===== C5 (43.95 – 46.3): mucho más que una celebración =====
+        card("#c5", 43.95, 46.3);
+        soft("#c5-a", 43.98, 0.45);
+        soft("#c5-b", T(95), 0.6);
+        soft("#c5-c", T(99), 0.8, { scale: 1.12, y: 0 });
+        tl.fromTo(".c5r", { scale: 0.6, opacity: 0, transformOrigin: "540px 900px" }, { scale: 1, opacity: 1, duration: 1.2, ease: "sine.out", stagger: 0.16 }, 44.0);
+        twinkle("#c5 .spark", 44.5);
+
+        // ===== C6 (46.3 – 49.9): guarda este video · escríbenos EVENTO =====
+        card("#c6", 46.3, 49.9, "50% 100%");
+        tl.fromTo("#c6-save", { y: -40, scale: 0.8, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.8)" }, T(100) - 0.04)
+          .fromTo("#c6-save .ic", { scale: 0, rotation: -60 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.6)" }, T(100) + 0.1);
+        soft("#c6-a", T(104) - 0.1, 0.5);
+        tl.fromTo("#dm", { y: 60, scale: 0.8, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 48.1);
+        gsap.set("#dm-txt span", { opacity: 0 });
+        $("#dm-txt").querySelectorAll("span").forEach((s, i) => tl.set(s, { opacity: 1 }, T(105) + i * 0.07));
+        tl.to("#dm-caret", { opacity: 0, duration: 0.01, yoyo: true, repeat: 5, repeatDelay: 0.18 }, 48.3)
+          .fromTo("#dm", { boxShadow: "0 0 0 0px rgba(230,179,90,0.7)" }, { boxShadow: "0 0 0 30px rgba(230,179,90,0)", duration: 0.6, ease: "power2.out", immediateRender: false }, T(105) + 0.45);
+
+        // ===== C7 (49.9 – end): llevar Cocoa hasta ti =====
+        card("#c7", 49.9, 54.46);
+        soft("#c7-a", T(106) - 0.04, 0.5);
+        soft("#c7-b", T(111), 0.9, { scale: 1.15, y: 0, filter: "blur(16px)" });
+        soft("#c7-c", T(112), 0.6);
+        tl.fromTo("#c7-dm", { y: 40, scale: 0.9, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 53.3)
+          .to(".c7w", { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "power2.inOut", stagger: 0.14 }, 50.4);
+        twinkle("#c7 .spark", 52.1);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      });
+    </script>
+  </body>
+</html>
