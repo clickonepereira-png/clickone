@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Cocoa Kids — Respira, Juega, Vive</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-normal.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-italic.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-italic.woff2") format("woff2");
+        font-weight: 500;
+        font-style: italic;
+      }
+
+      /* Cocoa line (Silencio poster) + a playful aqua for the water moments */
+      :root {
+        --violet: #3b1f6e;
+        --violet-2: #4b2a85;
+        --ink: #2b1052;
+        --lilac: #b9a3e3;
+        --lilac-2: #e8defa;
+        --glow: #c58bff;
+        --gold: #e6b35a;
+        --gold-2: #f7d58b;
+        --cream: #f8f1e7;
+        --aqua: #2bb6d6;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #cam {
+        display: none;
+      }
+      #cam {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+      .g {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions: Poppins + Playfair gold keywords, bouncy pop ---------- */
+      .cap {
+        position: absolute;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: center;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 18px;
+        text-align: center;
+      }
+      .cw {
+        position: relative;
+        display: inline-block;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 62px;
+        line-height: 1.3;
+        color: #ffffff;
+        -webkit-text-stroke: 12px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      .cw.kw {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 74px;
+        color: var(--gold-2);
+      }
+      .cw.hero {
+        flex-basis: 100%;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        color: var(--gold-2);
+        line-height: 1.05;
+        -webkit-text-stroke: 16px var(--ink);
+      }
+
+      /* ---------- stickers / pills ---------- */
+      .emo {
+        position: absolute;
+      }
+      .emo img {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .pill {
+        position: absolute;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        height: 130px;
+        padding: 0 50px 0 22px;
+        border-radius: 65px;
+        background: var(--cream);
+        border: 5px solid var(--gold);
+        white-space: nowrap;
+      }
+      .pill img {
+        width: 86px;
+        height: 86px;
+      }
+      .pill .t {
+        font-family: "Playfair", serif;
+        font-weight: 600;
+        font-size: 56px;
+        color: var(--violet);
+      }
+      .pill .t i {
+        font-weight: 700;
+      }
+      .bub {
+        position: absolute;
+        width: 230px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .bub .c {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: var(--cream);
+        border: 6px solid var(--gold);
+        display: grid;
+        place-items: center;
+      }
+      .bub .c img {
+        width: 124px;
+        height: 124px;
+      }
+      .bub .c svg {
+        width: 120px;
+        height: 120px;
+      }
+      .bub .l {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 58px;
+        color: #fff;
+        -webkit-text-stroke: 12px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+
+      /* ---------- pillars ---------- */
+      #pillars {
+        position: absolute;
+        left: 70px;
+        top: 880px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 22px;
+      }
+      #p-label {
+        font-family: "Poppins", sans-serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 52px;
+        color: #fff;
+        -webkit-text-stroke: 10px var(--ink);
+        paint-order: stroke fill;
+        margin-left: 12px;
+      }
+      .pl {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 128px;
+        padding: 0 46px 0 16px;
+        border-radius: 64px;
+        background: var(--cream);
+        border: 4px solid var(--gold);
+      }
+      .pl .ic {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: var(--violet);
+        display: grid;
+        place-items: center;
+        flex: none;
+      }
+      .pl .ic img {
+        width: 64px;
+        height: 64px;
+      }
+      .pl .t {
+        font-family: "Playfair", serif;
+        font-size: 56px;
+        color: var(--violet);
+        white-space: nowrap;
+      }
+      .pl .t b {
+        font-weight: 700;
+      }
+
+      /* ---------- calm meter ---------- */
+      #meter {
+        position: absolute;
+        left: 90px;
+        top: 960px;
+        width: 900px;
+        height: 380px;
+        border-radius: 48px;
+        background: var(--cream);
+        border: 5px solid var(--gold);
+        overflow: hidden;
+      }
+      #m-lbl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 34px;
+        text-align: center;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 44px;
+        color: var(--violet);
+      }
+      #m-lbl i {
+        font-family: "Playfair", serif;
+        font-weight: 700;
+      }
+      #m-calm {
+        position: absolute;
+        right: 40px;
+        bottom: 26px;
+        height: 76px;
+        padding: 0 30px;
+        border-radius: 38px;
+        background: var(--violet);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 44px;
+      }
+
+      /* ---------- white cards ---------- */
+      .card {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 44%, #ffffff 0%, #fdfbf8 48%, #f3ecf9 100%);
+      }
+      .cin {
+        position: absolute;
+        inset: 0;
+      }
+      .tl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .lbl {
+        font-family: "Poppins", sans-serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 50px;
+        color: #5b4a7d;
+      }
+      .rjv {
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+      }
+      .rjv img,
+      .rjv svg {
+        width: 150px;
+        height: 150px;
+      }
+      .rjv span {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        font-size: 170px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .col {
+        position: absolute;
+        top: 760px;
+        width: 420px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      .tag {
+        height: 100px;
+        padding: 0 44px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 50px;
+        letter-spacing: 0.08em;
+      }
+      .spark {
+        position: absolute;
+        overflow: visible;
+      }
+
+      /* ---------- comment box ---------- */
+      #cbox {
+        position: absolute;
+        left: 80px;
+        width: 920px;
+        top: 960px;
+        height: 330px;
+        border-radius: 48px;
+        background: var(--cream);
+        border: 5px solid var(--gold);
+      }
+      #cb-t {
+        position: absolute;
+        left: 50px;
+        top: 34px;
+        font-family: "Playfair", serif;
+        font-weight: 700;
+        font-size: 58px;
+        color: var(--violet);
+      }
+      #cb-in {
+        position: absolute;
+        left: 40px;
+        right: 170px;
+        top: 150px;
+        height: 130px;
+        border-radius: 65px;
+        background: #fff;
+        border: 4px solid var(--lilac);
+        display: flex;
+        align-items: center;
+        padding: 0 40px;
+      }
+      #cb-txt {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 72px;
+        letter-spacing: 0.08em;
+        color: var(--violet);
+      }
+      #cb-txt span {
+        display: inline-block;
+      }
+      #cb-caret {
+        display: inline-block;
+        width: 6px;
+        height: 70px;
+        margin-left: 8px;
+        background: var(--gold);
+      }
+      #cb-send {
+        position: absolute;
+        right: 36px;
+        top: 150px;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        background: var(--violet);
+        border: 5px solid var(--gold);
+        display: grid;
+        place-items: center;
+      }
+      #cb-send svg {
+        width: 64px;
+        height: 64px;
+      }
+
+      /* ---------- end card on the black tail ---------- */
+      #endc {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 40%, #5a35a0 0%, #3b1f6e 55%, #2b1052 100%);
+      }
+      .bb {
+        position: absolute;
+        border-radius: 50%;
+        border: 5px solid rgba(232, 222, 250, 0.35);
+        background: rgba(197, 139, 255, 0.12);
+      }
+      .ew {
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 28px;
+        white-space: nowrap;
+      }
+      .ew img {
+        width: 170px;
+        height: 170px;
+      }
+      .ew span {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        font-size: 150px;
+        color: #fff;
+      }
+      #e-small {
+        font-family: "Poppins", sans-serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 56px;
+        color: var(--lilac-2);
+      }
+      #e-logo {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #e-cocoa {
+        font-family: "Playfair", serif;
+        font-weight: 800;
+        font-size: 250px;
+        line-height: 1;
+        color: #fff;
+      }
+      #e-kids {
+        margin-top: 10px;
+        height: 110px;
+        padding: 0 54px;
+        border-radius: 55px;
+        background: var(--gold);
+        display: flex;
+        align-items: center;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 66px;
+        letter-spacing: 0.3em;
+        color: var(--ink);
+      }
+      #e-rjv {
+        margin-top: 50px;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: 66px;
+        color: var(--gold-2);
+        white-space: nowrap;
+      }
+      #e-cta {
+        position: absolute;
+        left: 50%;
+        top: 1330px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 140px;
+        padding: 0 60px 0 26px;
+        border-radius: 70px;
+        background: var(--cream);
+        border: 5px solid var(--gold);
+        white-space: nowrap;
+      }
+      #e-cta .dot {
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        background: var(--violet);
+        display: grid;
+        place-items: center;
+      }
+      #e-cta .dot svg {
+        width: 50px;
+        height: 50px;
+      }
+      #e-cta span {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 64px;
+        color: var(--violet);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="67.0" data-width="1080" data-height="1920">
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="64.57" data-track-index="0" muted playsinline></video>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="64.57" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="67.0" data-track-index="1">
+        <!-- stickers over footage -->
+        <div class="emo" id="s-kite" style="left: 790px; top: 300px; width: 210px; height: 210px"><img src="assets/img/kite.svg" alt="" /></div>
+        <div class="emo" id="s-shh" style="left: 800px; top: 330px; width: 200px; height: 200px"><img src="assets/img/shushing-face.svg" alt="" /></div>
+        <div class="emo" id="s-star" style="left: 780px; top: 320px; width: 220px; height: 220px"><img src="assets/img/star-struck.svg" alt="" /></div>
+        <div class="emo" id="s-eyes" style="left: 800px; top: 340px; width: 190px; height: 190px"><img src="assets/img/eyes.svg" alt="" /></div>
+        <div class="emo" id="s-yawn" style="left: 800px; top: 330px; width: 200px; height: 200px"><img src="assets/img/yawning-face.svg" alt="" /></div>
+        <svg id="s-yawn-x" style="position: absolute; left: 790px; top: 320px; width: 220px; height: 220px; overflow: visible" viewBox="0 0 220 220" aria-hidden="true">
+          <path class="yx" d="M20 20 L200 200" stroke="#e6b35a" stroke-width="22" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <path class="yx" d="M200 20 L20 200" stroke="#e6b35a" stroke-width="22" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+        </svg>
+
+        <!-- confetti burst for "los niños" -->
+        <div id="confetti" style="position: absolute; left: 540px; top: 1300px; width: 0; height: 0"></div>
+
+        <!-- Cancún pin -->
+        <div id="pin" class="pill" style="top: 200px"><img src="assets/img/round-pushpin.svg" alt="" /><span class="t">Cancún, <i>México</i></span></div>
+
+        <!-- del tapete → al agua -->
+        <div class="bub" id="b-mat" style="left: 130px; top: 960px">
+          <span class="c"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="16" y="40" width="88" height="44" rx="10" fill="#b9a3e3" stroke="#3b1f6e" stroke-width="5" /><circle cx="96" cy="62" r="16" fill="#e8defa" stroke="#3b1f6e" stroke-width="5" /></svg></span>
+          <span class="l">tapete</span>
+        </div>
+        <svg id="arrow" style="position: absolute; left: 390px; top: 1020px; width: 300px; height: 100px; overflow: visible" viewBox="0 0 300 100" aria-hidden="true">
+          <path id="arr-p" d="M10 60 C 90 0, 190 0, 270 50" fill="none" stroke="#f7d58b" stroke-width="12" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <path id="arr-h" d="M236 26 L274 52 L232 70" fill="none" stroke="#f7d58b" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <div class="bub" id="b-agua" style="left: 720px; top: 960px">
+          <span class="c" style="border-color: #2bb6d6"><img src="assets/img/water-wave.svg" alt="" /></span>
+          <span class="l">agua</span>
+        </div>
+
+        <!-- jugando: pillars -->
+        <div id="pillars">
+          <span id="p-label">jugando…</span>
+          <div class="pl" id="pl-0"><span class="ic"><img src="assets/img/water-wave.svg" alt="" /></span><span class="t">Respiran haciendo <b>olas</b></span></div>
+          <div class="pl" id="pl-1"><span class="ic"><img src="assets/img/high-voltage.svg" alt="" /></span><span class="t">Sueltan la <b>energía</b></span></div>
+          <div class="pl" id="pl-2"><span class="ic"><img src="assets/img/raised-hand.svg" alt="" /></span><span class="t">Exploran <b>5 sentidos</b></span></div>
+        </div>
+
+        <!-- tocan · mueven · escuchan -->
+        <div class="bub" id="c-0" style="left: 60px; top: 940px"><span class="c"><img src="assets/img/raised-hand.svg" alt="" /></span><span class="l">tocan</span></div>
+        <div class="bub" id="c-1" style="left: 425px; top: 940px"><span class="c" style="border-color: #2bb6d6"><img src="assets/img/water-wave.svg" alt="" /></span><span class="l">mueven</span></div>
+        <div class="bub" id="c-2" style="left: 790px; top: 940px"><span class="c"><img src="assets/img/ear.svg" alt="" /></span><span class="l">escuchan</span></div>
+
+        <!-- calm meter: jagged → smooth -->
+        <div id="meter">
+          <div id="m-lbl">sistema <i>nervioso</i></div>
+          <svg style="position: absolute; left: 50px; top: 120px; width: 800px; height: 160px; overflow: visible" viewBox="0 0 800 160" aria-hidden="true">
+            <path id="m-line" d="M0 80 L50 20 L100 140 L150 10 L200 150 L250 30 L300 130 L350 20 L400 140 L450 40 L500 120 L550 20 L600 140 L650 30 L700 130 L750 40 L800 80" fill="none" stroke="#c58bff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          </svg>
+          <div id="m-calm">calma ✓</div>
+        </div>
+
+        <!-- el bienestar es: juego · agua · conexión -->
+        <div class="bub" id="e-0" style="left: 60px; top: 940px"><span class="c"><img src="assets/img/kite.svg" alt="" /></span><span class="l">juego</span></div>
+        <div class="bub" id="e-1" style="left: 425px; top: 940px"><span class="c" style="border-color: #2bb6d6"><img src="assets/img/water-wave.svg" alt="" /></span><span class="l">agua</span></div>
+        <div class="bub" id="e-2" style="left: 790px; top: 940px"><span class="c"><img src="assets/img/smiling-face-with-hearts.svg" alt="" /></span><span class="l">conexión</span></div>
+
+        <!-- Cocoa Kids lockup over footage -->
+        <div id="ck" style="position: absolute; left: 0; right: 0; top: 820px; display: flex; flex-direction: column; align-items: center">
+          <span style="font-family: Playfair, serif; font-weight: 800; font-size: 190px; line-height: 1; color: #fff; -webkit-text-stroke: 18px #2b1052; paint-order: stroke fill">Cocoa</span>
+          <span id="ck-kids" style="margin-top: 6px; height: 96px; padding: 0 46px; border-radius: 48px; background: #e6b35a; border: 5px solid #2b1052; display: flex; align-items: center; font-family: Poppins, sans-serif; font-weight: 600; font-size: 58px; letter-spacing: 0.3em; color: #2b1052">KIDS</span>
+        </div>
+
+        <!-- comment JUEGO -->
+        <div id="cbox">
+          <div id="cb-t">Comenta la palabra</div>
+          <div id="cb-in"><span id="cb-txt"><span>J</span><span>U</span><span>E</span><span>G</span><span>O</span></span><i id="cb-caret"></i></div>
+          <span id="cb-send"><svg viewBox="0 0 54 54" aria-hidden="true"><path d="M8 27 L46 8 L36 46 L26 30 Z M26 30 L46 8" fill="none" stroke="#f7d58b" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" /></svg></span>
+        </div>
+
+        <div id="caps"></div>
+
+        <!-- ===== card · Respira, Juega, Vive (17.85 – 20.55) ===== -->
+        <div id="k1" class="card">
+          <div class="cin">
+            <div class="tl lbl" id="k1-a" style="top: 520px">en Cocoa se llama</div>
+            <div class="rjv" id="r-0" style="top: 650px">
+              <svg viewBox="0 0 150 150" aria-hidden="true"><path d="M20 60 C 50 30, 90 30, 110 50 C 130 70, 110 100, 85 92 C 65 85, 70 62, 90 64" fill="none" stroke="#b9a3e3" stroke-width="12" stroke-linecap="round" /><path d="M20 100 H 120" stroke="#c58bff" stroke-width="12" stroke-linecap="round" /></svg>
+              <span style="color: #3b1f6e">Respira,</span>
+            </div>
+            <div class="rjv" id="r-1" style="top: 860px"><span style="color: #1b8fab">Juega,</span><img src="assets/img/kite.svg" alt="" /></div>
+            <div class="rjv" id="r-2" style="top: 1070px"><img src="assets/img/seedling.svg" alt="" /><span style="color: #a8731c">Vive.</span></div>
+          </div>
+        </div>
+
+        <!-- ===== card · hoy → mañana (43.2 – 48.65) ===== -->
+        <div id="k2" class="card">
+          <div class="cin">
+            <div class="tl lbl" id="k2-a" style="top: 470px">un niño que aprende a</div>
+            <div class="tl" id="k2-b" style="top: 550px; font-family: Playfair, serif; font-style: italic; font-weight: 800; font-size: 104px; color: #3b1f6e">regular su cuerpo</div>
+            <div class="col" id="k2-l" style="left: 80px">
+              <img src="assets/img/child.svg" alt="" style="width: 200px; height: 200px; margin-top: 120px" />
+              <span class="tag" style="background: #3b1f6e; color: #fff">HOY</span>
+            </div>
+            <svg id="k2-arr" style="position: absolute; left: 430px; top: 950px; width: 220px; height: 80px; overflow: visible" viewBox="0 0 220 80" aria-hidden="true">
+              <path d="M10 40 H 190 M160 12 L196 40 L160 68" fill="none" stroke="#e6b35a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <div class="col" id="k2-r" style="left: 580px">
+              <img src="assets/img/person.svg" alt="" style="width: 320px; height: 320px" />
+              <span class="tag" style="background: #e6b35a; color: #2b1052">MAÑANA</span>
+            </div>
+            <div class="tl" id="k2-c" style="top: 1300px; font-family: Playfair, serif; font-weight: 600; font-size: 76px; color: #4b2a85">sabrá regular sus <i style="font-weight: 800">emociones</i></div>
+          </div>
+        </div>
+
+        <!-- ===== end · motion graphics over the black tail (62.45 – 67.0) ===== -->
+        <div id="endc">
+          <div id="bbs"></div>
+          <div class="ew" id="ew-0" style="top: 640px"><span id="e-small">a tu</span></div>
+          <div class="ew" id="ew-1" style="top: 760px"><img src="assets/img/school.svg" alt="" /><span>colegio</span></div>
+          <div class="ew" id="ew-2" style="top: 1000px"><span style="color: #f7d58b">o evento</span><img src="assets/img/party-popper.svg" alt="" /></div>
+          <div id="e-logo">
+            <span id="e-cocoa">Cocoa</span>
+            <span id="e-kids">KIDS</span>
+            <span id="e-rjv">Respira · Juega · Vive</span>
+          </div>
+          <div id="e-cta">
+            <span class="dot"><svg viewBox="0 0 50 50" aria-hidden="true"><path d="M8 25 L42 8 L33 42 L24 28 Z M24 28 L42 8" fill="none" stroke="#f7d58b" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round" /></svg></span>
+            <span>Comenta “JUEGO”</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SFX (tools/make_sfx.py): pops, whooshes, ramps + Cocoa bowls ============ -->
+      <audio id="sfx-01" src="assets/sfx/bowl-high.wav" data-start="0.05" data-duration="2.4" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="sfx-02" src="assets/sfx/pop.wav" data-start="1.4" data-duration="0.09" data-track-index="21" data-volume="0.55"></audio>
+      <audio id="sfx-03" src="assets/sfx/pop-high.wav" data-start="5.96" data-duration="0.07" data-track-index="21" data-volume="0.5"></audio>
+      <audio id="sfx-04" src="assets/sfx/whoosh-fast.wav" data-start="6.5" data-duration="0.22" data-track-index="20" data-volume="0.4"></audio>
+      <audio id="sfx-05" src="assets/sfx/whoosh.wav" data-start="8.0" data-duration="0.32" data-track-index="20" data-volume="0.45"></audio>
+      <audio id="sfx-06" src="assets/sfx/pop-up-1.wav" data-start="9.67" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-07" src="assets/sfx/pop-up-3.wav" data-start="11.43" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-08" src="assets/sfx/confirm.wav" data-start="13.1" data-duration="0.5" data-track-index="24" data-volume="0.35"></audio>
+      <audio id="sfx-09" src="assets/sfx/whoosh.wav" data-start="13.2" data-duration="0.32" data-track-index="20" data-volume="0.4"></audio>
+      <audio id="sfx-10" src="assets/sfx/bowl.wav" data-start="17.85" data-duration="3.2" data-track-index="23" data-volume="0.4"></audio>
+      <audio id="sfx-11" src="assets/sfx/pop-up-2.wav" data-start="18.31" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-12" src="assets/sfx/pop-up-4.wav" data-start="19.02" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-13" src="assets/sfx/pop-up-6.wav" data-start="19.72" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-14" src="assets/sfx/pop.wav" data-start="21.77" data-duration="0.09" data-track-index="21" data-volume="0.5"></audio>
+      <audio id="sfx-15" src="assets/sfx/whoosh.wav" data-start="24.76" data-duration="0.32" data-track-index="20" data-volume="0.45"></audio>
+      <audio id="sfx-16" src="assets/sfx/pop-up-2.wav" data-start="25.04" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-17" src="assets/sfx/pop-up-3.wav" data-start="26.76" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-18" src="assets/sfx/pop-up-4.wav" data-start="29.89" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-19" src="assets/sfx/pop.wav" data-start="31.85" data-duration="0.09" data-track-index="21" data-volume="0.5"></audio>
+      <audio id="sfx-20" src="assets/sfx/pop.wav" data-start="32.34" data-duration="0.09" data-track-index="21" data-volume="0.5"></audio>
+      <audio id="sfx-21" src="assets/sfx/pop.wav" data-start="32.96" data-duration="0.09" data-track-index="21" data-volume="0.5"></audio>
+      <audio id="sfx-22" src="assets/sfx/whoosh.wav" data-start="33.66" data-duration="0.32" data-track-index="20" data-volume="0.45"></audio>
+      <audio id="sfx-23" src="assets/sfx/bowl.wav" data-start="40.81" data-duration="3.2" data-track-index="23" data-volume="0.45"></audio>
+      <audio id="sfx-24" src="assets/sfx/whoosh-soft.wav" data-start="43.0" data-duration="0.55" data-track-index="20" data-volume="0.25"></audio>
+      <audio id="sfx-25" src="assets/sfx/pop-up-2.wav" data-start="45.34" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-26" src="assets/sfx/pop-up-5.wav" data-start="46.01" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-27" src="assets/sfx/whoosh.wav" data-start="48.48" data-duration="0.32" data-track-index="20" data-volume="0.45"></audio>
+      <audio id="sfx-28" src="assets/sfx/pop.wav" data-start="50.4" data-duration="0.09" data-track-index="21" data-volume="0.5"></audio>
+      <audio id="sfx-29" src="assets/sfx/pop-up-1.wav" data-start="51.06" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-30" src="assets/sfx/pop-up-3.wav" data-start="51.85" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-31" src="assets/sfx/pop-up-5.wav" data-start="52.34" data-duration="0.1" data-track-index="22" data-volume="0.45"></audio>
+      <audio id="sfx-32" src="assets/sfx/whoosh.wav" data-start="53.0" data-duration="0.32" data-track-index="20" data-volume="0.45"></audio>
+      <audio id="sfx-33" src="assets/sfx/bowl-high.wav" data-start="55.08" data-duration="2.4" data-track-index="23" data-volume="0.35"></audio>
+      <audio id="sfx-34" src="assets/sfx/pop.wav" data-start="57.4" data-duration="0.09" data-track-index="21" data-volume="0.5"></audio>
+      <audio id="sfx-35" src="assets/sfx/click.wav" data-start="59.1" data-duration="0.03" data-track-index="24" data-volume="0.7"></audio>
+      <audio id="sfx-36" src="assets/sfx/riser.wav" data-start="61.05" data-duration="1.4" data-track-index="25" data-volume="0.22"></audio>
+      <audio id="sfx-37" src="assets/sfx/whoosh.wav" data-start="62.4" data-duration="0.32" data-track-index="20" data-volume="0.5"></audio>
+      <audio id="sfx-38" src="assets/sfx/whoosh-fast.wav" data-start="63.12" data-duration="0.22" data-track-index="26" data-volume="0.45"></audio>
+      <audio id="sfx-39" src="assets/sfx/whoosh-fast.wav" data-start="64.08" data-duration="0.22" data-track-index="26" data-volume="0.45"></audio>
+      <audio id="sfx-40" src="assets/sfx/impact.wav" data-start="64.75" data-duration="0.4" data-track-index="24" data-volume="0.45"></audio>
+      <audio id="sfx-41" src="assets/sfx/bowl.wav" data-start="64.78" data-duration="2.2" data-track-index="23" data-volume="0.42"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+
+        // ---------- transcript (local Whisper small, sliding windows; spelling fixed by context) ----------
+        const W = [
+          ["¿Y", 0.08], ["si", 0.22], ["el", 0.3], ["bienestar", 0.46], ["fuera", 1.0], ["el", 1.16], ["juego", 1.4], ["favorito", 1.76], ["de", 2.18], ["tu", 2.28],
+          ["hijo?", 2.6], ["¿Quién", 2.82], ["dijo", 3.1], ["que", 3.26], ["calmar", 3.48], ["la", 3.88], ["mente", 4.2], ["era", 4.48], ["quedarse", 4.7], ["quieto", 5.29],
+          ["y", 5.58], ["en", 5.72], ["silencio?", 5.96], ["En", 6.55], ["Cancún", 6.74], ["hicimos", 7.21], ["algo", 7.7], ["loco:", 7.94], ["sacamos", 8.28], ["el", 8.7],
+          ["bienestar", 8.87], ["del", 9.42], ["tapete", 9.67], ["y", 10.26], ["lo", 10.44], ["llevamos", 10.66], ["al", 11.16], ["agua.", 11.43], ["Los", 11.63], ["protagonistas:", 11.9],
+          ["los", 12.81], ["niños.", 13.1], ["Nuestra", 13.48], ["experiencia", 13.96], ["inmersiva", 14.32], ["en", 15.02], ["neurobienestar", 15.3], ["para", 16.28], ["niños", 16.62], ["en", 17.03],
+          ["Cocoa", 17.3], ["se", 17.68], ["llama", 17.92], ["Respira,", 18.31], ["Juega,", 19.02], ["Vive.", 19.72], ["No", 19.96], ["les", 20.17], ["pedimos", 20.37], ["que", 20.83],
+          ["cierren", 21.08], ["los", 21.43], ["ojos,", 21.77], ["les", 22.07], ["enseñamos", 22.41], ["a", 22.95], ["escuchar", 23.23], ["su", 23.7], ["cuerpo", 24.04], ["jugando.", 24.34],
+          ["Respiran", 25.04], ["jugando", 25.52], ["a", 25.87], ["hacer", 26.03], ["olas,", 26.32], ["se", 26.76], ["mueven", 27.02], ["para", 27.4], ["sacar", 27.64], ["la", 27.86],
+          ["energía", 28.26], ["que", 28.56], ["los", 28.72], ["pone", 29.0], ["ansiosos,", 29.28], ["exploran", 29.89], ["con", 30.26], ["sus", 30.48], ["cinco", 30.9], ["sentidos:", 31.28],
+          ["tocan,", 31.85], ["mueven,", 32.34], ["escuchan", 32.96], ["el", 33.33], ["agua.", 33.66], ["Se", 33.94], ["regulan", 34.32], ["sin", 34.96], ["darse", 35.22], ["cuenta,", 35.7],
+          ["porque", 36.15], ["cuando", 36.42], ["un", 36.65], ["niño", 36.85], ["juega", 37.16], ["con", 37.49], ["intención,", 37.76], ["su", 38.45], ["sistema", 38.9], ["nervioso", 39.17],
+          ["aprende", 39.89], ["a", 40.12], ["volver", 40.35], ["a", 40.53], ["la", 40.64], ["calma", 40.81], ["solita.", 41.22], ["En", 41.65], ["Cocoa", 41.85], ["creemos", 42.36],
+          ["esto:", 43.02], ["un", 43.24], ["niño", 43.43], ["que", 43.61], ["aprende", 43.81], ["a", 44.0], ["regular", 44.31], ["su", 44.62], ["cuerpo", 44.93], ["hoy", 45.34],
+          ["es", 45.58], ["un", 45.74], ["adulto", 46.01], ["que", 46.4], ["sabrá", 46.58], ["regular", 47.03], ["sus", 47.28], ["emociones", 47.6], ["mañana.", 48.38], ["El", 48.72],
+          ["bienestar", 48.94], ["no", 49.76], ["es", 49.96], ["aburrido:", 50.17], ["es", 50.77], ["juego,", 51.06], ["es", 51.39], ["agua,", 51.85], ["es", 52.06], ["conexión.", 52.34],
+          ["Esto", 53.24], ["fue", 53.6], ["en", 53.75], ["Cancún.", 53.92], ["Llevamos", 54.49], ["Cocoa", 55.08], ["Kids", 55.43], ["a", 55.75], ["tu", 55.86], ["ciudad,", 56.24],
+          ["a", 56.49], ["tu", 56.65], ["espacio.", 56.98], ["Comenta", 57.44], ["la", 57.82], ["palabra", 58.11], ["JUEGO", 58.59], ["y", 58.91], ["te", 59.04], ["contamos", 59.31],
+          ["cómo", 59.92], ["traer", 60.2], ["esta", 60.53], ["experiencia", 60.92], ["inmersiva", 61.22], ["de", 61.84], ["neurobienestar", 62.25], ["a", 63.17], ["tu", 63.31], ["colegio", 63.49],
+          ["o", 64.12], ["evento.", 64.34],
+        ];
+        const T = (k) => W[k][1];
+        // captions: [first, last, top(px), keyword indices, hero {index: size}]
+        const CAPS = [
+          [0, 5, 1400, [3]],
+          [6, 10, 1340, [], { 6: 120, 7: 120 }],
+          [11, 16, 1400, [14]],
+          [17, 22, 1340, [22], { 19: 130 }],
+          [23, 27, 1400, [24], { 27: 130 }],
+          [28, 32, 1420, [32]],
+          [33, 37, 1420, [37]],
+          [38, 41, 1360, [], { 41: 150 }],
+          [42, 45, 1400, [44]],
+          [46, 50, 1400, [46, 50]],
+          [56, 62, 1400, [62]],
+          [63, 69, 1400, [68, 69]],
+          [70, 74, 1480, [74]],
+          [75, 80, 1480, [80]],
+          [81, 84, 1480, [84]],
+          [85, 89, 1480, [88, 89]],
+          [90, 94, 1400, [94]],
+          [95, 99, 1400, [96]],
+          [100, 106, 1420, [104, 106]],
+          [107, 110, 1420, [108, 109]],
+          [111, 116, 1400, [], { 115: 130 }],
+          [117, 120, 1400, [118]],
+          [139, 143, 1400, [140, 143]],
+          [144, 149, 1420, [145, 147, 149]],
+          [150, 153, 1400, [153]],
+          [154, 159, 1380, [159]],
+          [160, 162, 1400, [162]],
+          [163, 166, 1420, [166]],
+          [167, 172, 1420, [171]],
+          [173, 176, 1420, [176]],
+        ];
+        // a caption that hands off to a full card ends where it begins
+        const ENDS = { 9: 17.85, 21: 43.2, 29: 62.45 };
+
+        const caps = $("#caps");
+        const groups = CAPS.map(([a, b, top, kws, hero = {}], gi) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          cap.id = "cap-" + gi;
+          cap.style.top = top + "px";
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          for (let k = a; k <= b; k++) {
+            const s = document.createElement("span");
+            s.className = "cw" + (kws.includes(k) ? " kw" : "") + (k in hero ? " hero" : "");
+            s.id = "cw-" + k;
+            s.textContent = W[k][0];
+            if (k in hero) s.style.fontSize = hero[k] + "px";
+            inner.appendChild(s);
+          }
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          return { cap, a, b, gi };
+        });
+        ["#cw-6", "#cw-7"].forEach((id) => ($(id).style.flexBasis = "auto"));
+
+        // confetti dots, sparkles and end-card bubbles (deterministic layout)
+        const CONF = ["#f7d58b", "#c58bff", "#2bb6d6", "#e6b35a", "#b9a3e3", "#ffffff"];
+        for (let i = 0; i < 18; i++) {
+          const d = document.createElement("i");
+          d.className = "cf";
+          const sz = 18 + (i % 3) * 8;
+          d.style.cssText = `position:absolute;left:${-sz / 2}px;top:${-sz / 2}px;width:${sz}px;height:${sz}px;border-radius:${i % 2 ? "50%" : "4px"};background:${CONF[i % CONF.length]}`;
+          $("#confetti").appendChild(d);
+        }
+        const SPARK = '<path d="M0 -30 C4 -4 4 -4 30 0 C4 4 4 4 0 30 C-4 4 -4 4 -30 0 C-4 -4 -4 -4 0 -30 Z" fill="FILL" />';
+        const sparks = (host, list) =>
+          list.forEach(([x, y, s, c]) => {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            el.setAttribute("class", "spark");
+            el.setAttribute("viewBox", "-32 -32 64 64");
+            el.setAttribute("aria-hidden", "true");
+            el.style.cssText = `left:${x}px;top:${y}px;width:${s}px;height:${s}px`;
+            el.innerHTML = SPARK.replace("FILL", c);
+            $(host).appendChild(el);
+          });
+        sparks("#k1 .cin", [[880, 560, 66, "#e6b35a"], [140, 640, 42, "#b9a3e3"], [900, 1240, 50, "#2bb6d6"]]);
+        sparks("#endc", [[880, 540, 80, "#f7d58b"], [130, 640, 48, "#e8defa"], [860, 1150, 56, "#f7d58b"], [170, 1220, 40, "#c58bff"]]);
+        const BB = [[80, 1700, 120], [300, 1820, 70], [520, 1750, 160], [760, 1860, 90], [920, 1720, 130], [180, 1950, 100], [640, 2000, 60], [860, 2050, 110]];
+        BB.forEach(([x, y, s], i) => {
+          const b = document.createElement("i");
+          b.className = "bb";
+          b.id = "bb-" + i;
+          b.style.cssText = `left:${x}px;top:${y}px;width:${s}px;height:${s}px`;
+          $("#bbs").appendChild(b);
+        });
+
+        // ---------- timeline ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+        gsap.set([".cap", ".emo", "#s-yawn-x", "#pin", ".bub", "#arrow", "#pillars", "#meter", "#ck", "#cbox", ".card", "#endc"], { autoAlpha: 0 });
+        gsap.set(".cw", { opacity: 0 });
+        gsap.set([".pill", "#e-cta"], { xPercent: -50 });
+        gsap.set(".pl", { autoAlpha: 0 });
+
+        // bouncy show / hide
+        const show = (sel, t, from = { scale: 0, rotation: -20 }, d = 0.55, ease = "back.out(2.6)") =>
+          tl.set(sel, { autoAlpha: 1 }, t).fromTo(sel, { ...from }, { scale: 1, x: 0, y: 0, rotation: 0, duration: d, ease }, t);
+        const hide = (sel, t, d = 0.22) => tl.to(sel, { scale: 0, rotation: 12, duration: d, ease: "back.in(2)" }, t).set(sel, { autoAlpha: 0 }, t + d);
+        const wiggle = (sel, t, n = 5, deg = 10) => tl.to(sel, { rotation: deg, duration: 0.09, ease: "sine.inOut", yoyo: true, repeat: n }, t);
+        const twinkle = (sel, t) =>
+          tl.fromTo(sel, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(3)", stagger: 0.1 }, t).to(sel, { rotation: 45, duration: 1.4, ease: "sine.inOut" }, t + 0.7);
+
+        // ---- speed / zoom ramps on the footage (full version) ----
+        const RAMPS = [8.28, 13.48, 25.04, 33.94, 48.72, 53.24];
+        RAMPS.forEach((t) => {
+          tl.to("#cam", { scale: 1.22, duration: 0.24, ease: "power3.in" }, t - 0.24).fromTo("#cam", { scale: 1.22 }, { scale: 1, duration: 0.5, ease: "expo.out", immediateRender: false }, t);
+        });
+
+        // ---- captions: bouncy word pops, solid (no fades) ----
+        groups.forEach(({ cap, a, b, gi }) => {
+          const s = T(a) - 0.06;
+          const e = ENDS[gi] ?? (gi + 1 < groups.length ? T(groups[gi + 1].a) - 0.06 : 62.45);
+          tl.set(cap, { autoAlpha: 1 }, s);
+          for (let k = a; k <= b; k++) {
+            const el = $("#cw-" + k);
+            tl.set(el, { opacity: 1 }, T(k));
+            if (el.classList.contains("hero")) tl.fromTo(el, { scale: 0.3, rotation: -8 }, { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(3)" }, T(k));
+            else if (el.classList.contains("kw")) tl.fromTo(el, { scale: 0.4, y: 14 }, { scale: 1, y: 0, duration: 0.45, ease: "back.out(3)" }, T(k));
+            else tl.fromTo(el, { scale: 0.6, y: 18 }, { scale: 1, y: 0, duration: 0.3, ease: "back.out(2.4)" }, T(k));
+          }
+          tl.set(cap, { autoAlpha: 0 }, e);
+        });
+
+        // ===== hook (0 – 6.5) =====
+        show("#s-kite", T(6) - 0.04);
+        tl.fromTo("#s-kite img", { y: 0, rotation: -6 }, { y: -26, rotation: 8, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, T(6) + 0.5);
+        hide("#s-kite", 2.75);
+        show("#s-shh", T(22) - 0.1);
+        wiggle("#s-shh", T(22) + 0.4, 3, 12);
+        hide("#s-shh", 6.5);
+
+        // ===== Cancún · del tapete al agua (6.55 – 11.9) =====
+        show("#pin", T(23) - 0.06, { y: -260, scale: 1 }, 0.7, "bounce.out");
+        hide("#pin", 11.6);
+        show("#b-mat", T(32) - 0.06, { scale: 0, rotation: -30 });
+        tl.set("#arrow", { autoAlpha: 1 }, T(35) - 0.1)
+          .fromTo("#arr-h", { opacity: 0 }, { opacity: 1, duration: 0.15 }, T(35) + 0.3)
+          .to("#arr-p", { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power2.out" }, T(35) - 0.1);
+        show("#b-agua", T(37) - 0.06, { scale: 0, rotation: 30 });
+        tl.to("#b-agua .c", { y: -14, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 1 }, T(37) + 0.5);
+        hide(["#b-mat", "#b-agua"], 11.85, 0.2);
+        tl.set("#arrow", { autoAlpha: 0 }, 11.85);
+
+        // ===== los niños: confetti + star eyes =====
+        tl.set("#confetti", { autoAlpha: 1 }, T(41));
+        document.querySelectorAll(".cf").forEach((d, i) => {
+          const ang = (i / 18) * Math.PI * 2;
+          const r = 260 + (i % 4) * 70;
+          tl.fromTo(d, { x: 0, y: 0, scale: 0, rotation: 0 }, { x: Math.cos(ang) * r, y: Math.sin(ang) * r * 0.75 - 120, scale: 1, rotation: 200 + i * 20, duration: 0.8, ease: "expo.out" }, T(41))
+            .to(d, { y: `+=${220 + (i % 3) * 60}`, opacity: 0, duration: 0.7, ease: "power1.in" }, T(41) + 0.8);
+        });
+        show("#s-star", T(41) + 0.05);
+        hide("#s-star", 13.42);
+
+        // ===== card · Respira, Juega, Vive (17.85 – 20.55) =====
+        tl.set("#k1", { autoAlpha: 1 }, 17.85)
+          .fromTo("#k1", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(80% at 50% 50%)", duration: 0.45, ease: "power3.out" }, 17.85);
+        show("#k1-a", 17.9, { y: 40, scale: 0.8 }, 0.4);
+        [T(53), T(54), T(55)].forEach((t, i) => show(`#r-${i}`, t - 0.04, { scale: 0.2, rotation: i % 2 ? 10 : -10 }, 0.55, "back.out(2.4)"));
+        twinkle("#k1 .spark", 18.4);
+        tl.to("#k1", { yPercent: -100, duration: 0.3, ease: "power3.in" }, 20.25).set("#k1", { autoAlpha: 0, yPercent: 0 }, 20.55);
+
+        // ===== ojos =====
+        show("#s-eyes", T(62) - 0.04);
+        tl.to("#s-eyes img", { x: 18, duration: 0.18, ease: "sine.inOut", yoyo: true, repeat: 3 }, T(62) + 0.5);
+        hide("#s-eyes", 24.7);
+
+        // ===== jugando: pillars (25.0 – 31.75) =====
+        tl.set("#pillars", { autoAlpha: 1 }, 24.98);
+        show("#p-label", 25.0, { x: -60, scale: 0.6 }, 0.4);
+        [T(70), T(75), T(85)].forEach((t, i) => {
+          tl.set(`#pl-${i}`, { autoAlpha: 1 }, t - 0.02).fromTo(`#pl-${i}`, { x: -860, rotation: -4 }, { x: 0, rotation: 0, duration: 0.6, ease: "back.out(1.6)" }, t - 0.02);
+          tl.fromTo(`#pl-${i} .ic`, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(3)" }, t + 0.15);
+        });
+        tl.to(["#p-label", ".pl"], { x: -900, duration: 0.3, ease: "power3.in", stagger: 0.05 }, 31.45).set("#pillars", { autoAlpha: 0 }, 31.8);
+
+        // ===== tocan · mueven · escuchan (31.85 – 33.9) =====
+        [T(90), T(91), T(92)].forEach((t, i) => show(`#c-${i}`, t - 0.04, { scale: 0, y: 120 }, 0.5, "back.out(2.6)"));
+        hide(["#c-0", "#c-1", "#c-2"], 33.7, 0.2);
+
+        // ===== calm meter (36.1 – 41.6) =====
+        show("#meter", 36.1, { scale: 0.6, y: 80 }, 0.5, "back.out(1.8)");
+        tl.to("#m-line", { attr: { "stroke-dashoffset": 0 }, duration: 0.7, ease: "power2.out" }, 36.3)
+          .fromTo("#m-line", { y: 0 }, { y: 6, duration: 0.06, ease: "none", yoyo: true, repeat: 23 }, 37.0)
+          .to("#m-line", { attr: { d: "M0 80 L50 70 L100 90 L150 70 L200 90 L250 70 L300 90 L350 70 L400 90 L450 70 L500 90 L550 70 L600 90 L650 70 L700 90 L750 70 L800 80" }, duration: 0.9, ease: "sine.inOut" }, T(112))
+          .to("#m-line", { attr: { stroke: "#2bb6d6" }, duration: 0.6, ease: "none" }, T(115));
+        tl.set("#m-calm", { opacity: 0 }, 0);
+        tl.set("#m-calm", { opacity: 1 }, T(115)).fromTo("#m-calm", { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(3)" }, T(115));
+        hide("#meter", 41.5, 0.25);
+
+        // ===== card · hoy → mañana (43.2 – 48.65) =====
+        tl.set("#k2", { autoAlpha: 1 }, 43.2)
+          .fromTo("#k2", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(80% at 50% 50%)", duration: 0.45, ease: "power3.out" }, 43.2);
+        show("#k2-a", T(121) - 0.04, { y: 40, scale: 0.8 }, 0.4);
+        show("#k2-b", T(126) - 0.04, { scale: 0.4 }, 0.5);
+        show("#k2-l", T(129) - 0.04, { scale: 0, y: 80 }, 0.55);
+        tl.fromTo("#k2-arr", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.4, ease: "expo.out" }, T(131));
+        show("#k2-r", T(132) - 0.04, { scale: 0, y: 80 }, 0.6);
+        show("#k2-c", T(135) - 0.04, { scale: 0.4, y: 30 }, 0.5);
+        tl.to("#k2", { xPercent: -100, duration: 0.3, ease: "power3.in" }, 48.4).set("#k2", { autoAlpha: 0, xPercent: 0 }, 48.7);
+
+        // ===== aburrido ✕ → juego · agua · conexión =====
+        show("#s-yawn", T(142) - 0.08);
+        tl.set("#s-yawn-x", { autoAlpha: 1 }, 50.4).to(".yx", { attr: { "stroke-dashoffset": 0 }, duration: 0.18, ease: "power2.out", stagger: 0.1 }, 50.4);
+        hide(["#s-yawn", "#s-yawn-x"], 50.85, 0.2);
+        [T(145), T(147), T(149)].forEach((t, i) => show(`#e-${i}`, t - 0.04, { scale: 0, y: 120, rotation: i % 2 ? 15 : -15 }, 0.55, "back.out(2.6)"));
+        tl.to(["#e-0 .c", "#e-1 .c", "#e-2 .c"], { y: -16, duration: 0.22, ease: "sine.inOut", yoyo: true, repeat: 1, stagger: 0.12 }, 52.6);
+        hide(["#e-0", "#e-1", "#e-2"], 53.0, 0.2);
+
+        // ===== Cancún · Cocoa Kids (53.2 – 57.3) =====
+        show("#pin", T(153) - 0.06, { y: -260, scale: 1 }, 0.7, "bounce.out");
+        hide("#pin", 57.2);
+        show("#ck", T(155) - 0.04, { scale: 2.4, rotation: 0 }, 0.6, "expo.out");
+        tl.fromTo("#ck-kids", { scale: 0, rotation: -12 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(3)", immediateRender: false }, T(156));
+        hide("#ck", 57.25, 0.22);
+
+        // ===== comenta JUEGO (57.4 – 62.45) =====
+        show("#cbox", T(163) - 0.04, { scale: 0.6, y: 120 }, 0.5, "back.out(1.8)");
+        gsap.set("#cb-txt span", { opacity: 0 });
+        $("#cb-txt").querySelectorAll("span").forEach((s, i) => {
+          tl.set(s, { opacity: 1 }, T(166) + i * 0.07).fromTo(s, { y: -30 }, { y: 0, duration: 0.25, ease: "back.out(3)" }, T(166) + i * 0.07);
+        });
+        tl.to("#cb-caret", { opacity: 0, duration: 0.01, yoyo: true, repeat: 7, repeatDelay: 0.2 }, 57.6)
+          .to("#cb-send", { scale: 0.82, duration: 0.08, ease: "power2.in", yoyo: true, repeat: 1 }, 59.08)
+          .fromTo("#cb-send", { boxShadow: "0 0 0 0px rgba(230,179,90,0.7)" }, { boxShadow: "0 0 0 30px rgba(230,179,90,0)", duration: 0.5, ease: "power2.out", immediateRender: false }, 59.12)
+          .to("#cbox", { y: -10, duration: 1.2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 59.6);
+        hide("#cbox", 62.2, 0.22);
+
+        // ===== END · motion graphics over the black tail (62.45 – 67.0) =====
+        tl.set("#endc", { autoAlpha: 1 }, 62.45)
+          .fromTo("#endc", { clipPath: "circle(0% at 50% 100%)" }, { clipPath: "circle(140% at 50% 100%)", duration: 0.5, ease: "expo.inOut" }, 62.4);
+        BB.forEach(([, , s], i) => tl.fromTo(`#bb-${i}`, { y: 0 }, { y: -2300, duration: 4.6 + (i % 3) * 0.6, ease: "none" }, 62.45 + i * 0.05));
+        // speed-ramped words: fast in, slow hold, fast out
+        tl.fromTo("#ew-0", { x: -1100 }, { x: 0, duration: 0.45, ease: "expo.out" }, T(177) - 0.1)
+          .fromTo("#ew-1", { x: 1200, scale: 1.3 }, { x: 0, scale: 1, duration: 0.5, ease: "expo.out" }, T(179) - 0.12)
+          .to("#ew-1", { x: -30, duration: 0.6, ease: "none" }, T(179) + 0.4)
+          .fromTo("#ew-2", { x: -1200, scale: 1.3 }, { x: 0, scale: 1, duration: 0.5, ease: "expo.out" }, T(180) - 0.06)
+          .to(["#ew-0", "#ew-1", "#ew-2"], { y: -1400, duration: 0.35, ease: "expo.in", stagger: 0.04 }, 64.45);
+        tl.fromTo("#e-logo", { scale: 3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: "expo.out" }, 64.75)
+          .fromTo("#e-kids", { scale: 0, rotation: -15 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(3)" }, 64.95)
+          .fromTo("#e-rjv", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "back.out(2)" }, 65.2)
+          .fromTo("#e-cta", { y: 120, scale: 0.6, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.55, ease: "back.out(2)" }, 65.5)
+          .to("#e-cta", { scale: 1.05, duration: 0.35, ease: "sine.inOut", yoyo: true, repeat: 1 }, 66.1);
+        twinkle("#endc .spark", 64.9);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      });
+    </script>
+  </body>
+</html>
