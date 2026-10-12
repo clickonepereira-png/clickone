@@ -100,6 +100,13 @@
         position: absolute;
         inset: 0;
       }
+      #veil {
+        position: absolute;
+        inset: 0;
+        background: rgba(43, 16, 82, 0.5);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+      }
 
       /* ---------- captions: solid, gentle rise ---------- */
       .cap {
@@ -248,13 +255,13 @@
       #toggle {
         position: absolute;
         left: 50%;
-        top: 1120px;
+        top: 150px;
         display: flex;
         align-items: center;
-        gap: 30px;
-        height: 150px;
-        padding: 0 30px 0 50px;
-        border-radius: 75px;
+        gap: 22px;
+        height: 108px;
+        padding: 0 20px 0 38px;
+        border-radius: 54px;
         background: var(--night);
         border: 5px solid var(--gold);
         white-space: nowrap;
@@ -262,34 +269,34 @@
       #tg-lbl {
         font-family: "Poppins", sans-serif;
         font-weight: 600;
-        font-size: 50px;
+        font-size: 36px;
         letter-spacing: 0.1em;
         color: #fff;
       }
       #tg-sw {
         position: relative;
-        width: 190px;
-        height: 96px;
-        border-radius: 48px;
+        width: 136px;
+        height: 70px;
+        border-radius: 35px;
         background: var(--gold);
       }
       #tg-knob {
         position: absolute;
-        left: 102px;
-        top: 8px;
-        width: 80px;
-        height: 80px;
+        left: 72px;
+        top: 6px;
+        width: 58px;
+        height: 58px;
         border-radius: 50%;
         background: #fff;
       }
       #tg-state {
         position: absolute;
         left: 50%;
-        top: 1300px;
+        top: 278px;
         font-family: "Playfair", serif;
         font-style: italic;
         font-weight: 700;
-        font-size: 64px;
+        font-size: 50px;
         color: #fff;
         -webkit-text-stroke: 12px var(--ink);
         paint-order: stroke fill;
@@ -446,6 +453,9 @@
       <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="59.95" data-track-index="10" data-volume="1"></audio>
 
       <div id="stage" class="clip" data-start="0" data-duration="62.4" data-track-index="1">
+        <!-- violet blur behind the boxes (full version only; in CapCut add it under the green layer) -->
+        <div id="veil" class="fullonly"></div>
+
         <!-- frequency: chaos → order (opening) -->
         <svg id="fq1" class="freq" style="top: 520px" viewBox="0 0 1080 260" aria-hidden="true">
           <path id="fq1-a" d="M-20 130 L40 40 L100 220 L160 20 L220 240 L280 50 L340 210 L400 30 L460 230 L520 60 L580 200 L640 20 L700 240 L760 40 L820 220 L880 50 L940 210 L1000 30 L1100 130" fill="none" stroke="#2b1052" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
@@ -530,7 +540,7 @@
         <!-- ===== dark card · 20 minutos (29.3 – 31.45) ===== -->
         <div id="d1" class="dcard">
           <div class="stars"></div>
-          <div class="tl lbl" id="d1-a" style="top: 560px">esto hace en tu cerebro en</div>
+          <div class="tl lbl" id="d1-a" style="top: 560px">¿qué pasa en tu cerebro en</div>
           <svg id="d1-ring" style="position: absolute; left: 290px; top: 680px; width: 500px; height: 500px; overflow: visible" viewBox="0 0 500 500" aria-hidden="true">
             <circle cx="250" cy="250" r="220" fill="none" stroke="#4b2a85" stroke-width="16" />
             <circle id="d1-p" cx="250" cy="250" r="220" fill="none" stroke="#e6b35a" stroke-width="16" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" transform="rotate(-90 250 250)" />
@@ -546,6 +556,14 @@
             <path class="d2w" d="M-40 130 C 120 30, 260 30, 400 130 S 680 230, 820 130 S 1040 30, 1120 100" fill="none" stroke="#c58bff" stroke-width="9" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
             <path class="d2w" d="M-40 170 C 140 80, 280 90, 420 170 S 700 260, 840 170 S 1040 80, 1120 140" fill="none" stroke="#e6b35a" stroke-width="5" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
           </svg>
+          <div id="d2-save" style="position: absolute; left: 0; right: 0; top: 640px; display: flex; flex-direction: column; align-items: center; gap: 36px">
+            <svg id="d2-bm" style="width: 220px; height: 260px; overflow: visible" viewBox="0 0 220 260" aria-hidden="true">
+              <path id="d2-bm-p" d="M40 20 H180 V240 L110 185 L40 240 Z" fill="none" stroke="#f7d58b" stroke-width="14" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path id="d2-bm-f" d="M40 20 H180 V240 L110 185 L40 240 Z" fill="#e6b35a" />
+            </svg>
+            <div class="serif" style="font-size: 110px; color: #fff; white-space: nowrap">Guarda</div>
+            <div class="lbl" style="font-size: 56px">este video</div>
+          </div>
           <div class="tl lbl" id="d2-a" style="top: 560px">para el día que necesites</div>
           <div class="tl serif" id="d2-b" style="top: 670px; font-size: 190px; color: #fff">volver</div>
           <div class="tl serif" id="d2-c" style="top: 905px; font-size: 190px; color: #f7d58b">a ti.</div>
@@ -569,7 +587,8 @@
       <audio id="sfx-12" src="assets/sfx/bowl-high.wav" data-start="41.26" data-duration="2.4" data-track-index="23" data-volume="0.3"></audio>
       <audio id="sfx-13" src="assets/sfx/bowl.wav" data-start="50.99" data-duration="3.2" data-track-index="24" data-volume="0.36"></audio>
       <audio id="sfx-14" src="assets/sfx/click.wav" data-start="53.6" data-duration="0.03" data-track-index="21" data-volume="0.6"></audio>
-      <audio id="sfx-15" src="assets/sfx/whoosh-soft.wav" data-start="58.2" data-duration="0.55" data-track-index="20" data-volume="0.25"></audio>
+      <audio id="sfx-15" src="assets/sfx/whoosh-soft.wav" data-start="56.9" data-duration="0.55" data-track-index="20" data-volume="0.25"></audio>
+      <audio id="sfx-17" src="assets/sfx/pop-high.wav" data-start="57.61" data-duration="0.07" data-track-index="21" data-volume="0.4"></audio>
       <audio id="sfx-16" src="assets/sfx/bowl-high.wav" data-start="59.44" data-duration="2.4" data-track-index="23" data-volume="0.4"></audio>
     </div>
 
@@ -586,7 +605,7 @@
           ["nervioso", 15.18], ["el", 15.55], ["permiso", 15.79], ["que", 16.13], ["no", 16.24], ["le", 16.38], ["has", 16.52], ["dado", 16.77], ["en", 16.98], ["meses:", 17.43],
           ["salir", 17.92], ["del", 18.33], ["modo", 18.55], ["alerta.", 18.86], ["Creamos", 19.11], ["una", 19.51], ["inmersión", 19.77], ["de", 20.12], ["neurobienestar", 20.31], ["donde", 21.19],
           ["usamos", 21.43], ["sonido", 21.96], ["con", 22.38], ["intención", 22.62], ["neurológica.", 23.14], ["No", 23.98], ["es", 24.11], ["música", 24.48], ["relajante:", 24.77], ["son", 25.59],
-          ["frecuencias", 25.76], ["precisas", 26.44], ["que", 26.94], ["tu", 27.08], ["cerebro", 27.28], ["reconoce", 27.69], ["como", 28.34], ["seguridad.", 28.9], ["Esto", 29.4], ["hace", 29.56],
+          ["frecuencias", 25.76], ["precisas", 26.44], ["que", 26.94], ["tu", 27.08], ["cerebro", 27.28], ["reconoce", 27.69], ["como", 28.34], ["seguridad.", 28.9], ["¿Qué", 29.4], ["pasa", 29.56],
           ["en", 29.76], ["tu", 29.87], ["cerebro", 30.06], ["en", 30.38], ["20", 30.55], ["minutos:", 31.17], ["Uno:", 31.5], ["baja", 31.85], ["tus", 32.11], ["ondas", 32.29],
           ["cerebrales", 32.61], ["de", 33.22], ["beta", 33.46], ["a", 33.8], ["alfa.", 34.02], ["Ahí", 34.6], ["es", 34.87], ["donde", 35.02], ["tu", 35.2], ["cerebro", 35.44],
           ["cambia", 35.98], ["de", 36.26], ["estado.", 36.51], ["Dos:", 36.88], ["activa", 37.4], ["tu", 37.68], ["nervio", 37.86], ["vago,", 38.34], ["el", 38.7], ["freno", 38.98],
@@ -628,7 +647,7 @@
           [167, 171, 1400, [171]],
         ];
         // captions that hand off to a full-frame card end where the card begins
-        const ENDS = { 2: 7.2, 12: 29.3, 25: 58.4 };
+        const ENDS = { 2: 7.2, 12: 29.3, 24: 56.95, 25: 58.4 };
 
         const caps = $("#caps");
         const groups = CAPS.map(([a, b, top, kws, hero = {}], gi) => {
@@ -695,7 +714,7 @@
 
         // ---------- timeline ----------
         const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
-        gsap.set([".cap", "#fq1", "#fq2", "#toggle", "#tg-state", "#panel", ".chip", "#mic", "#cbox", "#pin", "#save", ".bloom", ".dcard"], { autoAlpha: 0 });
+        gsap.set(["#veil", ".cap", "#fq1", "#fq2", "#toggle", "#tg-state", "#panel", ".chip", "#mic", "#cbox", "#pin", "#save", ".bloom", ".dcard"], { autoAlpha: 0 });
         gsap.set(".cw", { opacity: 0 });
         gsap.set([".pill", "#toggle", "#tg-state"], { xPercent: -50 });
 
@@ -753,9 +772,14 @@
         twinkle("#b1 .spark", 7.8);
         exhale("#b1", 9.5);
 
+        // ---- veil windows: the footage stays visible, blurred and tinted violet, while a box is up ----
+        [[18.3, 21.3], [31.4, 49.35], [52.45, 56.9]].forEach(([a, b]) => {
+          tl.to("#veil", { autoAlpha: 1, duration: 0.45, ease: "sine.out" }, a).to("#veil", { autoAlpha: 0, duration: 0.45, ease: "sine.in" }, b - 0.45);
+        });
+
         // ===== modo alerta → apagado (18.4 – 23.9) =====
         show("#toggle", T(51) - 0.1, { scale: 0.6, y: 60 }, 0.55);
-        tl.to("#tg-knob", { x: -94, duration: 0.45, ease: "back.out(2)" }, 19.0)
+        tl.to("#tg-knob", { x: -66, duration: 0.45, ease: "back.out(2)" }, 19.0)
           .to("#tg-sw", { backgroundColor: "#4b2a85", duration: 0.45, ease: "none" }, 19.0)
           .to("#tg-lbl", { color: "#b9a3e3", duration: 0.45, ease: "none" }, 19.0);
         show("#tg-state", 19.25, { scale: 0.6, y: 30 }, 0.6);
@@ -827,11 +851,17 @@
 
         // ===== guarda este video (over the black beat, 56.85 – 58.4) =====
         show("#save", T(164) - 0.04, { scale: 0.5, y: 60 }, 0.6);
-        tl.to("#save .ic", { scale: 1.15, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 1 }, 57.7);
+        tl.set("#save", { autoAlpha: 0 }, 57.05);
 
         // ===== dark card: volver a ti (58.4 – end) =====
-        inhale("#d2", 58.4, "50% 60%");
-        tl.set("#save", { autoAlpha: 0 }, 58.75);
+        // the source goes black at 57.13: the closing card opens there, on the bookmark
+        inhale("#d2", 56.95, "50% 40%");
+        gsap.set("#d2-bm-f", { opacity: 0 });
+        rise("#d2-save", 57.1, 0.6, { scale: 0.85, y: 0 });
+        tl.to("#d2-bm-p", { attr: { "stroke-dashoffset": 0 }, duration: 0.6, ease: "power2.out" }, T(165))
+          .to("#d2-bm-f", { opacity: 1, duration: 0.3, ease: "sine.out" }, T(166))
+          .fromTo("#d2-bm", { scale: 1 }, { scale: 1.12, duration: 0.18, ease: "sine.inOut", yoyo: true, repeat: 1, svgOrigin: "110 130" }, T(166) + 0.2)
+          .to("#d2-save", { y: -80, opacity: 0, duration: 0.4, ease: "power2.in" }, 58.15);
         rise("#d2-a", T(168) - 0.05, 0.6);
         rise("#d2-b", T(172), 0.9, { scale: 1.15, y: 0 });
         rise("#d2-c", T(174) - 0.1, 0.9, { scale: 1.15, y: 0 });
