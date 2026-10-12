@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Cocoa — una frecuencia que te ordena</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-normal.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-italic.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-italic.woff2") format("woff2");
+        font-weight: 500;
+        font-style: italic;
+      }
+
+      /* Cocoa line (Silencio poster): violet · gold · cream · lilac */
+      :root {
+        --violet: #3b1f6e;
+        --violet-2: #4b2a85;
+        --ink: #2b1052;
+        --night: #1d0b3d;
+        --lilac: #b9a3e3;
+        --lilac-2: #e8defa;
+        --glow: #c58bff;
+        --gold: #e6b35a;
+        --gold-2: #f7d58b;
+        --cream: #f8f1e7;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #cam,
+      html[data-mode="green"] .fullonly {
+        display: none;
+      }
+      #cam {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 45%;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      /* cinematic violet vignette (full version only) */
+      #vig {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at 50% 42%, rgba(43, 16, 82, 0) 52%, rgba(43, 16, 82, 0.5) 100%);
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions: solid, gentle rise ---------- */
+      .cap {
+        position: absolute;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: center;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 18px;
+        text-align: center;
+      }
+      .cw {
+        position: relative;
+        display: inline-block;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 60px;
+        line-height: 1.3;
+        color: #ffffff;
+        -webkit-text-stroke: 12px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      .cw.kw {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 72px;
+        color: var(--gold-2);
+      }
+      .cw.hero {
+        flex-basis: 100%;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        color: var(--gold-2);
+        line-height: 1.05;
+        -webkit-text-stroke: 16px var(--ink);
+      }
+
+      /* ---------- frequency line ---------- */
+      .freq {
+        position: absolute;
+        left: 0;
+        width: 1080px;
+        height: 260px;
+        overflow: visible;
+      }
+
+      /* ---------- bloom (breathing transition) ---------- */
+      .bloom {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 46%, #ffffff 0%, #fbf5ee 40%, #efe4f8 100%);
+      }
+      .ripple {
+        position: absolute;
+        left: 50%;
+        top: 46%;
+        border-radius: 50%;
+        border: 4px solid var(--lilac);
+      }
+
+      /* ---------- dark violet cards (this edit's signature) ---------- */
+      .dcard {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 42%, #5a35a0 0%, #3b1f6e 45%, #1d0b3d 100%);
+      }
+      .star {
+        position: absolute;
+        border-radius: 50%;
+        background: var(--lilac-2);
+      }
+      .tl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .lbl {
+        font-family: "Poppins", sans-serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 52px;
+        color: var(--lilac-2);
+      }
+      .lbl.dk {
+        color: #5b4a7d;
+      }
+      .serif {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        line-height: 1;
+      }
+      .spark {
+        position: absolute;
+        overflow: visible;
+      }
+
+      /* ---------- pills & panels ---------- */
+      .pill {
+        position: absolute;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        height: 124px;
+        padding: 0 48px 0 22px;
+        border-radius: 62px;
+        background: var(--cream);
+        border: 5px solid var(--gold);
+        white-space: nowrap;
+      }
+      .pill .ic {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        background: var(--violet);
+        display: grid;
+        place-items: center;
+      }
+      .pill .ic svg {
+        width: 50px;
+        height: 50px;
+      }
+      .pill .t {
+        font-family: "Playfair", serif;
+        font-weight: 600;
+        font-size: 54px;
+        color: var(--violet);
+      }
+      .pill .t i {
+        font-weight: 800;
+      }
+      #toggle {
+        position: absolute;
+        left: 50%;
+        top: 1120px;
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        height: 150px;
+        padding: 0 30px 0 50px;
+        border-radius: 75px;
+        background: var(--night);
+        border: 5px solid var(--gold);
+        white-space: nowrap;
+      }
+      #tg-lbl {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 50px;
+        letter-spacing: 0.1em;
+        color: #fff;
+      }
+      #tg-sw {
+        position: relative;
+        width: 190px;
+        height: 96px;
+        border-radius: 48px;
+        background: var(--gold);
+      }
+      #tg-knob {
+        position: absolute;
+        left: 102px;
+        top: 8px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #fff;
+      }
+      #tg-state {
+        position: absolute;
+        left: 50%;
+        top: 1300px;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 64px;
+        color: #fff;
+        -webkit-text-stroke: 12px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      #panel {
+        position: absolute;
+        left: 80px;
+        top: 880px;
+        width: 920px;
+        height: 460px;
+        border-radius: 52px;
+        background: linear-gradient(180deg, #4b2a85 0%, #2b1052 100%);
+        border: 5px solid var(--gold);
+        overflow: hidden;
+      }
+      .pane {
+        position: absolute;
+        inset: 0;
+      }
+      .phead {
+        position: absolute;
+        left: 46px;
+        top: 34px;
+        display: flex;
+        align-items: center;
+        gap: 26px;
+      }
+      .num {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        font-size: 120px;
+        line-height: 1;
+        color: var(--gold-2);
+      }
+      .pt {
+        font-family: "Playfair", serif;
+        font-weight: 700;
+        font-size: 62px;
+        color: #fff;
+        white-space: nowrap;
+      }
+      .pt i {
+        font-weight: 800;
+        color: var(--gold-2);
+      }
+      .wl {
+        position: absolute;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 38px;
+        letter-spacing: 0.14em;
+        color: var(--lilac-2);
+      }
+      .chip {
+        position: absolute;
+        left: 70px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        height: 110px;
+        padding: 0 44px 0 30px;
+        border-radius: 55px;
+        background: var(--cream);
+        border: 4px solid var(--lilac);
+        white-space: nowrap;
+      }
+      .chip i {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--gold);
+      }
+      .chip span {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 56px;
+        color: var(--violet);
+      }
+      #cbox {
+        position: absolute;
+        left: 80px;
+        width: 920px;
+        top: 920px;
+        height: 330px;
+        border-radius: 52px;
+        background: var(--night);
+        border: 5px solid var(--gold);
+      }
+      #cb-t {
+        position: absolute;
+        left: 50px;
+        top: 34px;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 56px;
+        color: var(--gold-2);
+      }
+      #cb-in {
+        position: absolute;
+        left: 40px;
+        right: 170px;
+        top: 150px;
+        height: 130px;
+        border-radius: 65px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 40px;
+      }
+      #cb-txt {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 70px;
+        letter-spacing: 0.1em;
+        color: var(--violet);
+      }
+      #cb-txt span {
+        display: inline-block;
+      }
+      #cb-caret {
+        display: inline-block;
+        width: 6px;
+        height: 70px;
+        margin-left: 8px;
+        background: var(--gold);
+      }
+      #cb-send {
+        position: absolute;
+        right: 36px;
+        top: 150px;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        background: var(--gold);
+        display: grid;
+        place-items: center;
+      }
+      #cb-send svg {
+        width: 64px;
+        height: 64px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="62.4" data-width="1080" data-height="1920">
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="59.95" data-track-index="0" muted playsinline></video>
+        <div id="vig" class="fullonly"></div>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="59.95" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="62.4" data-track-index="1">
+        <!-- frequency: chaos → order (opening) -->
+        <svg id="fq1" class="freq" style="top: 520px" viewBox="0 0 1080 260" aria-hidden="true">
+          <path id="fq1-a" d="M-20 130 L40 40 L100 220 L160 20 L220 240 L280 50 L340 210 L400 30 L460 230 L520 60 L580 200 L640 20 L700 240 L760 40 L820 220 L880 50 L940 210 L1000 30 L1100 130" fill="none" stroke="#2b1052" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <path id="fq1-b" d="M-20 130 L40 40 L100 220 L160 20 L220 240 L280 50 L340 210 L400 30 L460 230 L520 60 L580 200 L640 20 L700 240 L760 40 L820 220 L880 50 L940 210 L1000 30 L1100 130" fill="none" stroke="#c58bff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+        </svg>
+
+        <!-- modo alerta toggle -->
+        <div id="toggle"><span id="tg-lbl">MODO ALERTA</span><span id="tg-sw"><i id="tg-knob"></i></span></div>
+        <div id="tg-state">apagado, por fin</div>
+
+        <!-- chapters 1 · 2 · 3 -->
+        <div id="panel">
+          <div class="pane" id="p1">
+            <div class="phead"><span class="num">1</span><span class="pt">Ondas <i>cerebrales</i></span></div>
+            <span class="wl" id="w-beta" style="left: 60px; top: 210px">BETA</span>
+            <span class="wl" id="w-alfa" style="left: 60px; top: 210px; color: #f7d58b">ALFA</span>
+            <svg style="position: absolute; left: 50px; top: 260px; width: 820px; height: 150px; overflow: visible" viewBox="0 0 820 150" aria-hidden="true">
+              <path id="br" d="M0 75 L25 20 L50 130 L75 15 L100 135 L125 25 L150 125 L175 20 L200 130 L225 25 L250 125 L275 15 L300 135 L325 20 L350 130 L375 25 L400 125 L425 15 L450 135 L475 20 L500 130 L525 25 L550 125 L575 15 L600 135 L625 20 L650 130 L675 25 L700 125 L725 15 L750 135 L775 25 L820 75" fill="none" stroke="#c58bff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+            </svg>
+          </div>
+          <div class="pane" id="p2">
+            <div class="phead"><span class="num">2</span><span class="pt">Nervio <i>vago</i></span></div>
+            <svg style="position: absolute; left: 260px; top: 190px; width: 400px; height: 240px; overflow: visible" viewBox="0 0 400 240" aria-hidden="true">
+              <path d="M40 200 A 160 160 0 0 1 360 200" fill="none" stroke="#4b2a85" stroke-width="30" stroke-linecap="round" />
+              <path id="gauge-calm" d="M40 200 A 160 160 0 0 1 200 40" fill="none" stroke="#b9a3e3" stroke-width="30" stroke-linecap="round" />
+              <path id="gauge-hot" d="M200 40 A 160 160 0 0 1 360 200" fill="none" stroke="#e6b35a" stroke-width="30" stroke-linecap="round" />
+              <g id="needle"><path d="M200 200 L200 70" stroke="#ffffff" stroke-width="12" stroke-linecap="round" /><circle cx="200" cy="200" r="20" fill="#ffffff" /></g>
+            </svg>
+            <span class="wl" style="left: 160px; top: 380px">CALMA</span>
+            <span class="wl" style="right: 150px; top: 380px; color: #f7d58b">ESTRÉS</span>
+          </div>
+          <div class="pane" id="p3">
+            <div class="phead"><span class="num">3</span><span class="pt">Libera lo <i>guardado</i></span></div>
+            <svg style="position: absolute; left: 0; top: 0; width: 920px; height: 460px; overflow: visible" viewBox="0 0 920 460" aria-hidden="true">
+              <circle id="core" cx="460" cy="320" r="70" fill="none" stroke="#f7d58b" stroke-width="8" />
+              <g id="motes"></g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- symptoms -->
+        <div class="chip" id="sy-0" style="top: 880px"><i></i><span>la mente a mil</span></div>
+        <div class="chip" id="sy-1" style="top: 1020px"><i></i><span>el pecho apretado</span></div>
+        <div class="chip" id="sy-2" style="top: 1160px"><i></i><span>durmiendo mal</span></div>
+        <svg id="mic" style="position: absolute; left: 790px; top: 940px; width: 200px; height: 260px; overflow: visible" viewBox="0 0 200 260" aria-hidden="true">
+          <rect x="62" y="20" width="76" height="130" rx="38" fill="#f8f1e7" stroke="#3b1f6e" stroke-width="8" />
+          <path d="M36 110 C 36 180, 164 180, 164 110 M100 175 V230 M60 230 H140" fill="none" stroke="#f8f1e7" stroke-width="10" stroke-linecap="round" />
+          <path id="mic-x" d="M20 20 L180 240" stroke="#e6b35a" stroke-width="16" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+        </svg>
+
+        <!-- frequency: chaos → order (callback) -->
+        <svg id="fq2" class="freq" style="top: 760px" viewBox="0 0 1080 260" aria-hidden="true">
+          <path id="fq2-a" d="M-20 130 L40 40 L100 220 L160 20 L220 240 L280 50 L340 210 L400 30 L460 230 L520 60 L580 200 L640 20 L700 240 L760 40 L820 220 L880 50 L940 210 L1000 30 L1100 130" fill="none" stroke="#2b1052" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <path id="fq2-b" d="M-20 130 L40 40 L100 220 L160 20 L220 240 L280 50 L340 210 L400 30 L460 230 L520 60 L580 200 L640 20 L700 240 L760 40 L820 220 L880 50 L940 210 L1000 30 L1100 130" fill="none" stroke="#c58bff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+        </svg>
+
+        <!-- comenta PAUSA -->
+        <div id="cbox">
+          <div id="cb-t">Comenta la palabra</div>
+          <div id="cb-in"><span id="cb-txt"><span>P</span><span>A</span><span>U</span><span>S</span><span>A</span></span><i id="cb-caret"></i></div>
+          <span id="cb-send"><svg viewBox="0 0 54 54" aria-hidden="true"><path d="M8 27 L46 8 L36 46 L26 30 Z M26 30 L46 8" fill="none" stroke="#3b1f6e" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" /></svg></span>
+        </div>
+        <div id="pin" class="pill" style="top: 200px">
+          <span class="ic"><svg viewBox="0 0 50 50" aria-hidden="true"><path d="M25 46 C25 46 9 30 9 19 C9 10 16 4 25 4 C34 4 41 10 41 19 C41 30 25 46 25 46 Z" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" /><circle cx="25" cy="19" r="6" fill="none" stroke="#fff" stroke-width="4" /></svg></span>
+          <span class="t">en <i>tu ciudad</i></span>
+        </div>
+        <div id="save" class="pill" style="top: 820px">
+          <span class="ic"><svg viewBox="0 0 50 50" aria-hidden="true"><path d="M14 8 H36 V42 L25 33 L14 42 Z" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" /></svg></span>
+          <span class="t">Guarda este <i>video</i></span>
+        </div>
+
+        <div id="caps"></div>
+
+        <!-- ===== bloom · Cocoa, espacio de neurobienestar (7.2 – 9.6) ===== -->
+        <div id="b1" class="bloom">
+          <div id="ripples"></div>
+          <div class="tl lbl dk" id="b1-a" style="top: 640px">esto pasa en</div>
+          <div class="tl" id="b1-b" style="top: 780px; font-family: Playfair, serif; font-weight: 800; font-size: 230px; line-height: 1; color: #3b1f6e">Cocoa</div>
+          <div class="tl serif" id="b1-c" style="top: 1040px; font-size: 76px; color: #4b2a85">espacio de neurobienestar</div>
+        </div>
+
+        <!-- ===== dark card · 20 minutos (29.3 – 31.45) ===== -->
+        <div id="d1" class="dcard">
+          <div class="stars"></div>
+          <div class="tl lbl" id="d1-a" style="top: 560px">esto hace en tu cerebro en</div>
+          <svg id="d1-ring" style="position: absolute; left: 290px; top: 680px; width: 500px; height: 500px; overflow: visible" viewBox="0 0 500 500" aria-hidden="true">
+            <circle cx="250" cy="250" r="220" fill="none" stroke="#4b2a85" stroke-width="16" />
+            <circle id="d1-p" cx="250" cy="250" r="220" fill="none" stroke="#e6b35a" stroke-width="16" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" transform="rotate(-90 250 250)" />
+          </svg>
+          <div class="tl serif" id="d1-n" style="top: 790px; font-size: 230px; color: #fff">20</div>
+          <div class="tl lbl" id="d1-m" style="top: 1065px; font-style: normal; color: #f7d58b">minutos</div>
+        </div>
+
+        <!-- ===== dark card · volver a ti (58.4 – end) ===== -->
+        <div id="d2" class="dcard">
+          <div class="stars"></div>
+          <svg class="freq" style="top: 1450px" viewBox="0 0 1080 260" aria-hidden="true">
+            <path class="d2w" d="M-40 130 C 120 30, 260 30, 400 130 S 680 230, 820 130 S 1040 30, 1120 100" fill="none" stroke="#c58bff" stroke-width="9" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+            <path class="d2w" d="M-40 170 C 140 80, 280 90, 420 170 S 700 260, 840 170 S 1040 80, 1120 140" fill="none" stroke="#e6b35a" stroke-width="5" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          </svg>
+          <div class="tl lbl" id="d2-a" style="top: 560px">para el día que necesites</div>
+          <div class="tl serif" id="d2-b" style="top: 670px; font-size: 190px; color: #fff">volver</div>
+          <div class="tl serif" id="d2-c" style="top: 905px; font-size: 190px; color: #f7d58b">a ti.</div>
+          <div class="tl" id="d2-d" style="top: 1170px; font-family: Playfair, serif; font-weight: 800; font-size: 110px; line-height: 1; color: #fff">Cocoa</div>
+          <div class="tl lbl" id="d2-e" style="top: 1295px; font-size: 42px">espacio de neurobienestar</div>
+        </div>
+      </div>
+
+      <!-- ============ SFX (tools/make_sfx.py): cuencos as the spine, few soft accents ============ -->
+      <audio id="sfx-01" src="assets/sfx/bowl.wav" data-start="0.1" data-duration="3.2" data-track-index="22" data-volume="0.36"></audio>
+      <audio id="sfx-02" src="assets/sfx/bowl-high.wav" data-start="4.24" data-duration="2.4" data-track-index="23" data-volume="0.34"></audio>
+      <audio id="sfx-03" src="assets/sfx/whoosh-soft.wav" data-start="7.0" data-duration="0.55" data-track-index="20" data-volume="0.25"></audio>
+      <audio id="sfx-04" src="assets/sfx/bowl.wav" data-start="7.3" data-duration="3.2" data-track-index="24" data-volume="0.38"></audio>
+      <audio id="sfx-05" src="assets/sfx/click.wav" data-start="19.0" data-duration="0.03" data-track-index="21" data-volume="0.6"></audio>
+      <audio id="sfx-06" src="assets/sfx/riser.wav" data-start="27.9" data-duration="1.4" data-track-index="25" data-volume="0.18"></audio>
+      <audio id="sfx-07" src="assets/sfx/bowl-high.wav" data-start="29.3" data-duration="2.4" data-track-index="23" data-volume="0.38"></audio>
+      <audio id="sfx-08" src="assets/sfx/whoosh-soft.wav" data-start="31.3" data-duration="0.55" data-track-index="20" data-volume="0.25"></audio>
+      <audio id="sfx-09" src="assets/sfx/bowl.wav" data-start="34.02" data-duration="3.2" data-track-index="22" data-volume="0.34"></audio>
+      <audio id="sfx-10" src="assets/sfx/whoosh-soft.wav" data-start="36.7" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sfx-11" src="assets/sfx/whoosh-soft.wav" data-start="40.28" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sfx-12" src="assets/sfx/bowl-high.wav" data-start="41.26" data-duration="2.4" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="sfx-13" src="assets/sfx/bowl.wav" data-start="50.99" data-duration="3.2" data-track-index="24" data-volume="0.36"></audio>
+      <audio id="sfx-14" src="assets/sfx/click.wav" data-start="53.6" data-duration="0.03" data-track-index="21" data-volume="0.6"></audio>
+      <audio id="sfx-15" src="assets/sfx/whoosh-soft.wav" data-start="58.2" data-duration="0.55" data-track-index="20" data-volume="0.25"></audio>
+      <audio id="sfx-16" src="assets/sfx/bowl-high.wav" data-start="59.44" data-duration="2.4" data-track-index="23" data-volume="0.4"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+
+        // ---------- transcript (local Whisper small, sliding windows; spelling fixed by context) ----------
+        const W = [
+          ["Tu", 0.1], ["cerebro", 0.34], ["no", 0.96], ["necesita", 1.34], ["más", 1.7], ["silencio,", 1.92], ["necesita", 2.76], ["una", 2.92], ["frecuencia", 3.16], ["que", 3.74],
+          ["lo", 3.92], ["ordene.", 4.24], ["Y", 4.52], ["eso", 4.94], ["es", 5.24], ["exactamente", 5.92], ["lo", 6.3], ["que", 6.43], ["pasa", 6.76], ["en", 7.04],
+          ["Cocoa,", 7.3], ["espacio", 8.19], ["de", 8.43], ["neurobienestar.", 8.78], ["Cuando", 9.66], ["entras", 9.94], ["a", 10.19], ["Cocoa", 10.41], ["no", 10.87], ["vienes", 11.1],
+          ["a", 11.38], ["escuchar", 11.59], ["solamente", 12.24], ["cuencos", 12.68], ["bonitos.", 13.2], ["Vienes", 13.7], ["a", 14.01], ["darle", 14.34], ["a tu", 14.54], ["sistema", 14.9],
+          ["nervioso", 15.18], ["el", 15.55], ["permiso", 15.79], ["que", 16.13], ["no", 16.24], ["le", 16.38], ["has", 16.52], ["dado", 16.77], ["en", 16.98], ["meses:", 17.43],
+          ["salir", 17.92], ["del", 18.33], ["modo", 18.55], ["alerta.", 18.86], ["Creamos", 19.11], ["una", 19.51], ["inmersión", 19.77], ["de", 20.12], ["neurobienestar", 20.31], ["donde", 21.19],
+          ["usamos", 21.43], ["sonido", 21.96], ["con", 22.38], ["intención", 22.62], ["neurológica.", 23.14], ["No", 23.98], ["es", 24.11], ["música", 24.48], ["relajante:", 24.77], ["son", 25.59],
+          ["frecuencias", 25.76], ["precisas", 26.44], ["que", 26.94], ["tu", 27.08], ["cerebro", 27.28], ["reconoce", 27.69], ["como", 28.34], ["seguridad.", 28.9], ["Esto", 29.4], ["hace", 29.56],
+          ["en", 29.76], ["tu", 29.87], ["cerebro", 30.06], ["en", 30.38], ["20", 30.55], ["minutos:", 31.17], ["Uno:", 31.5], ["baja", 31.85], ["tus", 32.11], ["ondas", 32.29],
+          ["cerebrales", 32.61], ["de", 33.22], ["beta", 33.46], ["a", 33.8], ["alfa.", 34.02], ["Ahí", 34.6], ["es", 34.87], ["donde", 35.02], ["tu", 35.2], ["cerebro", 35.44],
+          ["cambia", 35.98], ["de", 36.26], ["estado.", 36.51], ["Dos:", 36.88], ["activa", 37.4], ["tu", 37.68], ["nervio", 37.86], ["vago,", 38.34], ["el", 38.7], ["freno", 38.98],
+          ["de", 39.2], ["emergencia", 39.46], ["de", 39.96], ["tu", 40.04], ["estrés.", 40.28], ["Tres:", 40.44], ["libera", 41.26], ["lo", 41.55], ["que", 41.72], ["el", 41.92],
+          ["cuerpo", 42.12], ["guardó.", 42.52], ["Si", 42.88], ["llevas", 43.06], ["semanas", 43.6], ["con", 43.9], ["la", 44.08], ["mente", 44.28], ["a", 44.47], ["mil,", 44.65],
+          ["con", 44.94], ["el", 45.09], ["pecho", 45.25], ["apretado", 45.56], ["y", 46.14], ["durmiendo", 46.3], ["mal,", 46.89], ["no", 47.12], ["necesitas", 47.34], ["otro", 47.96],
+          ["podcast", 48.32], ["de", 48.62], ["bienestar:", 48.78], ["necesitas", 49.31], ["una", 49.87], ["experiencia", 50.45], ["que", 50.84], ["ordene", 50.99], ["tu", 51.28], ["sistema", 51.72],
+          ["nervioso.", 52.02], ["Comenta", 52.52], ["PAUSA", 53.03], ["y", 53.5], ["te", 53.64], ["enviamos", 53.75], ["la", 54.15], ["próxima", 54.37], ["inmersión", 54.68], ["de", 55.1],
+          ["Cocoa", 55.39], ["en", 55.98], ["tu", 56.19], ["ciudad.", 56.59], ["Guarda", 56.87], ["este", 57.2], ["video", 57.61], ["para", 57.94], ["el", 58.1], ["día", 58.25],
+          ["que", 58.45], ["necesites", 58.7], ["volver", 59.44], ["a", 59.79], ["ti.", 59.89],
+        ];
+        const T = (k) => W[k][1];
+        const CAPS = [
+          [0, 5, 1400, [1, 5]],
+          [6, 11, 1400, [8, 11]],
+          [12, 19, 1400, [15]],
+          [24, 30, 1400, [27]],
+          [31, 34, 1400, [33, 34]],
+          [35, 40, 1400, [39, 40]],
+          [41, 49, 1400, [42, 49]],
+          [50, 53, 1440, [52, 53]],
+          [54, 58, 1400, [56, 58]],
+          [59, 64, 1400, [61, 63]],
+          [65, 68, 1400, [67, 68]],
+          [69, 71, 1400, [70, 71]],
+          [72, 77, 1360, [], { 77: 130 }],
+          [86, 94, 1430, [92, 94]],
+          [95, 102, 1430, [100, 102]],
+          [103, 107, 1430, [106, 107]],
+          [108, 114, 1430, [109, 114]],
+          [115, 121, 1430, [116, 121]],
+          [122, 129, 1400, [127, 129]],
+          [130, 136, 1400, [133, 136]],
+          [137, 142, 1400, [140]],
+          [143, 150, 1400, [147, 150]],
+          [151, 155, 1400, [152]],
+          [156, 163, 1400, [158, 160]],
+          [164, 166, 1400, [166]],
+          [167, 171, 1400, [171]],
+        ];
+        // captions that hand off to a full-frame card end where the card begins
+        const ENDS = { 2: 7.2, 12: 29.3, 25: 58.4 };
+
+        const caps = $("#caps");
+        const groups = CAPS.map(([a, b, top, kws, hero = {}], gi) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          cap.id = "cap-" + gi;
+          cap.style.top = top + "px";
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          for (let k = a; k <= b; k++) {
+            const s = document.createElement("span");
+            s.className = "cw" + (kws.includes(k) ? " kw" : "") + (k in hero ? " hero" : "");
+            s.id = "cw-" + k;
+            s.textContent = W[k][0];
+            if (k in hero) s.style.fontSize = hero[k] + "px";
+            inner.appendChild(s);
+          }
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          return { cap, a, b, gi };
+        });
+
+        // deterministic stars, ripples, sparks and motes
+        document.querySelectorAll(".dcard .stars").forEach((host, h) => {
+          for (let i = 0; i < 26; i++) {
+            const s = document.createElement("i");
+            s.className = "star";
+            const sz = 4 + ((i * 7 + h * 3) % 5) * 2;
+            s.style.cssText = `left:${(i * 137 + h * 61) % 1040 + 20}px;top:${(i * 263 + h * 97) % 1880 + 20}px;width:${sz}px;height:${sz}px;opacity:${0.35 + (i % 4) * 0.15}`;
+            host.appendChild(s);
+          }
+        });
+        [260, 420, 600, 800].forEach((d, i) => {
+          const r = document.createElement("i");
+          r.className = "ripple";
+          r.id = "rp-" + i;
+          r.style.cssText = `width:${d}px;height:${d}px;margin-left:${-d / 2}px;margin-top:${-d / 2}px;border-color:${i % 2 ? "#e6b35a" : "#b9a3e3"}`;
+          $("#ripples").appendChild(r);
+        });
+        const SPARK = '<path d="M0 -30 C4 -4 4 -4 30 0 C4 4 4 4 0 30 C-4 4 -4 4 -30 0 C-4 -4 -4 -4 0 -30 Z" fill="FILL" />';
+        const sparks = (host, list) =>
+          list.forEach(([x, y, s, c]) => {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            el.setAttribute("class", "spark");
+            el.setAttribute("viewBox", "-32 -32 64 64");
+            el.setAttribute("aria-hidden", "true");
+            el.style.cssText = `left:${x}px;top:${y}px;width:${s}px;height:${s}px`;
+            el.innerHTML = SPARK.replace("FILL", c);
+            $(host).appendChild(el);
+          });
+        sparks("#b1", [[880, 720, 70, "#e6b35a"], [140, 820, 42, "#b9a3e3"]]);
+        sparks("#d1", [[860, 640, 64, "#f7d58b"], [170, 1160, 42, "#e8defa"]]);
+        sparks("#d2", [[880, 660, 76, "#f7d58b"], [150, 760, 44, "#e8defa"], [820, 1080, 52, "#f7d58b"]]);
+        const motes = $("#motes");
+        for (let i = 0; i < 12; i++) {
+          const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          c.setAttribute("class", "mote");
+          c.setAttribute("cx", 460);
+          c.setAttribute("cy", 320);
+          c.setAttribute("r", 8 + (i % 3) * 4);
+          c.setAttribute("fill", i % 2 ? "#f7d58b" : "#c58bff");
+          motes.appendChild(c);
+        }
+
+        // ---------- timeline ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+        gsap.set([".cap", "#fq1", "#fq2", "#toggle", "#tg-state", "#panel", ".chip", "#mic", "#cbox", "#pin", "#save", ".bloom", ".dcard"], { autoAlpha: 0 });
+        gsap.set(".cw", { opacity: 0 });
+        gsap.set([".pill", "#toggle", "#tg-state"], { xPercent: -50 });
+
+        const rise = (sel, t, d = 0.7, from = {}) => tl.fromTo(sel, { opacity: 0, y: 30, ...from }, { opacity: 1, y: 0, scale: 1, duration: d, ease: "power3.out" }, t);
+        const show = (sel, t, from = { scale: 0.7, y: 40 }, d = 0.6, ease = "back.out(1.8)") => tl.set(sel, { autoAlpha: 1 }, t).fromTo(sel, { ...from }, { scale: 1, x: 0, y: 0, rotation: 0, duration: d, ease }, t);
+        const hide = (sel, t, d = 0.3) => tl.to(sel, { scale: 0.9, y: 20, autoAlpha: 0, duration: d, ease: "power2.in" }, t);
+        const twinkle = (sel, t) =>
+          tl.fromTo(sel, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.7, ease: "back.out(2.6)", stagger: 0.12 }, t).to(sel, { rotation: 45, duration: 1.6, ease: "sine.inOut" }, t + 0.8);
+        // emotional transitions: the frame "inhales" open and "exhales" closed
+        const inhale = (sel, t, at = "50% 46%") => tl.set(sel, { autoAlpha: 1 }, t).fromTo(sel, { clipPath: `circle(0% at ${at})` }, { clipPath: `circle(85% at ${at})`, duration: 0.8, ease: "sine.inOut" }, t);
+        const exhale = (sel, t, at = "50% 46%") => tl.to(sel, { clipPath: `circle(0% at ${at})`, duration: 0.6, ease: "sine.inOut" }, t).set(sel, { autoAlpha: 0 }, t + 0.6);
+
+        // ---- slow emotional push-ins on the footage (full version) ----
+        const PUSH = [0, 9.6, 19.1, 23.98, 31.45, 36.88, 42.88, 49.31, 52.5, 58.4];
+        PUSH.slice(0, -1).forEach((t, i) => {
+          const n = PUSH[i + 1];
+          tl.fromTo("#cam", { scale: 1 }, { scale: 1.07, duration: n - t, ease: "sine.inOut", immediateRender: i === 0 }, t);
+        });
+
+        // ---- captions: solid words, gentle rise ----
+        groups.forEach(({ cap, a, b, gi }) => {
+          const s = T(a) - 0.06;
+          const e = ENDS[gi] ?? (gi + 1 < groups.length ? T(groups[gi + 1].a) - 0.06 : 58.4);
+          tl.set(cap, { autoAlpha: 1 }, s);
+          for (let k = a; k <= b; k++) {
+            const el = $("#cw-" + k);
+            tl.set(el, { opacity: 1 }, T(k));
+            if (el.classList.contains("hero")) tl.fromTo(el, { scale: 1.25, y: 10 }, { scale: 1, y: 0, duration: 0.8, ease: "expo.out" }, T(k));
+            else if (el.classList.contains("kw")) tl.fromTo(el, { y: 22, scale: 0.92 }, { y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, T(k));
+            else tl.fromTo(el, { y: 16 }, { y: 0, duration: 0.35, ease: "power2.out" }, T(k));
+          }
+          tl.set(cap, { autoAlpha: 0 }, e);
+        });
+
+        // ===== opening: silencio → frecuencia que ordena (0.3 – 4.9) =====
+        tl.set("#fq1", { autoAlpha: 1 }, 0.3).to(["#fq1-a", "#fq1-b"], { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "power2.inOut" }, 0.3)
+          .fromTo("#fq1", { y: 0 }, { y: 8, duration: 0.07, ease: "none", yoyo: true, repeat: 25 }, 1.7);
+        const ORDER = "M-20 130 C 40 60, 100 60, 160 130 S 280 200, 340 130 S 460 60, 520 130 S 640 200, 700 130 S 820 60, 880 130 S 1000 200, 1100 130";
+        const CHAOS2 = "M-20 130 C 40 40, 100 220, 160 20 S 220 240, 280 50 S 340 210, 400 30 S 460 230, 520 60 S 580 200, 640 20 S 760 40, 1100 130";
+        // morph needs matching structures: swap to a cubic "chaos" first, then ease into order
+        tl.set(["#fq1-a", "#fq1-b"], { attr: { d: CHAOS2 } }, T(9))
+          .to(["#fq1-a", "#fq1-b"], { attr: { d: ORDER }, duration: 1.0, ease: "sine.inOut" }, T(11) - 0.2)
+          .to("#fq1-b", { attr: { stroke: "#f7d58b" }, duration: 0.6, ease: "none" }, T(11))
+          .to(["#fq1-a", "#fq1-b"], { attr: { "stroke-dashoffset": -1 }, duration: 0.7, ease: "power2.in" }, 6.3)
+          .set("#fq1", { autoAlpha: 0 }, 7.0);
+
+        // ===== bloom: Cocoa, espacio de neurobienestar (7.2 – 9.6) =====
+        inhale("#b1", 7.2);
+        rise("#b1-a", 7.25, 0.5);
+        rise("#b1-b", T(20), 0.9, { scale: 1.12, y: 0 });
+        rise("#b1-c", T(21), 0.7);
+        document.querySelectorAll(".ripple").forEach((r, i) =>
+          tl.fromTo(r, { scale: 0.4, opacity: 0 }, { scale: 1.3, opacity: 1, duration: 1.6, ease: "sine.out" }, 7.3 + i * 0.18).to(r, { opacity: 0, duration: 0.6, ease: "sine.in" }, 8.9 + i * 0.05)
+        );
+        twinkle("#b1 .spark", 7.8);
+        exhale("#b1", 9.5);
+
+        // ===== modo alerta → apagado (18.4 – 23.9) =====
+        show("#toggle", T(51) - 0.1, { scale: 0.6, y: 60 }, 0.55);
+        tl.to("#tg-knob", { x: -94, duration: 0.45, ease: "back.out(2)" }, 19.0)
+          .to("#tg-sw", { backgroundColor: "#4b2a85", duration: 0.45, ease: "none" }, 19.0)
+          .to("#tg-lbl", { color: "#b9a3e3", duration: 0.45, ease: "none" }, 19.0);
+        show("#tg-state", 19.25, { scale: 0.6, y: 30 }, 0.6);
+        hide(["#toggle", "#tg-state"], 21.0);
+
+        // ===== dark card: 20 minutos (29.3 – 31.45) =====
+        inhale("#d1", 29.3);
+        rise("#d1-a", T(78), 0.5);
+        rise("#d1-n", T(84) - 0.05, 0.8, { scale: 1.3, y: 0 });
+        rise("#d1-m", T(85) - 0.1, 0.5);
+        tl.to("#d1-p", { attr: { "stroke-dashoffset": 0 }, duration: 1.6, ease: "power1.inOut" }, 29.6);
+        twinkle("#d1 .spark", 29.8);
+        exhale("#d1", 31.2);
+
+        // ===== chapters 1 · 2 · 3 (31.45 – 42.85) =====
+        gsap.set(["#p2", "#p3", "#w-alfa"], { autoAlpha: 0 });
+        show("#panel", 31.45, { scale: 0.85, y: 80 }, 0.6);
+        rise("#p1 .num", 31.5, 0.6, { scale: 1.4, y: 0 });
+        tl.to("#br", { attr: { "stroke-dashoffset": 0 }, duration: 1.0, ease: "power2.out" }, T(89));
+        const BR_CALM = "M0 75 L25 60 L50 90 L75 60 L100 90 L125 60 L150 90 L175 60 L200 90 L225 60 L250 90 L275 60 L300 90 L325 60 L350 90 L375 60 L400 90 L425 60 L450 90 L475 60 L500 90 L525 60 L550 90 L575 60 L600 90 L625 60 L650 90 L675 60 L700 90 L725 60 L750 90 L775 60 L820 75";
+        tl.to("#br", { attr: { d: BR_CALM }, duration: 1.2, ease: "sine.inOut" }, T(92))
+          .to("#br", { attr: { stroke: "#f7d58b" }, duration: 0.8, ease: "none" }, T(94))
+          .to("#w-beta", { autoAlpha: 0, duration: 0.25 }, T(94) - 0.1)
+          .to("#w-alfa", { autoAlpha: 1, duration: 0.25 }, T(94));
+        const swap = (out, inn, t) => {
+          tl.to(out, { autoAlpha: 0, x: -120, duration: 0.25, ease: "power2.in" }, t - 0.25)
+            .set(inn, { autoAlpha: 1 }, t)
+            .fromTo(inn, { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, t);
+          rise(`${inn} .num`, t + 0.05, 0.6, { scale: 1.4, y: 0 });
+        };
+        swap("#p1", "#p2", T(103));
+        tl.fromTo("#needle", { rotation: 70, svgOrigin: "200 200" }, { rotation: 55, duration: 0.5, ease: "sine.inOut" }, T(103) + 0.2)
+          .to("#needle", { rotation: 62, duration: 0.12, ease: "none", yoyo: true, repeat: 7 }, T(106))
+          .to("#needle", { rotation: -60, duration: 1.0, ease: "back.out(1.4)" }, T(111));
+        swap("#p2", "#p3", T(115));
+        tl.fromTo("#core", { scale: 0.6, svgOrigin: "460 320" }, { scale: 1.15, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, T(115) + 0.2);
+        document.querySelectorAll(".mote").forEach((m, i) => {
+          const a = -Math.PI / 2 + ((i - 5.5) / 12) * Math.PI * 1.4;
+          tl.fromTo(m, { attr: { cx: 460, cy: 320 }, opacity: 1 }, { attr: { cx: 460 + Math.cos(a) * 380, cy: 320 + Math.sin(a) * 260 }, opacity: 0, duration: 1.3, ease: "power2.out" }, T(116) + i * 0.04);
+        });
+        hide("#panel", 42.6, 0.3);
+
+        // ===== symptoms → no otro podcast (42.88 – 49.2) =====
+        [T(127), T(132), T(135)].forEach((t, i) => show(`#sy-${i}`, t - 0.06, { x: -700, scale: 1 }, 0.7, "expo.out"));
+        tl.to("#sy-0", { x: 8, duration: 0.06, ease: "none", yoyo: true, repeat: 9 }, T(129));
+        show("#mic", T(139) - 0.04, { scale: 0.4, rotation: -15 }, 0.5);
+        tl.to("#mic-x", { attr: { "stroke-dashoffset": 0 }, duration: 0.3, ease: "power2.out" }, T(140) + 0.1);
+        hide(["#sy-0", "#sy-1", "#sy-2", "#mic"], 49.05, 0.3);
+
+        // ===== frequency callback: una experiencia que ordene (49.3 – 52.4) =====
+        tl.set("#fq2", { autoAlpha: 1 }, 49.35).to(["#fq2-a", "#fq2-b"], { attr: { "stroke-dashoffset": 0 }, duration: 1.0, ease: "power2.inOut" }, 49.35)
+          .fromTo("#fq2", { y: 0 }, { y: 8, duration: 0.07, ease: "none", yoyo: true, repeat: 7 }, 50.35)
+          .set(["#fq2-a", "#fq2-b"], { attr: { d: CHAOS2 } }, 50.9)
+          .to(["#fq2-a", "#fq2-b"], { attr: { d: ORDER }, duration: 1.0, ease: "sine.inOut" }, T(147))
+          .to("#fq2-b", { attr: { stroke: "#f7d58b" }, duration: 0.6, ease: "none" }, T(147) + 0.2)
+          .to(["#fq2-a", "#fq2-b"], { attr: { "stroke-dashoffset": -1 }, duration: 0.5, ease: "power2.in" }, 52.0)
+          .set("#fq2", { autoAlpha: 0 }, 52.5);
+
+        // ===== comenta PAUSA · en tu ciudad (52.5 – 56.8) =====
+        show("#cbox", T(151) - 0.04, { scale: 0.7, y: 120 }, 0.55);
+        gsap.set("#cb-txt span", { opacity: 0 });
+        $("#cb-txt").querySelectorAll("span").forEach((s, i) => tl.set(s, { opacity: 1 }, T(152) + i * 0.07).fromTo(s, { y: -26 }, { y: 0, duration: 0.25, ease: "back.out(3)" }, T(152) + i * 0.07));
+        tl.to("#cb-caret", { opacity: 0, duration: 0.01, yoyo: true, repeat: 7, repeatDelay: 0.2 }, 52.7)
+          .to("#cb-send", { scale: 0.82, duration: 0.08, ease: "power2.in", yoyo: true, repeat: 1 }, 53.58)
+          .fromTo("#cb-send", { boxShadow: "0 0 0 0px rgba(230,179,90,0.7)" }, { boxShadow: "0 0 0 30px rgba(230,179,90,0)", duration: 0.5, ease: "power2.out", immediateRender: false }, 53.62);
+        hide("#cbox", 56.6, 0.3);
+        show("#pin", T(161) - 0.06, { y: -200, scale: 1 }, 0.7, "bounce.out");
+        hide("#pin", 56.8, 0.25);
+
+        // ===== guarda este video (over the black beat, 56.85 – 58.4) =====
+        show("#save", T(164) - 0.04, { scale: 0.5, y: 60 }, 0.6);
+        tl.to("#save .ic", { scale: 1.15, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 1 }, 57.7);
+
+        // ===== dark card: volver a ti (58.4 – end) =====
+        inhale("#d2", 58.4, "50% 60%");
+        tl.set("#save", { autoAlpha: 0 }, 58.75);
+        rise("#d2-a", T(168) - 0.05, 0.6);
+        rise("#d2-b", T(172), 0.9, { scale: 1.15, y: 0 });
+        rise("#d2-c", T(174) - 0.1, 0.9, { scale: 1.15, y: 0 });
+        rise("#d2-d", 60.4, 0.8);
+        rise("#d2-e", 60.7, 0.6);
+        tl.to(".d2w", { attr: { "stroke-dashoffset": 0 }, duration: 1.6, ease: "power2.inOut", stagger: 0.15 }, 59.0);
+        twinkle("#d2 .spark", 59.6);
+        tl.to("#d2 .stars", { y: -40, duration: 4.0, ease: "none" }, 58.4);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      });
+    </script>
+  </body>
+</html>
