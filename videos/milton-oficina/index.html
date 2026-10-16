@@ -179,6 +179,60 @@
         inset: 0;
         background: radial-gradient(circle at 50% 42%, #16284d 0%, #0b1428 70%);
       }
+      .ch {
+        display: inline-block;
+      }
+      .hero .hicon {
+        width: 112px;
+        height: 112px;
+      }
+      #flash {
+        position: absolute;
+        inset: 0;
+        background: #fffbe6;
+      }
+      html[data-mode="green"] .fullonly {
+        display: none;
+      }
+      #lt {
+        position: absolute;
+        left: 70px;
+        top: 1170px;
+        display: flex;
+        gap: 22px;
+        align-items: stretch;
+      }
+      #lt-bar {
+        width: 12px;
+        border-radius: 6px;
+        background: var(--yellow);
+        border: 3px solid var(--ink);
+        transform-origin: 50% 0%;
+      }
+      #lt-name {
+        display: block;
+        overflow: hidden;
+        font-weight: 900;
+        font-style: italic;
+        font-size: 74px;
+        line-height: 1.05;
+        text-transform: uppercase;
+        color: #fff;
+        -webkit-text-stroke: 11px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+        padding: 6px 8px 0 4px;
+      }
+      #lt-sub {
+        display: block;
+        font-weight: 700;
+        font-size: 32px;
+        letter-spacing: 0.06em;
+        color: var(--yellow);
+        -webkit-text-stroke: 7px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
     </style>
   </head>
   <body>
@@ -189,12 +243,38 @@
       <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="57.28" data-track-index="10" data-volume="1"></audio>
 
       <div id="stage" class="clip" data-start="0" data-duration="59.6" data-track-index="1">
+        <!-- GPS route over the city shots -->
+        <svg id="route" style="position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible" viewBox="0 0 1080 1920" aria-hidden="true">
+          <path d="M140 900 C 300 760, 220 560, 420 520 S 820 600, 880 420 S 820 220, 640 210" fill="none" stroke="#0b1428" stroke-width="22" stroke-linecap="round" stroke-dasharray="4 26" opacity="0.55" />
+          <path id="r-path-i" d="M140 900 C 300 760, 220 560, 420 520 S 820 600, 880 420 S 820 220, 640 210" fill="none" stroke="#0b1428" stroke-width="22" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <path id="r-path" d="M140 900 C 300 760, 220 560, 420 520 S 820 600, 880 420 S 820 220, 640 210" fill="none" stroke="#ffd400" stroke-width="11" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <circle id="r-dot" r="18" fill="#ffffff" stroke="#0b1428" stroke-width="7" />
+          <g id="r-start"><path d="M140 900 C140 900 112 872 112 852 C112 836 125 824 140 824 C155 824 168 836 168 852 C168 872 140 900 140 900 Z" fill="#ffffff" stroke="#0b1428" stroke-width="6" /><circle cx="140" cy="852" r="9" fill="#0b1428" /></g>
+          <g id="r-end"><path d="M640 210 C640 210 600 170 600 140 C600 118 618 100 640 100 C662 100 680 118 680 140 C680 170 640 210 640 210 Z" fill="#ffd400" stroke="#0b1428" stroke-width="7" /><circle cx="640" cy="140" r="13" fill="#0b1428" /></g>
+        </svg>
+
+        <!-- pulse on the orange sign -->
+        <svg id="ring" style="position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible" viewBox="0 0 1080 1920" aria-hidden="true">
+          <rect class="rg" x="280" y="1470" width="680" height="150" rx="24" fill="none" stroke="#ffd400" stroke-width="8" />
+          <rect class="rg" x="280" y="1470" width="680" height="150" rx="24" fill="none" stroke="#ffffff" stroke-width="5" />
+          <g id="ring-arrow"><path d="M560 1100 C 590 1250, 590 1320, 610 1430 M578 1398 L610 1438 L640 1398" fill="none" stroke="#0b1428" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" /><path d="M560 1100 C 590 1250, 590 1320, 610 1430 M578 1398 L610 1438 L640 1398" fill="none" stroke="#ffd400" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" /></g>
+        </svg>
+
         <div id="heroes"></div>
         <div id="caps"></div>
 
+        <!-- lower third without a box -->
+        <div id="lt">
+          <i id="lt-bar"></i>
+          <div><span id="lt-name">El Profe Milton</span><span id="lt-sub">Ahora te atendemos presencial</span></div>
+        </div>
+
+        <div id="flash" class="fullonly"></div>
+
         <!-- end card: text only (57.28 – 59.6) -->
         <div id="endc">
-          <div id="e-wrap" style="position: absolute; left: 0; right: 0; top: 640px; display: flex; flex-direction: column; align-items: center; text-align: center">
+          <div id="e-wrap" style="position: absolute; left: 0; right: 0; top: 520px; display: flex; flex-direction: column; align-items: center; text-align: center">
+            <svg id="e-pin" class="hicon" style="width: 110px; height: 110px; margin-bottom: 20px; overflow: visible" viewBox="0 0 96 96" aria-hidden="true"><path class="ic-i" d="M48 90 C48 90 16 58 16 36 C16 18 30 6 48 6 C66 6 80 18 80 36 C80 58 48 90 48 90 Z M48 26 A10 10 0 1 1 47.9 26" fill="none" stroke="#0b1428" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" /><path class="ic-y" d="M48 90 C48 90 16 58 16 36 C16 18 30 6 48 6 C66 6 80 18 80 36 C80 58 48 90 48 90 Z M48 26 A10 10 0 1 1 47.9 26" fill="none" stroke="#ffd400" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" /></svg>
             <span class="hl" id="e-a" style="font-family: Playfair, serif; font-weight: 800; font-size: 120px; line-height: 1.05; color: #fff">El Profe Milton</span>
             <span class="hl h-small" id="e-b" style="font-size: 36px; margin-top: 18px">Asesoría y gestión jurídica de tránsito</span>
             <span class="uline" id="e-u" style="width: 300px; margin-top: 40px"></span>
@@ -217,14 +297,22 @@
       <audio id="sfx-09" src="assets/sfx/whoosh-soft.wav" data-start="26.98" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
       <audio id="sfx-10" src="assets/sfx/whoosh-soft.wav" data-start="29.98" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
       <audio id="sfx-11" src="assets/sfx/whoosh-soft.wav" data-start="32.55" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
-      <audio id="sfx-12" src="assets/sfx/whoosh-soft.wav" data-start="47.34" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
-      <audio id="sfx-13" src="assets/sfx/whoosh-soft.wav" data-start="51.38" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
-      <audio id="sfx-14" src="assets/sfx/pop.wav" data-start="52.83" data-duration="0.09" data-track-index="21" data-volume="0.22"></audio>
-      <audio id="sfx-15" src="assets/sfx/pop.wav" data-start="53.58" data-duration="0.09" data-track-index="21" data-volume="0.22"></audio>
-      <audio id="sfx-16" src="assets/sfx/pop.wav" data-start="54.68" data-duration="0.09" data-track-index="21" data-volume="0.22"></audio>
-      <audio id="sfx-17" src="assets/sfx/tick.wav" data-start="20.41" data-duration="0.03" data-track-index="22" data-volume="0.3"></audio>
-      <audio id="sfx-18" src="assets/sfx/confirm.wav" data-start="56.69" data-duration="0.5" data-track-index="23" data-volume="0.22"></audio>
-      <audio id="sfx-19" src="assets/sfx/whoosh.wav" data-start="57.2" data-duration="0.32" data-track-index="20" data-volume="0.2"></audio>
+      <audio id="sfx-12" src="assets/sfx/whoosh-soft.wav" data-start="41.22" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-13" src="assets/sfx/whoosh-soft.wav" data-start="43.52" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-14" src="assets/sfx/whoosh-soft.wav" data-start="47.34" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-15" src="assets/sfx/whoosh-soft.wav" data-start="51.38" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-16" src="assets/sfx/pop.wav" data-start="52.83" data-duration="0.09" data-track-index="21" data-volume="0.22"></audio>
+      <audio id="sfx-17" src="assets/sfx/pop.wav" data-start="53.58" data-duration="0.09" data-track-index="21" data-volume="0.22"></audio>
+      <audio id="sfx-18" src="assets/sfx/pop.wav" data-start="54.68" data-duration="0.09" data-track-index="21" data-volume="0.22"></audio>
+      <audio id="sfx-19" src="assets/sfx/tick.wav" data-start="14.39" data-duration="0.03" data-track-index="22" data-volume="0.28"></audio>
+      <audio id="sfx-20" src="assets/sfx/tick.wav" data-start="17.27" data-duration="0.03" data-track-index="22" data-volume="0.28"></audio>
+      <audio id="sfx-21" src="assets/sfx/tick.wav" data-start="20.46" data-duration="0.03" data-track-index="22" data-volume="0.28"></audio>
+      <audio id="sfx-22" src="assets/sfx/tick.wav" data-start="23.68" data-duration="0.03" data-track-index="22" data-volume="0.28"></audio>
+      <audio id="sfx-23" src="assets/sfx/confirm.wav" data-start="8.79" data-duration="0.5" data-track-index="23" data-volume="0.2"></audio>
+      <audio id="sfx-24" src="assets/sfx/pop-high.wav" data-start="26.29" data-duration="0.07" data-track-index="24" data-volume="0.22"></audio>
+      <audio id="sfx-25" src="assets/sfx/confirm.wav" data-start="56.69" data-duration="0.5" data-track-index="23" data-volume="0.22"></audio>
+      <audio id="sfx-26" src="assets/sfx/whoosh.wav" data-start="57.2" data-duration="0.32" data-track-index="20" data-volume="0.2"></audio>
+      <audio id="sfx-27" src="assets/sfx/pop.wav" data-start="34.0" data-duration="0.09" data-track-index="21" data-volume="0.18"></audio>
     </div>
 
     <script>
@@ -251,33 +339,58 @@
         ];
         const T = (k) => W[k][1];
 
-        // ---------- hero moments: one strong idea at a time (big italic, serif accent, small label) ----------
-        // lines: [word index where it lands, style, text, optional font-size]
+        // ---------- hero moments: one strong idea at a time ----------
+        // lines: [word index where it lands, style, text, optional size, optional color]
+        // icon: line icon drawn on above the hero · frame: corner brackets · burst: emphasis rays · flash: light hit (full only)
         const HEROES = [
-          { a: 3, b: 5, top: 1170, fx: "pop", lines: [[3, "big", "Indemnización"], [4, "serif", "del SOAT"]] },
-          { a: 9, b: 11, top: 1170, fx: "slideL", lines: [[9, "big", "Eliminación"], [10, "serif", "de multas"]] },
-          { a: 24, b: 24, top: 1140, fx: "stretch", uline: true, lines: [[24, "small", "ahora también"], [24, "big", "Presencial"]] },
-          { a: 27, b: 30, top: 1170, fx: "rise", lines: [[27, "big", "La forma"], [29, "serif", "más fácil"]] },
-          { a: 43, b: 50, top: 1080, fx: "pop", icon: "pin", lines: [[43, "big", "El Lago"], [47, "serif", "esquina donde está Frisby"]] },
-          { a: 56, b: 57, top: 1170, fx: "slideR", uline: true, lines: [[56, "big", "La Séptima"]] },
-          { a: 66, b: 67, top: 1170, fx: "pop", lines: [[66, "big", "2 cuadras", 150]] },
-          { a: 74, b: 76, top: 1080, fx: "slideL", icon: "left", lines: [[74, "serif", "a mano"], [76, "big", "izquierda"]] },
-          { a: 89, b: 91, top: 800, fx: "stretch", lines: [[89, "big", "Cerámicas"], [90, "serif", "del Eje"]] },
-          { a: 98, b: 101, top: 1150, fx: "rise", lines: [[98, "big", "2.º piso"], [100, "serif", "oficina 202"]] },
-          { a: 104, b: 107, top: 1160, fx: "pop", uline: true, lines: [[104, "small", "la oficina del"], [106, "big", "Profe Milton"]] },
-          { a: 146, b: 150, top: 1170, fx: "slideR", lines: [[146, "big", "Eliminación"], [147, "serif", "de multas de tránsito"]] },
-          { a: 156, b: 157, top: 1170, fx: "pop", lines: [[156, "big", "Para ustedes"]] },
-          { a: 160, b: 168, top: 1000, fx: "stack", end: 56.6, lines: [[160, "big", "Escucharlos", 104], [161, "big", "Asesorarlos", 104], [163, "big", "Acompañarlos", 104], [165, "serif", "en cada proceso de tránsito"]] },
-          { a: 169, b: 169, top: 1150, fx: "pop", end: 57.28, lines: [[169, "big", "¡Bienvenidos!", 120, "#ffd400"]] },
+          { a: 3, b: 5, top: 1150, fx: "pop", icon: "shield", frame: true, lines: [[3, "big", "Indemnización"], [4, "serif", "del SOAT"]] },
+          { a: 9, b: 11, top: 1150, fx: "slideL", icon: "doc", frame: true, lines: [[9, "big", "Eliminación"], [10, "serif", "de multas"]] },
+          { a: 24, b: 24, top: 1120, fx: "stretch", icon: "check", burst: true, flash: true, uline: true, lines: [[24, "small", "ahora también"], [24, "big", "Presencial"]] },
+          { a: 27, b: 30, top: 1150, fx: "rise", frame: true, lines: [[27, "big", "La forma"], [29, "serif", "más fácil"]] },
+          { a: 43, b: 50, top: 1060, fx: "pop", icon: "pin", flash: true, lines: [[43, "big", "El Lago"], [47, "serif", "esquina donde está Frisby"]] },
+          { a: 56, b: 57, top: 1150, fx: "slideR", uline: true, lines: [[56, "big", "La Séptima"]] },
+          { a: 66, b: 67, top: 1150, fx: "pop", burst: true, lines: [[66, "big", "2 cuadras", 150]] },
+          { a: 74, b: 76, top: 1060, fx: "slideL", icon: "left", lines: [[74, "serif", "a mano"], [76, "big", "izquierda"]] },
+          { a: 89, b: 91, top: 760, fx: "stretch", icon: "building", lines: [[89, "big", "Cerámicas"], [90, "serif", "del Eje"]] },
+          { a: 98, b: 101, top: 1120, fx: "rise", icon: "stairs", frame: true, lines: [[98, "big", "2.º piso"], [100, "serif", "oficina 202"]] },
+          { a: 104, b: 107, top: 1150, fx: "pop", burst: true, flash: true, uline: true, lines: [[104, "small", "la oficina del"], [106, "big", "Profe Milton"]] },
+          { a: 130, b: 135, top: 1100, fx: "slideR", icon: "scale", lines: [[130, "small", "01 · acompañamiento"], [132, "big", "Procesos legales"], [134, "serif", "de tránsito"]] },
+          { a: 136, b: 145, top: 1100, fx: "slideL", icon: "shield", lines: [[136, "small", "02 · solicitud de"], [138, "big", "Indemnización"], [140, "serif", "por incapacidad permanente"]] },
+          { a: 146, b: 150, top: 1100, fx: "slideR", icon: "doc", lines: [[146, "small", "03"], [146, "big", "Eliminación"], [147, "serif", "de multas de tránsito"]] },
+          { a: 156, b: 157, top: 1150, fx: "pop", frame: true, lines: [[156, "big", "Para ustedes"]] },
+          { a: 160, b: 168, top: 980, fx: "stack", end: 56.6, lines: [[160, "big", "Escucharlos", 104], [161, "big", "Asesorarlos", 104], [163, "big", "Acompañarlos", 104], [165, "serif", "en cada proceso de tránsito"]] },
+          { a: 169, b: 169, top: 1150, fx: "pop", burst: true, flash: true, end: 57.28, lines: [[169, "big", "¡Bienvenidos!", 120, "#ffd400"]] },
         ];
-        const ICONS = {
-          pin: '<svg class="hicon" viewBox="0 0 96 96" aria-hidden="true"><path d="M48 90 C48 90 16 58 16 36 C16 18 30 6 48 6 C66 6 80 18 80 36 C80 58 48 90 48 90 Z" fill="#ffd400" stroke="#0b1428" stroke-width="7" stroke-linejoin="round" /><circle cx="48" cy="36" r="12" fill="#0b1428" /></svg>',
-          left: '<svg class="hicon" viewBox="0 0 96 96" aria-hidden="true"><path d="M70 84 V46 C70 36 62 28 52 28 H22 M40 10 L22 28 L40 46" fill="none" stroke="#0b1428" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" /><path d="M70 84 V46 C70 36 62 28 52 28 H22 M40 10 L22 28 L40 46" fill="none" stroke="#ffd400" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" /></svg>',
+        // line icons (96×96), drawn on as an ink outline + yellow stroke
+        const ICON_D = {
+          shield: "M48 8 L80 20 V46 C80 68 64 82 48 90 C32 82 16 68 16 46 V20 Z M48 34 V62 M34 48 H62",
+          doc: "M24 10 H62 L74 22 V86 H24 Z M34 40 H62 M34 54 H58 M52 66 L68 82 M68 66 L52 82",
+          check: "M48 8 A40 40 0 1 1 47.9 8 M28 50 L42 64 L68 36",
+          scale: "M48 14 V84 M28 84 H68 M16 26 H80 M16 26 L6 52 H26 Z M80 26 L70 52 H90 Z",
+          pin: "M48 90 C48 90 16 58 16 36 C16 18 30 6 48 6 C66 6 80 18 80 36 C80 58 48 90 48 90 Z M48 26 A10 10 0 1 1 47.9 26",
+          left: "M70 86 V46 C70 36 62 28 52 28 H20 M38 10 L20 28 L38 46",
+          stairs: "M8 86 H30 V66 H50 V46 H70 V26 H90",
+          building: "M20 88 V20 H60 V88 M60 40 H82 V88 M10 88 H90 M32 34 H48 M32 50 H48 M32 66 H48 M68 56 H74 M68 70 H74",
         };
+        const iconSVG = (k) =>
+          `<svg class="hicon" viewBox="0 0 96 96" aria-hidden="true"><path class="ic-i" d="${ICON_D[k]}" fill="none" stroke="#0b1428" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" /><path class="ic-y" d="${ICON_D[k]}" fill="none" stroke="#ffd400" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" /></svg>`;
         // base subtitle keywords (yellow)
-        const KW = [8, 16, 62, 86, 111, 116, 121, 128, 130, 138, 144];
+        const KW = [8, 16, 62, 86, 111, 116, 121, 128];
         const inHero = (k) => HEROES.some((h) => k >= h.a && k <= h.b);
+        const NS = "http://www.w3.org/2000/svg";
 
+        // split a few titles into letters for the cascade
+        ["#lt-name", "#e-a"].forEach((sel) => {
+          const el = $(sel);
+          const txt = el.textContent;
+          el.textContent = "";
+          [...txt].forEach((c) => {
+            const ch = document.createElement("span");
+            ch.className = "ch";
+            ch.textContent = c === " " ? "\u00a0" : c;
+            el.appendChild(ch);
+          });
+        });
         // ---------- build heroes ----------
         const hostH = $("#heroes");
         HEROES.forEach((h, hi) => {
@@ -285,14 +398,20 @@
           el.className = "hero";
           el.id = "hero-" + hi;
           el.style.top = h.top + "px";
-          if (h.icon) el.insertAdjacentHTML("beforeend", ICONS[h.icon]);
+          if (h.icon) el.insertAdjacentHTML("beforeend", iconSVG(h.icon));
           h.lines.forEach(([k, st, txt, size, color], li) => {
             const s = document.createElement("span");
             s.className = "hl h-" + st;
             s.id = `hl-${hi}-${li}`;
-            s.textContent = txt;
             if (size) s.style.fontSize = size + "px";
             if (color) s.style.color = color;
+            if (st === "big") [...txt].forEach((c) => {
+              const ch = document.createElement("span");
+              ch.className = "ch";
+              ch.textContent = c === " " ? "\u00a0" : c;
+              s.appendChild(ch);
+            });
+            else s.textContent = txt;
             el.appendChild(s);
           });
           if (h.uline) el.insertAdjacentHTML("beforeend", '<span class="uline"></span>');
@@ -300,8 +419,34 @@
           // keep every line inside the frame
           el.querySelectorAll(".hl").forEach((s) => {
             const w = s.getBoundingClientRect().width;
-            if (w > 980) s.style.fontSize = parseFloat(getComputedStyle(s).fontSize) * (980 / w) + "px";
+            if (w > 960) s.style.fontSize = parseFloat(getComputedStyle(s).fontSize) * (960 / w) + "px";
           });
+          // corner brackets / emphasis rays sized to the big line
+          const big = el.querySelector(".h-big");
+          if (big && (h.frame || h.burst)) {
+            const er = el.getBoundingClientRect(), br = big.getBoundingClientRect();
+            const x0 = br.left - er.left - 34, y0 = br.top - er.top - 22, x1 = br.right - er.left + 34, y1 = br.bottom - er.top + 18;
+            const svg = document.createElementNS(NS, "svg");
+            svg.setAttribute("class", h.frame ? "frame" : "burst");
+            svg.setAttribute("aria-hidden", "true");
+            svg.style.cssText = "position:absolute;left:0;top:0;width:1080px;height:420px;overflow:visible";
+            const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+            let d = "";
+            if (h.frame) {
+              const L = 46;
+              d = `M${x0} ${y0 + L} V${y0} H${x0 + L} M${x1 - L} ${y0} H${x1} V${y0 + L} M${x1} ${y1 - L} V${y1} H${x1 - L} M${x0 + L} ${y1} H${x0} V${y1 - L}`;
+            } else {
+              const rx = (x1 - x0) / 2 + 40, ry = (y1 - y0) / 2 + 40;
+              for (let i = 0; i < 12; i++) {
+                const a = (i / 12) * Math.PI * 2 + 0.26;
+                const c = Math.cos(a), s = Math.sin(a);
+                d += `M${(cx + c * rx).toFixed(1)} ${(cy + s * ry).toFixed(1)} L${(cx + c * (rx + 60)).toFixed(1)} ${(cy + s * (ry + 44)).toFixed(1)} `;
+              }
+            }
+            svg.innerHTML = `<path d="${d}" fill="none" stroke="#0b1428" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" /><path d="${d}" fill="none" stroke="#ffd400" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />`;
+            svg.style.transformOrigin = `${cx}px ${cy}px`;
+            el.appendChild(svg);
+          }
         });
 
         // ---------- base subtitles: words outside the heroes, up to 4 per line, break on punctuation / pauses ----------
@@ -320,6 +465,8 @@
           const cap = document.createElement("div");
           cap.className = "cap";
           cap.id = "cap-" + gi;
+          // the orange "Cerámicas del Eje" sign sits low in frame (25.4 – 28.3): lift those lines above it
+          if (g[0] >= 80 && g[0] <= 88) cap.style.top = "1180px";
           const inner = document.createElement("div");
           inner.className = "inner";
           g.forEach((k) => {
@@ -336,13 +483,12 @@
 
         // ---------- timeline ----------
         const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
-        gsap.set([".cap", ".hero", "#endc"], { autoAlpha: 0 });
+        gsap.set([".cap", ".hero", "#endc", "#route", "#ring", "#lt", "#flash"], { autoAlpha: 0 });
         gsap.set([".cw", ".hl"], { opacity: 0 });
 
-        // gentle punch-ins on the talking parts (full version)
+        // punch-ins that land with the hero words (full version)
         [[0, 1.0], [6.78, 1.08], [10.0, 1.0], [33.84, 1.0], [38.26, 1.08], [43.64, 1.0], [49.62, 1.08], [52.3, 1.0], [56.69, 1.1]].forEach(([t, s]) => tl.set("#cam", { scale: s }, t));
 
-        // next on-screen event after word k (start of the next base group or hero)
         const starts = [...groups.map((g) => T(g[0])), ...HEROES.map((h) => T(h.a))].sort((x, y) => x - y);
         const nextAfter = (t) => starts.find((s) => s > t + 0.01) ?? 57.28;
 
@@ -351,42 +497,93 @@
           const last = T(g[g.length - 1]);
           const e = Math.min(nextAfter(T(g[0])) - 0.04, last + 1.6);
           tl.set(`#cap-${gi}`, { autoAlpha: 1 }, s);
-          g.forEach((k) => tl.set(`#cw-${k}`, { opacity: 1 }, T(k)).fromTo(`#cw-${k}`, { y: 10, scale: 0.92 }, { y: 0, scale: 1, duration: 0.22, ease: "power3.out" }, T(k)));
+          g.forEach((k) => tl.set(`#cw-${k}`, { opacity: 1 }, T(k)).fromTo(`#cw-${k}`, { y: 12, scale: 0.9 }, { y: 0, scale: 1, duration: 0.24, ease: "back.out(2.2)" }, T(k)));
           tl.set(`#cap-${gi}`, { autoAlpha: 0 }, e);
         });
 
         const FX = {
-          pop: [{ scale: 1.5 }, { scale: 1, duration: 0.45, ease: "expo.out" }],
-          slideL: [{ x: -520 }, { x: 0, duration: 0.5, ease: "expo.out" }],
-          slideR: [{ x: 520 }, { x: 0, duration: 0.5, ease: "expo.out" }],
-          rise: [{ y: 70 }, { y: 0, duration: 0.45, ease: "expo.out" }],
-          stretch: [{ scaleX: 0.25, scaleY: 1.35 }, { scaleX: 1, scaleY: 1, duration: 0.5, ease: "back.out(1.8)" }],
-          stack: [{ y: 40, scale: 0.8 }, { y: 0, scale: 1, duration: 0.4, ease: "back.out(2.4)" }],
+          pop: [{ scale: 1.35 }, { scale: 1, duration: 0.5, ease: "expo.out" }],
+          slideL: [{ x: -380 }, { x: 0, duration: 0.55, ease: "expo.out" }],
+          slideR: [{ x: 380 }, { x: 0, duration: 0.55, ease: "expo.out" }],
+          rise: [{ y: 70 }, { y: 0, duration: 0.5, ease: "expo.out" }],
+          stretch: [{ scaleX: 0.3, scaleY: 1.3 }, { scaleX: 1, scaleY: 1, duration: 0.55, ease: "back.out(1.8)" }],
+          stack: [{ y: 40, scale: 0.8 }, { y: 0, scale: 1, duration: 0.45, ease: "back.out(2.4)" }],
         };
+        const flashAt = [];
         HEROES.forEach((h, hi) => {
           const s = T(h.a) - 0.05;
           const e = h.end ?? (h.b + 1 < W.length ? T(h.b + 1) - 0.04 : 57.28);
-          tl.set(`#hero-${hi}`, { autoAlpha: 1 }, s);
-          h.lines.forEach(([k], li) => {
+          const H = `#hero-${hi}`;
+          tl.set(H, { autoAlpha: 1 }, s);
+          h.lines.forEach(([k, st], li) => {
             const [from, to] = FX[h.fx];
             const sel = `#hl-${hi}-${li}`;
             const t = T(k) + (li && h.lines[li - 1][0] === k ? 0.08 : 0);
             tl.set(sel, { opacity: 1 }, t).fromTo(sel, { ...from }, { ...to }, t);
+            // big words: letters cascade in with a small skew
+            if (st === "big") tl.fromTo(`${sel} .ch`, { yPercent: 60, rotation: 10, opacity: 0 }, { yPercent: 0, rotation: 0, opacity: 1, duration: 0.42, ease: "back.out(2)", stagger: 0.022 }, t);
           });
-          if (h.uline) tl.fromTo(`#hero-${hi} .uline`, { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "expo.out" }, T(h.lines[h.lines.length - 1][0]) + 0.15);
-          if (h.icon === "pin") tl.fromTo(`#hero-${hi} .hicon`, { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "bounce.out" }, T(h.a));
-          if (h.icon === "left") tl.fromTo(`#hero-${hi} .hicon`, { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "expo.out" }, T(h.a)).to(`#hero-${hi} .hicon`, { x: -18, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 3 }, T(h.a) + 0.45);
-          tl.set(`#hero-${hi}`, { autoAlpha: 0 }, e);
+          // drawn line icon
+          if (h.icon) {
+            tl.fromTo(`${H} .hicon`, { scale: 0.6, y: 20 }, { scale: 1, y: 0, duration: 0.5, ease: "back.out(2.4)" }, s)
+              .to([`${H} .ic-i`, `${H} .ic-y`], { attr: { "stroke-dashoffset": 0 }, duration: 0.7, ease: "power2.inOut" }, s + 0.05);
+            if (h.icon === "left") tl.to(`${H} .hicon`, { x: -18, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 3 }, s + 0.8);
+            if (h.icon === "pin") tl.fromTo(`${H} .hicon`, { y: -140 }, { y: 0, duration: 0.7, ease: "bounce.out", immediateRender: false }, s);
+          }
+          if (h.frame) tl.fromTo(`${H} .frame`, { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, s + 0.12)
+            .to(`${H} .frame`, { scale: 1.04, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, s + 0.7);
+          if (h.burst) tl.fromTo(`${H} .burst`, { scale: 0.55, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "expo.out" }, s + 0.08)
+            .to(`${H} .burst`, { scale: 1.18, opacity: 0, duration: 0.45, ease: "power2.in" }, s + 0.5);
+          if (h.uline) tl.fromTo(`${H} .uline`, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "expo.out" }, T(h.lines[h.lines.length - 1][0]) + 0.18);
+          if (h.flash) flashAt.push(s);
+          tl.set(H, { autoAlpha: 0 }, e);
         });
+        // light hit on the biggest moments (full version only)
+        flashAt.forEach((t) => tl.set("#flash", { autoAlpha: 1 }, t).fromTo("#flash", { opacity: 0.55 }, { opacity: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, t).set("#flash", { autoAlpha: 0 }, t + 0.36));
+
+        // ===== GPS route drawn over the city shots (13.3 – 24.6) =====
+        const rp = $("#r-path"), rpi = $("#r-path-i"), dot = $("#r-dot");
+        const len = rp.getTotalLength();
+        const at = (f) => rp.getPointAtLength(len * f);
+        tl.set("#route", { autoAlpha: 1 }, 13.3);
+        tl.fromTo("#r-start", { scale: 0, transformOrigin: "50% 100%" }, { scale: 1, duration: 0.6, ease: "back.out(2.6)" }, T(43));
+        // progress along the route with the directions: lago → séptima → 2 cuadras → izquierda
+        [[T(43), 0.0, 0.22], [T(56), 0.22, 0.55], [T(66), 0.55, 0.84], [T(76), 0.84, 1.0]].forEach(([t, f0, f1]) => {
+          const steps = 16, dur = 1.2;
+          tl.to([rp, rpi], { attr: { "stroke-dashoffset": 1 - f1 }, duration: dur, ease: "power1.inOut" }, t);
+          const kf = [];
+          for (let i = 1; i <= steps; i++) {
+            const p = at(f0 + ((f1 - f0) * i) / steps);
+            kf.push({ attr: { cx: p.x, cy: p.y }, duration: dur / steps, ease: "none" });
+          }
+          tl.to(dot, { keyframes: kf }, t);
+        });
+        gsap.set(dot, { attr: { cx: at(0).x, cy: at(0).y } });
+        tl.fromTo("#r-end", { scale: 0, y: -60, transformOrigin: "50% 100%" }, { scale: 1, y: 0, duration: 0.7, ease: "bounce.out" }, T(76) + 1.1)
+          .to("#route", { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 24.5);
+
+        // ===== pulse on the orange sign (26.3 – 28.3) =====
+        tl.set("#ring", { autoAlpha: 1 }, T(86) - 0.05);
+        document.querySelectorAll(".rg").forEach((r, i) => tl.fromTo(r, { scale: 0.9, opacity: 1, svgOrigin: "620 1545" }, { scale: 1.25, opacity: 0, duration: 1.1, ease: "power2.out", repeat: 1, svgOrigin: "620 1545" }, T(86) + i * 0.3));
+        tl.to("#ring-arrow path", { attr: { "stroke-dashoffset": 0 }, duration: 0.45, ease: "power2.out" }, T(89) + 0.1).set("#ring", { autoAlpha: 0 }, 28.3);
+
+        // ===== lower third, no box (34.0 – 38.2) =====
+        tl.set("#lt", { autoAlpha: 1 }, 34.0)
+          .fromTo("#lt-bar", { scaleY: 0 }, { scaleY: 1, duration: 0.45, ease: "expo.out" }, 34.0)
+          .fromTo("#lt-name .ch", { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: "expo.out", stagger: 0.02 }, 34.12)
+          .fromTo("#lt-sub", { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 34.45)
+          .to("#lt", { x: -60, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 37.95);
 
         // ===== end card (57.28 – 59.6) =====
         tl.set("#endc", { autoAlpha: 1 }, 57.28)
           .fromTo("#endc", { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.45, ease: "expo.inOut" }, 57.22)
           .set(["#e-a", "#e-b", "#e-c", "#e-c2", "#e-d"], { opacity: 1 }, 57.4)
-          .fromTo("#e-a", { y: 50 }, { y: 0, duration: 0.6, ease: "expo.out" }, 57.4)
-          .fromTo("#e-b", { y: 30 }, { y: 0, duration: 0.5, ease: "expo.out" }, 57.55)
+          .fromTo("#e-a .ch", { yPercent: 80, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.5, ease: "expo.out", stagger: 0.025 }, 57.4)
+          .fromTo("#e-b", { y: 30 }, { y: 0, duration: 0.5, ease: "expo.out" }, 57.6)
           .fromTo("#e-u", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 57.7)
-          .fromTo(["#e-c", "#e-c2", "#e-d"], { y: 30 }, { y: 0, duration: 0.5, ease: "expo.out", stagger: 0.12 }, 57.85);
+          .fromTo(["#e-c", "#e-c2", "#e-d"], { y: 30 }, { y: 0, duration: 0.5, ease: "expo.out", stagger: 0.12 }, 57.85)
+          .to(["#e-pin .ic-i", "#e-pin .ic-y"], { attr: { "stroke-dashoffset": 0 }, duration: 0.7, ease: "power2.inOut" }, 57.8)
+          .fromTo("#e-pin", { y: -80 }, { y: 0, duration: 0.7, ease: "bounce.out" }, 57.75);
         gsap.set(["#e-a", "#e-b", "#e-c", "#e-c2", "#e-d"], { opacity: 0 });
 
         window.__timelines["main"] = tl;
