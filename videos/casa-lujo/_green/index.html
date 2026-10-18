@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="es" data-mode="green">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Villa de Acapulco — propiedad en venta</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Tinos = metric clone of Times New Roman (OFL) */
+      @font-face {
+        font-family: "Times Lux";
+        src: url("assets/fonts/tinos-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Times Lux";
+        src: url("assets/fonts/tinos-latin-400-italic.woff2") format("woff2");
+        font-weight: 400;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Times Lux";
+        src: url("assets/fonts/tinos-latin-700-normal.woff2") format("woff2");
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-300-normal.woff2") format("woff2");
+        font-weight: 300;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      /* premium real-estate line: black · ivory · champagne gold */
+      :root {
+        --gold: #c9a96e;
+        --gold-2: #e6cf9f;
+        --ivory: #f5f1ea;
+        --ink: #0d0c0a;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #cam,
+      html[data-mode="green"] .fullonly {
+        display: none;
+      }
+      #cam {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      /* soft cinematic grade at the edges so white type reads (full version only) */
+      #vig {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0) 22%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.42) 100%);
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+      .shade {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1150px;
+      }
+      #shadeL {
+        left: 0;
+        background: linear-gradient(90deg, rgba(8, 7, 5, 0.62) 0%, rgba(8, 7, 5, 0.38) 45%, rgba(8, 7, 5, 0) 100%);
+      }
+      #shadeR {
+        right: 0;
+        background: linear-gradient(270deg, rgba(8, 7, 5, 0.62) 0%, rgba(8, 7, 5, 0.38) 45%, rgba(8, 7, 5, 0) 100%);
+      }
+      #shadeC {
+        inset: 0;
+        width: auto;
+        background: radial-gradient(ellipse at 50% 48%, rgba(8, 7, 5, 0.55) 0%, rgba(8, 7, 5, 0.15) 60%, rgba(8, 7, 5, 0) 100%);
+      }
+
+      /* ---------- captions: small and quiet ---------- */
+      .cap {
+        position: absolute;
+        left: 360px;
+        right: 360px;
+        top: 968px;
+        display: flex;
+        justify-content: center;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        column-gap: 10px;
+      }
+      .cw {
+        display: inline-block;
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-size: 34px;
+        line-height: 1.3;
+        color: #fff;
+        white-space: nowrap;
+      }
+      html[data-mode="full"] .cw,
+      html[data-mode="full"] .spec,
+      html[data-mode="full"] .ttl {
+        text-shadow: 0 2px 18px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.5);
+      }
+
+      /* ---------- spec blocks: gold label · Times title · thin sub ---------- */
+      .spec {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+      }
+      .spec.r {
+        align-items: flex-end;
+        text-align: right;
+      }
+      .spec.c {
+        align-items: center;
+        text-align: center;
+      }
+      .lab {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-size: 22px;
+        letter-spacing: 0.42em;
+        color: var(--gold-2);
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .lab i {
+        display: block;
+        width: 70px;
+        height: 2px;
+        background: var(--gold);
+      }
+      .ttl {
+        font-family: "Times Lux", "Times New Roman", serif;
+        font-weight: 400;
+        font-size: 96px;
+        line-height: 1.02;
+        color: #fff;
+        white-space: nowrap;
+        margin-top: 14px;
+        padding-bottom: 8px;
+      }
+      .ttl em {
+        font-style: italic;
+        color: var(--gold-2);
+      }
+      .sub {
+        font-family: "Poppins", sans-serif;
+        font-weight: 300;
+        font-size: 30px;
+        letter-spacing: 0.04em;
+        color: var(--ivory);
+        white-space: nowrap;
+        margin-top: 10px;
+      }
+      .rule {
+        width: 420px;
+        height: 2px;
+        margin-top: 18px;
+        background: linear-gradient(90deg, var(--gold) 0%, rgba(201, 169, 110, 0) 100%);
+      }
+      .spec.r .rule {
+        background: linear-gradient(270deg, var(--gold) 0%, rgba(201, 169, 110, 0) 100%);
+      }
+      .num {
+        font-family: "Times Lux", "Times New Roman", serif;
+        font-size: 170px;
+        line-height: 0.9;
+        color: #fff;
+      }
+      .row {
+        display: flex;
+        align-items: flex-end;
+        gap: 54px;
+        margin-top: 12px;
+      }
+      .cell {
+        display: flex;
+        flex-direction: column;
+      }
+      .cell .n {
+        font-family: "Times Lux", "Times New Roman", serif;
+        font-size: 110px;
+        line-height: 0.95;
+        color: #fff;
+      }
+      .cell .w {
+        font-family: "Poppins", sans-serif;
+        font-weight: 300;
+        font-size: 26px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--gold-2);
+        margin-top: 6px;
+        white-space: nowrap;
+      }
+      .layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: visible;
+      }
+      .feat {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        margin-top: 18px;
+      }
+      .feat svg {
+        width: 62px;
+        height: 62px;
+        flex: none;
+        overflow: visible;
+      }
+      .feat span {
+        font-family: "Times Lux", "Times New Roman", serif;
+        font-size: 50px;
+        color: #fff;
+        white-space: nowrap;
+      }
+
+      /* ---------- end card ---------- */
+      #endc {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at 50% 45%, #1c1813 0%, #0d0c0a 70%);
+        overflow: hidden;
+      }
+      .ew {
+        position: absolute;
+        top: 400px;
+        font-family: "Times Lux", "Times New Roman", serif;
+        font-size: 78px;
+        color: #fff;
+        white-space: nowrap;
+      }
+      .dot {
+        position: absolute;
+        top: 437px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--gold);
+      }
+      #e-cta {
+        position: absolute;
+        left: 50%;
+        top: 760px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        height: 96px;
+        padding: 0 56px;
+        border: 2px solid var(--gold);
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-size: 28px;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--gold-2);
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="58.37" data-width="1920" data-height="1080">
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="58.37" data-track-index="0" muted playsinline></video>
+        <div id="vig" class="fullonly"></div>
+      </div>
+
+      <div id="stage" class="clip" data-start="0" data-duration="58.37" data-track-index="1">
+        <!-- soft shade on the text side (full version only) -->
+        <div id="shadeL" class="shade fullonly"></div>
+        <div id="shadeR" class="shade fullonly"></div>
+        <div id="shadeC" class="shade fullonly"></div>
+
+        <!-- viewfinder corners for the drone shots -->
+        <svg id="vf" class="layer" viewBox="0 0 1920 1080" aria-hidden="true">
+          <path d="M80 160 V80 H160 M1760 80 H1840 V160 M1840 920 V1000 H1760 M160 1000 H80 V920" fill="none" stroke="#e6cf9f" stroke-width="2.5" />
+          <text id="vf-t" x="110" y="128" fill="#e6cf9f" font-family="Poppins" font-size="18" letter-spacing="6">VILLA DE ACAPULCO · LA VIRGINIA</text>
+          <circle id="vf-rec" cx="1786" cy="122" r="7" fill="#c9a96e" />
+        </svg>
+
+<!-- target removed: that beat is on the presenter -->
+
+        <!-- pool depth gauge -->
+        <svg id="gauge" class="layer" viewBox="0 0 1920 1080" aria-hidden="true">
+          <path id="g-line" d="M1560 330 V760" stroke="#e6cf9f" stroke-width="3" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          <g id="g-ticks" stroke="#e6cf9f" stroke-width="2">
+            <path d="M1540 330 H1580" /><path d="M1548 416 H1572" /><path d="M1548 502 H1572" /><path d="M1548 588 H1572" /><path d="M1548 674 H1572" /><path d="M1540 760 H1580" />
+          </g>
+          <path id="g-arrow" d="M1540 740 L1560 764 L1580 740" fill="none" stroke="#e6cf9f" stroke-width="3" />
+        </svg>
+
+        <div id="specs"></div>
+        <div id="caps"></div>
+
+        <!-- end card over the black tail (50.6 – end) -->
+        <div id="endc">
+          <svg class="layer" viewBox="0 0 1920 1080" aria-hidden="true">
+            <path id="e-l1" d="M260 300 H1660" stroke="#c9a96e" stroke-width="1.5" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+            <path id="e-l2" d="M1660 640 H260" stroke="#c9a96e" stroke-width="1.5" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          </svg>
+          <div class="lab" id="e-lab" style="position: absolute; left: 0; right: 0; top: 250px; justify-content: center">una propiedad que combina</div>
+          <span class="ew" id="ew-0">Amplitud</span>
+          <span class="ew" id="ew-1">Comodidad</span>
+          <span class="ew" id="ew-2">Naturaleza</span>
+          <span class="ew" id="ew-3"><em style="color: #e6cf9f">Exclusividad</em></span>
+          <div class="sub" id="e-sub" style="position: absolute; left: 0; right: 0; top: 560px; text-align: center; font-size: 34px">en un solo lugar</div>
+          <div class="ttl" id="e-con" style="position: absolute; left: 0; right: 0; top: 670px; text-align: center; font-size: 64px; margin: 0"><em>Contáctanos</em> para más información</div>
+          <div id="e-cta">Agenda tu visita</div>
+          <div class="lab" id="e-foot" style="position: absolute; left: 0; right: 0; top: 920px; justify-content: center; font-size: 18px">Villa de Acapulco · a 10 minutos de La Virginia</div>
+        </div>
+      </div>
+
+      <!-- ============ SFX: quiet and premium ============ -->
+      <audio id="sfx-01" src="assets/sfx/whoosh-soft.wav" data-start="0.35" data-duration="0.55" data-track-index="20" data-volume="0.18"></audio>
+      <audio id="sfx-02" src="assets/sfx/whoosh-soft.wav" data-start="8.6" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-04" src="assets/sfx/whoosh-soft.wav" data-start="17.05" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-05" src="assets/sfx/whoosh-soft.wav" data-start="18.45" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-06" src="assets/sfx/tick.wav" data-start="22.4" data-duration="0.03" data-track-index="21" data-volume="0.25"></audio>
+      <audio id="sfx-07" src="assets/sfx/tick.wav" data-start="23.47" data-duration="0.03" data-track-index="21" data-volume="0.25"></audio>
+      <audio id="sfx-08" src="assets/sfx/tick.wav" data-start="25.64" data-duration="0.03" data-track-index="21" data-volume="0.25"></audio>
+      <audio id="sfx-09" src="assets/sfx/tick.wav" data-start="26.4" data-duration="0.03" data-track-index="21" data-volume="0.25"></audio>
+      <audio id="sfx-10" src="assets/sfx/tick.wav" data-start="27.42" data-duration="0.03" data-track-index="21" data-volume="0.25"></audio>
+      <audio id="sfx-11" src="assets/sfx/whoosh-soft.wav" data-start="29.3" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-12" src="assets/sfx/whoosh-soft.wav" data-start="32.2" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-13" src="assets/sfx/whoosh-soft.wav" data-start="35.35" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-14" src="assets/sfx/whoosh-soft.wav" data-start="40.3" data-duration="0.55" data-track-index="20" data-volume="0.16"></audio>
+      <audio id="sfx-15" src="assets/sfx/riser.wav" data-start="45.6" data-duration="1.4" data-track-index="22" data-volume="0.14"></audio>
+      <audio id="sfx-16" src="assets/sfx/impact.wav" data-start="47.0" data-duration="0.4" data-track-index="23" data-volume="0.22"></audio>
+      <audio id="sfx-17" src="assets/sfx/whoosh.wav" data-start="50.55" data-duration="0.32" data-track-index="20" data-volume="0.2"></audio>
+      <audio id="sfx-18" src="assets/sfx/bowl-high.wav" data-start="54.7" data-duration="2.4" data-track-index="24" data-volume="0.18"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+
+        // ---------- transcript (local Whisper small, sliding windows; names fixed by context) ----------
+        const W = [
+          ["Te", 0.14], ["presentamos", 0.34], ["esta", 0.94], ["increíble", 1.16], ["propiedad", 1.54], ["ubicada", 2.12], ["en", 2.76], ["el", 2.86], ["condominio", 3.1], ["Villa", 3.7],
+          ["de", 3.88], ["Acapulco,", 3.96], ["a", 4.6], ["tan", 4.72], ["solo", 4.94], ["10", 5.24], ["minutos", 5.56], ["de", 5.8], ["La", 5.9], ["Virginia.", 6.06],
+          ["Y", 12.24], ["es", 12.36], ["el", 12.54], ["lote", 12.72], ["más", 13.02], ["central", 13.34], ["de", 13.74], ["todo", 14.02], ["el", 14.14], ["condominio.", 14.35],
+          ["Adicional,", 15.08], ["nuestra", 15.82], ["propiedad", 16.04], ["cuenta", 16.47], ["con", 16.86], ["tres", 17.15], ["pisos", 17.46], ["y", 18.17], ["976", 18.56], ["metros", 19.57],
+          ["cuadrados", 19.86], ["totalmente", 20.8], ["construidos.", 21.3], ["Dispone", 21.78], ["de", 22.16], ["8", 22.4], ["habitaciones,", 22.64], ["8", 23.47], ["baños,", 23.88], ["un", 24.28],
+          ["cuarto", 24.47], ["de", 24.62], ["San", 24.72], ["Alejo,", 24.9], ["tres", 25.64], ["salas,", 26.0], ["tres", 26.4], ["cocinas,", 26.68], ["tres", 27.42], ["patios", 27.8],
+          ["y", 28.21], ["una", 28.34], ["caseta", 28.55], ["social.", 29.18], ["Cuenta", 29.4], ["con", 29.73], ["parqueadero", 29.91], ["para", 30.6], ["dos", 30.84], ["carros", 31.08],
+          ["y", 31.32], ["cuatro", 31.55], ["motos,", 31.88], ["nacimiento", 32.31], ["de", 32.81], ["agua", 32.97], ["dulce", 33.18], ["que", 33.44], ["pasa", 33.64], ["por", 33.86],
+          ["la", 33.98], ["propiedad,", 34.16], ["huerta,", 34.86], ["piscina", 35.44], ["de", 35.9], ["1,70", 36.08], ["metros", 37.2], ["de", 37.39], ["profundidad", 37.68], ["y", 38.24],
+          ["jacuzzi", 38.38], ["para", 38.96], ["10", 39.18], ["personas.", 39.8], ["Además,", 40.42], ["ofrece", 40.85], ["excelente", 41.25], ["iluminación", 41.65], ["LED", 42.28], ["solar,", 42.55],
+          ["tanque", 43.1], ["de", 43.31], ["reserva", 43.61], ["de", 43.92], ["agua", 44.14], ["y", 44.38], ["puertas", 44.54], ["eléctricas", 44.9], ["automatizadas.", 45.8], ["Y", 46.72],
+          ["lo", 46.86], ["mejor", 47.14], ["es", 47.42], ["que", 47.52], ["se", 47.66], ["vende", 47.84], ["a", 48.19], ["puertas", 48.35], ["cerradas.", 48.77], ["Una", 49.41],
+          ["propiedad", 49.62], ["que", 49.92], ["combina", 50.18], ["amplitud,", 50.66], ["comodidad,", 51.26], ["naturaleza", 52.13], ["y", 52.7], ["exclusividad", 52.95], ["en", 53.6], ["un", 53.74],
+          ["solo", 53.96], ["lugar.", 54.34], ["Contáctanos", 54.74], ["para", 55.38], ["más", 55.56], ["información", 55.99], ["y", 56.35], ["agenda", 56.49], ["tu", 56.84], ["visita.", 57.0],
+        ];
+        const T = (k) => W[k][1];
+
+        // ---------- spec blocks ----------
+        // { id, a (show), b (hide), pos: [left|right, top], align, parts: [[time, html]] }
+        const L = (x) => `<div class="lab"><i></i>${x}</div>`;
+        const LR = (x) => `<div class="lab">${x}<i></i></div>`;
+        const SPECS = [
+          { id: "s0", a: 0.4, b: 6.9, x: 1820, y: 640, al: "r", parts: [[0.45, LR("En venta · exclusiva")], [T(9), '<div class="ttl">Villa de <em>Acapulco</em></div>'], [T(12), '<div class="sub">Condominio · a 10 minutos de La Virginia</div>'], [T(12) + 0.1, '<div class="rule"></div>']] },
+          { id: "s1", a: T(20) - 0.1, b: 15.0, x: 1820, y: 640, al: "r", parts: [[T(20), LR("Ubicación")], [T(24), '<div class="ttl">El lote más <em>central</em></div>'], [T(27), '<div class="sub">de todo el condominio</div>']] },
+          { id: "s2", a: T(35) - 0.1, b: 18.3, x: 1820, y: 560, al: "r", parts: [[T(35) - 0.1, LR("Arquitectura")], [T(35), '<div class="row"><div class="cell" style="align-items:flex-end"><span class="n" id="n-pisos" style="font-size:180px">3</span><span class="w">pisos</span></div></div>']] },
+          { id: "s3", a: T(38) - 0.1, b: 21.75, x: 1820, y: 640, al: "r", parts: [[T(38) - 0.1, LR("Área construida")], [T(38), '<div class="num"><span id="n-m2">0</span><span style="font-size:80px"> m²</span></div>'], [T(41), '<div class="sub">totalmente construidos</div>']] },
+          { id: "s4", a: T(45) - 0.1, b: 25.5, x: 110, y: 640, al: "", parts: [[T(45) - 0.1, L("Interiores")], [T(45), '<div class="row"><div class="cell"><span class="n">8</span><span class="w">habitaciones</span></div><div class="cell r4b"><span class="n">8</span><span class="w">baños</span></div></div>'], [T(50), '<div class="sub">+ cuarto de San Alejo</div>']] },
+          { id: "s5", a: T(54) - 0.1, b: 29.3, x: 110, y: 660, al: "", parts: [[T(54) - 0.1, L("Espacios")], [T(54), '<div class="row"><div class="cell c5"><span class="n">3</span><span class="w">salas</span></div><div class="cell c5" id="c5-b"><span class="n">3</span><span class="w">cocinas</span></div><div class="cell c5" id="c5-c"><span class="n">3</span><span class="w">patios</span></div></div>'], [T(62), '<div class="sub">+ caseta social</div>']] },
+          { id: "s6", a: T(66) - 0.1, b: 32.2, x: 110, y: 700, al: "", parts: [[T(66) - 0.1, L("Parqueadero")], [T(68), '<div class="ttl">2 carros <em>·</em> 4 motos</div>']] },
+          { id: "s7", a: T(73) - 0.1, b: 35.35, x: 110, y: 680, al: "", parts: [[T(73) - 0.1, L("Naturaleza")], [T(73), '<div class="ttl">Nacimiento de <em>agua dulce</em></div>'], [T(82), '<div class="sub">+ huerta propia</div>']] },
+          { id: "s8", a: T(83) - 0.1, b: 40.3, x: 1500, y: 360, al: "r", parts: [[T(83) - 0.1, LR("Piscina")], [T(85), '<div class="num"><span id="n-depth">0,00</span><span style="font-size:70px"> m</span></div>'], [T(88), '<div class="sub">de profundidad</div>'], [T(90), '<div class="ttl" style="font-size:64px;margin-top:26px"><em>Jacuzzi</em> para 10</div>']] },
+          { id: "s9", a: T(94) - 0.1, b: 46.65, x: 110, y: 560, al: "", parts: [[T(94), L("Además")], [T(97), '<div class="feat"><svg viewBox="0 0 62 62"><circle cx="31" cy="26" r="11" fill="none" stroke="#e6cf9f" stroke-width="2.5"/><path d="M31 4 V9 M31 43 V48 M9 26 H14 M48 26 H53 M15 10 L19 14 M43 38 L47 42 M47 10 L43 14 M19 38 L15 42 M22 56 H40" stroke="#e6cf9f" stroke-width="2.5" stroke-linecap="round"/></svg><span>Iluminación LED solar</span></div>'], [T(100), '<div class="feat"><svg viewBox="0 0 62 62"><path d="M14 10 H48 V52 H14 Z M14 30 H48" fill="none" stroke="#e6cf9f" stroke-width="2.5"/><path d="M22 40 C 26 36, 30 44, 34 40 S 40 36, 42 40" fill="none" stroke="#e6cf9f" stroke-width="2.5" stroke-linecap="round"/></svg><span>Tanque de reserva de agua</span></div>'], [T(106), '<div class="feat"><svg viewBox="0 0 62 62"><path d="M8 54 V18 H54 V54 M8 54 H54 M31 18 V54" fill="none" stroke="#e6cf9f" stroke-width="2.5"/><path d="M20 36 L26 36 M36 36 L42 36" stroke="#e6cf9f" stroke-width="2.5" stroke-linecap="round"/><path d="M24 8 C 28 4, 34 4, 38 8 M20 4 C 26 -2, 36 -2, 42 4" fill="none" stroke="#e6cf9f" stroke-width="2" stroke-linecap="round"/></svg><span>Puertas eléctricas automatizadas</span></div>']] },
+          { id: "s10", a: T(110) - 0.1, b: 50.6, x: 960, y: 380, al: "c", parts: [[T(110), '<div class="lab"><i></i>Lo mejor<i></i></div>'], [T(114), '<div class="ttl" style="font-size:118px">Se vende a</div>'], [T(117), '<div class="ttl" style="font-size:118px;margin-top:0"><em>puertas cerradas</em></div>']] },
+        ];
+        const host = $("#specs");
+        SPECS.forEach((sp) => {
+          const el = document.createElement("div");
+          el.className = "spec " + sp.al;
+          el.id = sp.id;
+          if (sp.al === "r") el.style.right = 1920 - sp.x + "px";
+          else if (sp.al === "c") (el.style.left = "0px"), (el.style.right = "0px");
+          else el.style.left = sp.x + "px";
+          el.style.top = sp.y + "px";
+          sp.parts.forEach(([t, html], i) => {
+            const w = document.createElement("div");
+            w.className = "part";
+            w.id = `${sp.id}-p${i}`;
+            w.style.position = "relative";
+            w.innerHTML = html;
+            el.appendChild(w);
+          });
+          host.appendChild(el);
+        });
+
+        // ---------- captions (small, quiet) ----------
+        const groups = [];
+        let cur = [];
+        const flush = () => cur.length && (groups.push(cur), (cur = []));
+        W.forEach(([w], k) => {
+          if (T(k) >= 50.6) return flush();
+          if (cur.length && (T(k) - T(cur[cur.length - 1]) > 0.75 || cur.length >= 6)) flush();
+          cur.push(k);
+          if (/[.,:;?!]$/.test(w) && cur.length >= 3) flush();
+        });
+        flush();
+        groups.forEach((g, gi) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          cap.id = "cap-" + gi;
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          g.forEach((k) => {
+            const s = document.createElement("span");
+            s.className = "cw";
+            s.id = "cw-" + k;
+            s.textContent = W[k][0];
+            inner.appendChild(s);
+          });
+          cap.appendChild(inner);
+          $("#caps").appendChild(cap);
+        });
+
+        // ---------- timeline ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+        gsap.set([".cap", ".spec", "#vf", "#gauge", "#endc", ".shade"], { autoAlpha: 0 });
+        gsap.set([".cw", ".part"], { opacity: 0 });
+
+        // captions
+        groups.forEach((g, gi) => {
+          const s = T(g[0]) - 0.05;
+          const nx = gi + 1 < groups.length ? T(groups[gi + 1][0]) - 0.05 : 50.55;
+          const e = Math.min(nx, T(g[g.length - 1]) + 1.8, 50.55);
+          tl.set(`#cap-${gi}`, { autoAlpha: 1 }, s);
+          g.forEach((k) => tl.set(`#cw-${k}`, { opacity: 1 }, T(k)).fromTo(`#cw-${k}`, { y: 8 }, { y: 0, duration: 0.3, ease: "power2.out" }, T(k)));
+          tl.set(`#cap-${gi}`, { autoAlpha: 0 }, e);
+        });
+
+        // spec blocks: each part slides up out of a mask, labels draw their gold rule
+        SPECS.forEach((sp) => {
+          tl.set(`#${sp.id}`, { autoAlpha: 1, y: 0 }, sp.a);
+          sp.parts.forEach(([t], i) => {
+            const p = `#${sp.id}-p${i}`;
+            tl.set(p, { opacity: 1 }, t)
+              .fromTo(p, { clipPath: "inset(0 0 100% 0)", y: 40 }, { clipPath: "inset(0 0 0% 0)", y: 0, duration: 0.9, ease: "expo.out" }, t);
+            tl.fromTo(`${p} .lab i`, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "expo.out", transformOrigin: sp.al === "r" ? "100% 50%" : "0% 50%" }, t + 0.1);
+            tl.fromTo(`${p} .rule`, { scaleX: 0, transformOrigin: sp.al === "r" ? "100% 50%" : "0% 50%" }, { scaleX: 1, duration: 1.0, ease: "expo.out" }, t + 0.1);
+          });
+          tl.to(`#${sp.id}`, { autoAlpha: 0, y: -16, duration: 0.45, ease: "power2.in" }, sp.b - 0.45);
+          const sh = sp.al === "r" ? "#shadeR" : sp.al === "c" ? "#shadeC" : "#shadeL";
+          tl.to(sh, { autoAlpha: 1, duration: 0.6, ease: "sine.out" }, sp.a - 0.1).to(sh, { autoAlpha: 0, duration: 0.5, ease: "sine.in" }, sp.b - 0.4);
+        });
+        // inline reveals inside blocks
+        gsap.set("#s4 .r4b", { opacity: 0 });
+        tl.fromTo("#s4 .r4b", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, T(47));
+        tl.fromTo(["#c5-b", "#c5-c"], { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out", stagger: 1.0 }, T(56));
+        gsap.set(["#c5-b", "#c5-c"], { opacity: 0 });
+
+        // counters
+        const counter = (sel, from, to, t, d, dec = 0) => {
+          const o = { v: from };
+          tl.to(o, { v: to, duration: d, ease: "power2.out", onUpdate: () => ($(sel).textContent = dec ? o.v.toFixed(dec).replace(".", ",") : Math.round(o.v).toLocaleString("es-CO")) }, t);
+        };
+        counter("#n-m2", 0, 976, T(38), 1.6);
+        counter("#n-depth", 0, 1.7, T(85), 1.2, 2);
+        tl.fromTo("#n-pisos", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: "expo.out" }, T(35));
+
+        // drone shots: viewfinder frame + REC pulse
+        [[8.6, 12.2], [32.5, 35.4], [38.6, 40.1]].forEach(([a, b]) => {
+          tl.set("#vf", { autoAlpha: 1 }, a).fromTo("#vf", { scale: 1.04, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: "expo.out", transformOrigin: "50% 50%" }, a).to("#vf", { autoAlpha: 0, duration: 0.3 }, b - 0.3);
+        });
+        tl.to("#vf-rec", { opacity: 0.2, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 7 }, 8.8).to("#vf-rec", { opacity: 0.2, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 5 }, 32.6);
+
+        // pool depth gauge
+        tl.set("#gauge", { autoAlpha: 1 }, T(85) - 0.1)
+          .to("#g-line", { attr: { "stroke-dashoffset": 0 }, duration: 1.2, ease: "power2.out" }, T(85))
+          .fromTo("#g-ticks path", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.3, ease: "power2.out", stagger: 0.15, svgOrigin: "1560 500" }, T(85) + 0.1)
+          .fromTo("#g-arrow", { y: -430, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: "power2.out" }, T(85))
+          .to("#gauge", { autoAlpha: 0, duration: 0.35 }, 40.0);
+
+        // ===== end card over the black tail =====
+        const EW = [[0, T(123)], [1, T(124)], [2, T(125)], [3, T(127)]];
+        // lay the four words out on one centered line with gold dots between
+        let x = 0;
+        const widths = EW.map(([i]) => $("#ew-" + i).getBoundingClientRect().width);
+        const gap = 64;
+        const total = widths.reduce((a, b) => a + b, 0) + gap * 3;
+        x = (1920 - total) / 2;
+        EW.forEach(([i], j) => {
+          $("#ew-" + i).style.left = x + "px";
+          if (j < 3) {
+            const d = document.createElement("i");
+            d.className = "dot";
+            d.id = "dot-" + j;
+            d.style.left = x + widths[j] + gap / 2 - 5 + "px";
+            $("#endc").appendChild(d);
+          }
+          x += widths[j] + gap;
+        });
+        gsap.set(".ew", { opacity: 0 });
+        gsap.set("#e-cta", { xPercent: -50 });
+        tl.set("#endc", { autoAlpha: 1 }, 50.6)
+          .fromTo("#endc", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 50.6)
+          .to(["#e-l1", "#e-l2"], { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "power2.inOut" }, 50.65)
+          .fromTo("#e-lab", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1.0, ease: "expo.out" }, 50.7);
+        EW.forEach(([i, t], j) => {
+          tl.set("#ew-" + i, { opacity: 1 }, t).fromTo("#ew-" + i, { clipPath: "inset(0 0 100% 0)", y: 50 }, { clipPath: "inset(0 0 0% 0)", y: 0, duration: 0.9, ease: "expo.out" }, t);
+          if (j > 0) tl.fromTo("#dot-" + (j - 1), { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(3)" }, t - 0.1);
+        });
+        tl.fromTo("#e-sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, T(128))
+          .fromTo("#e-con", { clipPath: "inset(0 0 100% 0)", y: 40, opacity: 1 }, { clipPath: "inset(0 0 0% 0)", y: 0, opacity: 1, duration: 0.9, ease: "expo.out" }, T(132))
+          .fromTo("#e-cta", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, T(137) - 0.1)
+          .fromTo("#e-cta", { boxShadow: "0 0 0 0 rgba(201,169,110,0.55)" }, { boxShadow: "0 0 0 26px rgba(201,169,110,0)", duration: 1.2, ease: "power2.out", repeat: 1, immediateRender: false }, T(139))
+          .fromTo("#e-foot", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" }, 57.3);
+        gsap.set(["#e-sub", "#e-con", "#e-cta", "#e-foot", "#e-lab"], { opacity: 0 });
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      });
+    </script>
+  </body>
+</html>
