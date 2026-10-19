@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Cocoa — testimonio</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-normal.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-italic.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+      }
+
+      /* Cocoa gold (from the logo gradient) */
+      :root {
+        --gold-d: #9c834f;
+        --gold: #c9a75c;
+        --gold-l: #e6c57a;
+        --copper: #b8834a;
+        --ink: #241708;
+        --cream: #fbf6ee;
+        --cream-2: #f1e5d0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #cam,
+      html[data-mode="green"] .fullonly {
+        display: none;
+      }
+      #cam {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #vig {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at 50% 40%, rgba(36, 23, 8, 0) 55%, rgba(36, 23, 8, 0.45) 100%);
+      }
+      #shadeB {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 1180px;
+        height: 740px;
+        background: linear-gradient(180deg, rgba(20, 12, 4, 0) 0%, rgba(20, 12, 4, 0.55) 55%, rgba(20, 12, 4, 0.7) 100%);
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions ---------- */
+      .cap {
+        position: absolute;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: center;
+        visibility: hidden;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 16px;
+        text-align: center;
+      }
+      .cw {
+        display: inline-block;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 56px;
+        line-height: 1.3;
+        color: #ffffff;
+        -webkit-text-stroke: 11px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      .cw.kw {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 66px;
+        color: var(--gold-l);
+      }
+      .cw.hero {
+        flex-basis: 100%;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 800;
+        font-size: 128px;
+        line-height: 1.05;
+        color: var(--gold-l);
+        -webkit-text-stroke: 16px var(--ink);
+      }
+
+      /* ---------- lotus watermark ---------- */
+      #mark {
+        position: absolute;
+        left: 912px;
+        top: 70px;
+        width: 108px;
+        height: 110px;
+        visibility: hidden;
+      }
+      #mark img {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+      }
+      .ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 3px solid var(--gold-l);
+        visibility: hidden;
+      }
+
+      /* ---------- photo b-roll cards ---------- */
+      .card {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: #0d0905;
+        visibility: hidden;
+      }
+      .ph {
+        position: absolute;
+        top: 0;
+        height: 1920px;
+        object-fit: cover;
+      }
+      .frame {
+        position: absolute;
+        inset: 44px;
+        border: 2px solid rgba(230, 197, 122, 0.75);
+      }
+      .cshade {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 960px;
+        background: linear-gradient(180deg, rgba(13, 9, 5, 0) 0%, rgba(13, 9, 5, 0.72) 60%, rgba(13, 9, 5, 0.86) 100%);
+      }
+      .ttl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Playfair", serif;
+        color: #fff;
+        white-space: nowrap;
+      }
+      .lab {
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 22px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-size: 30px;
+        letter-spacing: 0.32em;
+        color: var(--gold-l);
+        text-transform: uppercase;
+      }
+      .lab i {
+        display: block;
+        width: 90px;
+        height: 2px;
+        background: var(--gold-l);
+      }
+
+      /* ---------- brand cards (cream) ---------- */
+      .bcard {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 40%, #fffdf9 0%, var(--cream) 45%, var(--cream-2) 100%);
+        visibility: hidden;
+      }
+      .lock {
+        position: absolute;
+        left: 120px;
+        width: 840px;
+        height: 506px;
+      }
+      .lock img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .shine {
+        position: absolute;
+        inset: 0;
+        -webkit-mask-image: url("assets/img/cocoa-logo.png");
+        mask-image: url("assets/img/cocoa-logo.png");
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        background: linear-gradient(105deg, rgba(255, 255, 255, 0) 40%, rgba(255, 250, 230, 0.95) 50%, rgba(255, 255, 255, 0) 60%);
+        background-size: 300% 100%;
+        background-position: 100% 0;
+      }
+      .bring {
+        position: absolute;
+        border-radius: 50%;
+        border: 3px solid var(--gold);
+      }
+      .bsub {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 500;
+        color: #4a3517;
+        white-space: nowrap;
+      }
+      .bsub em {
+        font-weight: 800;
+        color: var(--copper);
+      }
+      .rule {
+        position: absolute;
+        left: 390px;
+        width: 300px;
+        height: 2px;
+        background: var(--gold);
+      }
+      .dots {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-size: 34px;
+        letter-spacing: 0.3em;
+        color: #7a5d2e;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="33.6" data-width="1080" data-height="1920">
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="30.5" data-track-index="0" muted playsinline></video>
+        <div id="vig" class="fullonly"></div>
+        <div id="shadeB" class="fullonly"></div>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="30.5" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="33.6" data-track-index="1">
+        <!-- lotus watermark (appears on "Cocoa") -->
+        <div id="mark"><img src="assets/img/lotus.png" alt="" /></div>
+        <div id="mring1" class="ring" style="left: 906px; top: 65px; width: 120px; height: 120px"></div>
+        <div id="mring2" class="ring" style="left: 906px; top: 65px; width: 120px; height: 120px"></div>
+
+        <div id="caps"></div>
+
+        <!-- b-roll 1: "este proyecto fabuloso" -->
+        <div id="br1" class="card">
+          <img id="p1" class="ph" src="assets/img/img_3506.jpg" alt="" style="left: 0; width: 2560px" />
+          <img id="p2" class="ph" src="assets/img/img_3508.jpg" alt="" style="left: -1480px; width: 2560px" />
+          <div class="cshade"></div>
+          <div id="br1-lab" class="lab" style="top: 1290px"><i></i>Cocoa<i></i></div>
+          <div id="br1-a" class="ttl" style="top: 1350px; font-size: 92px; font-weight: 500">Este proyecto</div>
+          <div id="br1-b" class="ttl" style="top: 1450px; font-size: 168px; font-style: italic; font-weight: 800; color: #e6c57a">fabuloso</div>
+          <div id="br1-c" class="ttl" style="top: 1690px; font-family: Poppins, sans-serif; font-size: 40px; font-weight: 400">a todos los que hoy nos escuchan</div>
+          <div class="frame"></div>
+        </div>
+
+        <!-- brand card: "Cocoa es la oportunidad magnífica" -->
+        <div id="bc1" class="bcard">
+          <div id="bc1-rings"></div>
+          <div id="lk1" class="lock" style="top: 560px">
+            <img id="lk1-a" src="assets/img/cocoa-logo.png" alt="" style="clip-path: inset(0 0 62.5% 0)" />
+            <img id="lk1-b" src="assets/img/cocoa-logo.png" alt="" style="clip-path: inset(37.5% 0 22% 0)" />
+            <img id="lk1-c" src="assets/img/cocoa-logo.png" alt="" style="clip-path: inset(78% 0 0 0)" />
+            <div id="lk1-s" class="shine"></div>
+          </div>
+          <div id="bc1-a" class="bsub" style="top: 1200px; font-size: 62px">es la oportunidad</div>
+          <div id="bc1-b" class="bsub" style="top: 1280px; font-size: 120px"><em>magnífica</em></div>
+        </div>
+
+        <!-- b-roll 2: paz interior · amor · alegría -->
+        <div id="br2" class="card">
+          <img id="p3" class="ph" src="assets/img/img_3513.jpg" alt="" style="left: -180px; width: 1440px" />
+          <img id="p4" class="ph" src="assets/img/img_3507.jpg" alt="" style="left: -740px; width: 2560px" />
+          <div class="cshade"></div>
+          <div id="br2-a" class="ttl" style="top: 1170px; font-family: Poppins, sans-serif; font-size: 44px; font-weight: 400">que encuentres</div>
+          <div id="br2-b" class="ttl" style="top: 1250px; font-size: 118px; font-style: italic; font-weight: 800; color: #e6c57a">esa paz interior</div>
+          <div id="br2-c" class="ttl" style="top: 1410px; font-size: 118px; font-style: italic; font-weight: 800; color: #fff">ese amor</div>
+          <div id="br2-d" class="ttl" style="top: 1570px; font-size: 118px; font-style: italic; font-weight: 800; color: #e6c57a">y esa alegría</div>
+          <div class="frame"></div>
+        </div>
+
+        <!-- end card -->
+        <div id="bc2" class="bcard">
+          <div id="bc2-rings"></div>
+          <div id="lk2" class="lock" style="top: 610px">
+            <img id="lk2-a" src="assets/img/cocoa-logo.png" alt="" style="clip-path: inset(0 0 62.5% 0)" />
+            <img id="lk2-b" src="assets/img/cocoa-logo.png" alt="" style="clip-path: inset(37.5% 0 22% 0)" />
+            <img id="lk2-c" src="assets/img/cocoa-logo.png" alt="" style="clip-path: inset(78% 0 0 0)" />
+            <div id="lk2-s" class="shine"></div>
+          </div>
+          <div id="bc2-r" class="rule" style="top: 1210px"></div>
+          <div id="bc2-d" class="dots" style="top: 1250px">paz · amor · alegría</div>
+          <div id="bc2-t" class="bsub" style="top: 1340px; font-size: 54px">compártela con los <em>demás</em></div>
+        </div>
+      </div>
+
+      <audio id="sfx-01" src="assets/sfx/bowl-high.wav" data-start="4.8" data-duration="2.4" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="sfx-02" src="assets/sfx/pop-high.wav" data-start="7.24" data-duration="0.07" data-track-index="22" data-volume="0.35"></audio>
+      <audio id="sfx-03" src="assets/sfx/whoosh-soft.wav" data-start="11.4" data-duration="0.55" data-track-index="23" data-volume="0.28"></audio>
+      <audio id="sfx-04" src="assets/sfx/pop.wav" data-start="12.34" data-duration="0.1" data-track-index="22" data-volume="0.3"></audio>
+      <audio id="sfx-05" src="assets/sfx/whoosh-soft.wav" data-start="15.25" data-duration="0.55" data-track-index="23" data-volume="0.22"></audio>
+      <audio id="sfx-06" src="assets/sfx/pop-high.wav" data-start="17.38" data-duration="0.07" data-track-index="22" data-volume="0.32"></audio>
+      <audio id="sfx-07" src="assets/sfx/riser.wav" data-start="18.6" data-duration="1.4" data-track-index="24" data-volume="0.16"></audio>
+      <audio id="sfx-08" src="assets/sfx/bowl.wav" data-start="20.0" data-duration="3.2" data-track-index="25" data-volume="0.38"></audio>
+      <audio id="sfx-09" src="assets/sfx/whoosh-soft.wav" data-start="24.45" data-duration="0.55" data-track-index="23" data-volume="0.26"></audio>
+      <audio id="sfx-10" src="assets/sfx/pop.wav" data-start="25.56" data-duration="0.1" data-track-index="22" data-volume="0.26"></audio>
+      <audio id="sfx-11" src="assets/sfx/pop.wav" data-start="26.62" data-duration="0.1" data-track-index="26" data-volume="0.26"></audio>
+      <audio id="sfx-12" src="assets/sfx/pop-high.wav" data-start="27.58" data-duration="0.07" data-track-index="27" data-volume="0.3"></audio>
+      <audio id="sfx-13" src="assets/sfx/bowl-high.wav" data-start="30.45" data-duration="2.4" data-track-index="21" data-volume="0.36"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const tl = gsap.timeline({ paused: true });
+
+        // ---------- captions (local Whisper small; spelling fixed by context) ----------
+        // [start, end, top, [[word, t, cls]]]
+        const CAPS = [
+          [0.24, 0.86, 1500, [["Bueno", 0.24], ["papá,", 0.48]]],
+          [0.86, 2.98, 1500, [["cuéntanos", 0.88], ["qué", 1.86], ["tal", 2.12], ["la", 2.26], ["experiencia", 2.5, "kw"]]],
+          [2.98, 5.3, 1500, [["que", 2.88], ["viviste", 3.1], ["en", 4.64], ["Cocoa", 4.84, "kw"]]],
+          [6.9, 8.2, 1440, [["Fue", 6.94], ["espectacular", 7.24, "hero"]]],
+          [8.2, 9.74, 1500, [["Me", 8.24], ["siento", 8.52], ["muy", 8.98], ["feliz", 9.42, "kw"]]],
+          [9.74, 11.45, 1500, [["de", 9.76], ["ver", 9.88], ["hasta", 10.08], ["dónde", 10.3], ["han", 10.4], ["llegado", 10.54, "kw"], ["ustedes.", 11.02]]],
+          [15.3, 17.0, 1500, [["Recuerden", 15.38], ["que", 15.84], ["el", 15.98], ["primer", 16.22], ["paso", 16.64, "kw"]]],
+          [17.0, 18.4, 1440, [["a", 17.04], ["la", 17.18], ["sanación", 17.38, "hero"]]],
+          [18.4, 20.0, 1500, [["arranca", 18.42], ["en", 18.74], ["amarte", 18.94, "kw"], ["a", 19.3, "kw"], ["ti", 19.44, "kw"], ["mismo", 19.6, "kw"]]],
+          [22.95, 24.45, 1500, [["de", 23.3], ["que", 23.38], ["te", 23.48], ["ames", 23.66, "kw"], ["a", 23.94], ["ti", 24.0], ["mismo", 24.28]]],
+          [28.1, 29.6, 1500, [["y", 28.12], ["después", 28.44], ["la", 28.9], ["compartas", 29.2, "kw"]]],
+          [29.6, 30.45, 1440, [["con", 29.68], ["los", 29.82], ["demás", 30.0, "hero"]]],
+        ];
+        const caps = $("#caps");
+        CAPS.forEach(([a, b, top, words], gi) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          cap.style.top = top + "px";
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          const spans = words.map(([w, t, cls]) => {
+            const s = document.createElement("span");
+            s.className = "cw" + (cls ? " " + cls : "");
+            s.textContent = w;
+            inner.appendChild(s);
+            return [s, Math.max(a, t - 0.04), cls];
+          });
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          tl.set(cap, { visibility: "visible" }, a);
+          tl.set(cap, { visibility: "hidden" }, b);
+          spans.forEach(([s, t, cls]) => {
+            const big = cls === "hero";
+            tl.fromTo(
+              s,
+              { y: big ? 60 : 26, clipPath: "inset(100% -30px -30px -30px)" },
+              { y: 0, clipPath: "inset(-30px -30px -30px -30px)", duration: big ? 0.42 : 0.22, ease: big ? "back.out(1.6)" : "power3.out" },
+              t,
+            );
+          });
+        });
+
+        // ---------- lotus watermark: blooms on "Cocoa", stays until the end card ----------
+        tl.set("#mark", { visibility: "visible" }, 4.84);
+        tl.fromTo("#mark", { scale: 0.2, rotation: -25, transformOrigin: "50% 80%" }, { scale: 1, rotation: 0, duration: 0.7, ease: "back.out(1.8)" }, 4.84);
+        [["#mring1", 4.9], ["#mring2", 5.15]].forEach(([r, t]) => {
+          tl.set(r, { visibility: "visible" }, t);
+          tl.fromTo(r, { scale: 0.6, opacity: 0.9 }, { scale: 2.2, opacity: 0, duration: 1.3, ease: "power2.out" }, t);
+          tl.set(r, { visibility: "hidden" }, t + 1.3);
+        });
+        tl.to("#mark", { y: -6, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: 14 }, 5.6);
+        tl.set("#mark", { visibility: "hidden" }, 30.45);
+
+        // ---------- b-roll 1 (11.45 – 15.3): slow pans across the session photos ----------
+        tl.set("#br1", { visibility: "visible" }, 11.45);
+        tl.set("#br1", { visibility: "hidden" }, 15.3);
+        tl.fromTo("#br1", { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.5, ease: "power3.inOut" }, 11.45);
+        tl.fromTo("#p1", { x: 0 }, { x: -1100, duration: 2.4, ease: "none" }, 11.45);
+        tl.set("#p2", { opacity: 0 }, 0);
+        tl.to("#p2", { opacity: 1, duration: 0.45, ease: "power1.inOut" }, 13.4);
+        tl.fromTo("#p2", { x: 0 }, { x: 900, duration: 2.0, ease: "none" }, 13.3);
+        tl.fromTo("#br1-lab", { clipPath: "inset(0 50% 0 50%)" }, { clipPath: "inset(0 0% 0 0%)", duration: 0.5, ease: "power2.out" }, 11.7);
+        tl.fromTo("#br1-a", { y: 40, clipPath: "inset(100% 0 -20% 0)" }, { y: 0, clipPath: "inset(-20% 0 -20% 0)", duration: 0.45, ease: "power3.out" }, 11.56);
+        tl.fromTo("#br1-b", { scale: 0.7, clipPath: "inset(0 100% -20% 0)" }, { scale: 1, clipPath: "inset(-20% -5% -20% -5%)", duration: 0.6, ease: "power3.out" }, 12.34);
+        tl.fromTo("#br1-c", { y: 30, clipPath: "inset(100% 0 -20% 0)" }, { y: 0, clipPath: "inset(-20% 0 -20% 0)", duration: 0.4, ease: "power3.out" }, 13.3);
+        tl.to("#br1", { clipPath: "inset(100% 0 0% 0)", duration: 0.4, ease: "power3.in" }, 14.9);
+
+        // ---------- lockup animation (lotus blooms up, letters wipe, swirl draws, shine) ----------
+        const lockup = (id, t) => {
+          tl.fromTo("#" + id + "-a", { clipPath: "inset(37.5% 0 62.5% 0)", y: 40 }, { clipPath: "inset(0% 0 62.5% 0)", y: 0, duration: 0.8, ease: "power3.out" }, t);
+          tl.fromTo("#" + id + "-b", { clipPath: "inset(37.5% 100% 22% 0)" }, { clipPath: "inset(37.5% 0% 22% 0)", duration: 0.7, ease: "power2.inOut" }, t + 0.45);
+          tl.fromTo("#" + id + "-c", { clipPath: "inset(78% 100% 0 0)" }, { clipPath: "inset(78% 0% 0 0)", duration: 0.7, ease: "power1.inOut" }, t + 0.85);
+          tl.fromTo("#" + id + "-s", { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 1.0, ease: "power1.inOut" }, t + 1.4);
+          tl.fromTo("#" + id, { scale: 0.94 }, { scale: 1, duration: 2.6, ease: "power1.out" }, t);
+        };
+        const rings = (host, cy, t, n) => {
+          for (let i = 0; i < n; i++) {
+            const r = document.createElement("i");
+            r.className = "bring";
+            r.style.cssText = "left:240px;top:" + (cy - 300) + "px;width:600px;height:600px";
+            $(host).appendChild(r);
+            tl.fromTo(r, { scale: 0.25, opacity: 0.55 }, { scale: 1.9, opacity: 0, duration: 2.2, ease: "power1.out" }, t + i * 0.55);
+          }
+        };
+
+        // ---------- brand card 1 (20.0 – 22.95): "Cocoa es la oportunidad magnífica" ----------
+        tl.set("#bc1", { visibility: "visible" }, 20.0);
+        tl.set("#bc1", { visibility: "hidden" }, 22.95);
+        tl.fromTo("#bc1", { clipPath: "circle(0% at 50% 45%)" }, { clipPath: "circle(75% at 50% 45%)", duration: 0.55, ease: "power3.inOut" }, 20.0);
+        rings("#bc1-rings", 720, 20.1, 3);
+        lockup("lk1", 20.1);
+        tl.fromTo("#bc1-a", { y: 30, clipPath: "inset(100% 0 -20% 0)" }, { y: 0, clipPath: "inset(-20% 0 -20% 0)", duration: 0.45, ease: "power3.out" }, 20.66);
+        tl.fromTo("#bc1-b", { scale: 0.7, clipPath: "inset(-20% 100% -20% 0)" }, { scale: 1, clipPath: "inset(-20% -5% -20% -5%)", duration: 0.55, ease: "power3.out" }, 22.4);
+        tl.to("#bc1", { clipPath: "circle(0% at 50% 45%)", duration: 0.4, ease: "power3.in" }, 22.55);
+
+        // ---------- b-roll 2 (24.45 – 28.1): paz interior · amor · alegría ----------
+        tl.set("#br2", { visibility: "visible" }, 24.45);
+        tl.set("#br2", { visibility: "hidden" }, 28.1);
+        tl.fromTo("#br2", { clipPath: "inset(0 0 0 100%)" }, { clipPath: "inset(0 0 0 0%)", duration: 0.45, ease: "power3.inOut" }, 24.45);
+        tl.fromTo("#p3", { scale: 1.0 }, { scale: 1.12, duration: 2.2, ease: "none" }, 24.45);
+        tl.set("#p4", { opacity: 0 }, 0);
+        tl.to("#p4", { opacity: 1, duration: 0.45, ease: "power1.inOut" }, 26.35);
+        tl.fromTo("#p4", { x: 0 }, { x: -420, duration: 1.9, ease: "none" }, 26.2);
+        [["#br2-a", 24.5], ["#br2-b", 25.28], ["#br2-c", 26.4], ["#br2-d", 27.24]].forEach(([el, t], i) => {
+          tl.fromTo(el, { y: i ? 50 : 30, clipPath: "inset(100% -5% -25% -5%)" }, { y: 0, clipPath: "inset(-25% -5% -25% -5%)", duration: i ? 0.5 : 0.35, ease: i ? "back.out(1.4)" : "power3.out" }, t);
+        });
+        tl.to("#br2", { clipPath: "inset(0 100% 0 0%)", duration: 0.35, ease: "power3.in" }, 27.75);
+
+        // ---------- end card (30.45 – 33.6) ----------
+        tl.set("#bc2", { visibility: "visible" }, 30.45);
+        tl.fromTo("#bc2", { clipPath: "circle(0% at 50% 45%)" }, { clipPath: "circle(75% at 50% 45%)", duration: 0.6, ease: "power3.inOut" }, 30.45);
+        rings("#bc2-rings", 770, 30.55, 4);
+        lockup("lk2", 30.55);
+        tl.fromTo("#bc2-r", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, 31.6);
+        tl.fromTo("#bc2-d", { y: 24, clipPath: "inset(100% 0 -20% 0)" }, { y: 0, clipPath: "inset(-20% 0 -20% 0)", duration: 0.45, ease: "power3.out" }, 31.8);
+        tl.fromTo("#bc2-t", { y: 24, clipPath: "inset(100% 0 -20% 0)" }, { y: 0, clipPath: "inset(-20% 0 -20% 0)", duration: 0.45, ease: "power3.out" }, 32.2);
+        tl.fromTo("#lk2-s", { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 1.0, ease: "power1.inOut" }, 32.5);
+
+        tl.set({}, {}, 33.6);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
