@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="es" data-mode="green">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Cornabis — la ARL va más allá</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-italic.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: italic;
+      }
+
+      /* Cornabis: navy from the logo + action blue */
+      :root {
+        --blue: #1f6fe5;
+        --navy: #17304d;
+        --navy-2: #0d3a91;
+        --sky: #eaf3ff;
+        --gray: #5d6b85;
+        --gray-2: #cfdaf0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #zoom {
+        display: none;
+      }
+      #zoom {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions (Cornabis) ---------- */
+      .cap {
+        position: absolute;
+        left: 50px;
+        right: 50px;
+        top: 1470px;
+        display: flex;
+        justify-content: center;
+        visibility: hidden;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 15px;
+        row-gap: 4px;
+        text-align: center;
+      }
+      .cw {
+        position: relative;
+        display: inline-block;
+        font-weight: 300;
+        font-size: 64px;
+        line-height: 1.3;
+        color: #fff;
+        -webkit-text-stroke: 6px var(--navy);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      .cw.kw {
+        font-weight: 800;
+        isolation: isolate;
+        -webkit-text-stroke: 0;
+        padding: 0 12px;
+        margin: 0 -4px;
+      }
+      .cw .hl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 10px;
+        bottom: 6px;
+        border-radius: 14px;
+        background: var(--blue);
+        border: 4px solid var(--navy);
+        z-index: -1;
+      }
+
+      /* on the white scenes the captions turn navy (no white-on-white) */
+      #caps[data-dark="1"] .cw {
+        color: var(--navy);
+        -webkit-text-stroke: 0;
+        font-weight: 400;
+      }
+      #caps[data-dark="1"] .cw.kw {
+        color: #fff;
+        font-weight: 800;
+      }
+
+      /* ---------- white motion-graphic scenes ---------- */
+      .ws {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: #fff;
+        visibility: hidden;
+      }
+      .ws .dots {
+        position: absolute;
+        inset: -60px;
+        background-image: radial-gradient(circle, #dfe9fa 3px, transparent 3.5px);
+        background-size: 60px 60px;
+      }
+      .ws .blob {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(61, 139, 255, 0.18) 0%, rgba(61, 139, 255, 0) 70%);
+      }
+      .kick {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-weight: 400;
+        font-size: 50px;
+        color: var(--gray);
+        white-space: nowrap;
+      }
+      .ttl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-weight: 900;
+        color: var(--navy);
+        white-space: nowrap;
+        line-height: 1;
+      }
+      .ttl b {
+        color: var(--blue);
+      }
+      .ln {
+        fill: none;
+        stroke: var(--blue);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .pill {
+        position: absolute;
+        height: 100px;
+        padding: 0 40px;
+        border-radius: 50px;
+        background: var(--blue);
+        border: 4px solid var(--navy);
+        color: #fff;
+        font-weight: 800;
+        font-size: 48px;
+        line-height: 92px;
+        white-space: nowrap;
+      }
+      .tile {
+        position: absolute;
+        width: 440px;
+        height: 380px;
+        border-radius: 40px;
+        background: #fff;
+        border: 4px solid var(--gray-2);
+        box-shadow: 0 14px 0 var(--gray-2);
+        text-align: center;
+      }
+      .tile svg {
+        position: absolute;
+        left: 140px;
+        top: 50px;
+        width: 160px;
+        height: 160px;
+        overflow: visible;
+      }
+      .tile .tl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 250px;
+        font-weight: 800;
+        font-size: 44px;
+        line-height: 1.1;
+        color: var(--navy);
+      }
+      .ok {
+        position: absolute;
+        right: -14px;
+        top: -14px;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: var(--blue);
+        border: 5px solid #fff;
+        display: grid;
+        place-items: center;
+      }
+      .row {
+        position: absolute;
+        left: 90px;
+        right: 90px;
+        height: 200px;
+        border-radius: 40px;
+        background: #fff;
+        border: 4px solid var(--gray-2);
+        box-shadow: 0 12px 0 var(--gray-2);
+      }
+      .row svg {
+        position: absolute;
+        left: 40px;
+        top: 30px;
+        width: 140px;
+        height: 140px;
+        overflow: visible;
+      }
+      .row .rt {
+        position: absolute;
+        left: 220px;
+        top: 52px;
+        font-weight: 800;
+        font-size: 64px;
+        color: var(--navy);
+        white-space: nowrap;
+      }
+      .row .rn {
+        position: absolute;
+        right: 40px;
+        top: 50px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--sky);
+        color: var(--blue);
+        font-weight: 900;
+        font-size: 54px;
+        display: grid;
+        place-items: center;
+      }
+      .lvl {
+        position: absolute;
+        bottom: 0;
+        width: 150px;
+        border-radius: 22px 22px 10px 10px;
+        color: #fff;
+        font-weight: 900;
+        font-size: 50px;
+        text-align: center;
+        padding-top: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="48.97" data-width="1080" data-height="1920">
+      <div id="zoom">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="48.97" data-track-index="0" muted playsinline></video>
+      </div>
+
+      <div id="stage" class="clip" data-start="0" data-duration="48.97" data-track-index="1">
+        <!-- W1 · prevención en riesgos (10.85 – 14.47) — also hides the bright pan behind her -->
+        <div id="w1" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -300px; top: 100px; width: 1000px; height: 1000px"></i>
+          <svg id="helmet" style="position: absolute; left: 340px; top: 220px; width: 400px; height: 340px; overflow: visible" viewBox="0 0 200 170" aria-hidden="true">
+            <path class="ln dr" d="M30 120 C30 60, 60 30, 100 30 C140 30, 170 60, 170 120" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" stroke-width="6" />
+            <path class="ln dr" d="M14 122 H186 C190 122, 192 136, 186 140 H14 C8 136, 10 122, 14 122 Z" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" stroke-width="6" />
+            <path class="ln dr" d="M86 32 V80 M114 32 V80 M86 80 H114" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" stroke-width="6" />
+          </svg>
+          <div id="w1-k" class="kick" style="top: 640px">También promueve la</div>
+          <div id="w1-t" class="ttl" style="top: 720px; font-size: 140px">PREVENCIÓN</div>
+          <div id="w1-p" class="pill" style="left: 340px; top: 910px">en riesgos</div>
+          <svg id="w1-warn" style="position: absolute; left: 120px; top: 1050px; width: 150px; height: 140px; overflow: visible" viewBox="0 0 60 56" aria-hidden="true">
+            <path d="M30 4 L56 52 H4 Z" fill="#ffd34d" stroke="#17304d" stroke-width="4" stroke-linejoin="round" />
+            <path d="M30 20 V36 M30 43 V44" stroke="#17304d" stroke-width="5" stroke-linecap="round" />
+          </svg>
+          <svg id="w1-chk" style="position: absolute; left: 810px; top: 1050px; width: 150px; height: 150px; overflow: visible" viewBox="0 0 60 60" aria-hidden="true">
+            <circle cx="30" cy="30" r="26" fill="#1f6fe5" stroke="#17304d" stroke-width="4" />
+            <path d="M18 31 L27 40 L43 22" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+          </svg>
+        </div>
+
+        <!-- W2 · ¿qué cubre? (15.5 – 20.5) -->
+        <div id="w2" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: 400px; top: -200px; width: 900px; height: 900px"></i>
+          <div id="w2-k" class="kick" style="top: 150px">La ARL</div>
+          <div id="w2-t" class="ttl" style="top: 220px; font-size: 120px">¿qué <b>cubre</b>?</div>
+          <div id="t0" class="tile" style="left: 80px; top: 430px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><path class="ln" d="M18 8 V30 C18 44, 42 44, 42 30 V8 M42 30 C42 50, 46 66, 60 66 C70 66, 72 56, 72 50" /><circle class="ln" cx="72" cy="44" r="7" /></svg>
+            <div class="tl">Atención<br />médica</div>
+            <span class="ok"><svg viewBox="0 0 30 30" style="position: static; width: 34px; height: 34px"><path d="M6 15 L12 21 L24 9" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+          </div>
+          <div id="t1" class="tile" style="left: 560px; top: 430px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><rect class="ln" x="10" y="28" width="60" height="26" rx="13" transform="rotate(-35 40 41)" /><path class="ln" d="M40 22 L40 60" transform="rotate(-35 40 41)" /></svg>
+            <div class="tl">Medica-<br />mentos</div>
+            <span class="ok"><svg viewBox="0 0 30 30" style="position: static; width: 34px; height: 34px"><path d="M6 15 L12 21 L24 9" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+          </div>
+          <div id="t2" class="tile" style="left: 80px; top: 870px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><path class="ln" d="M8 20 V66 M8 50 H72 V66 M8 40 H34 V50" /><circle class="ln" cx="21" cy="33" r="6" /><path class="ln" d="M38 36 H64 C68 36, 72 40, 72 44 V50" /><path class="ln" d="M56 8 V24 M48 16 H64" /></svg>
+            <div class="tl">Hospitali-<br />zación</div>
+            <span class="ok"><svg viewBox="0 0 30 30" style="position: static; width: 34px; height: 34px"><path d="M6 15 L12 21 L24 9" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+          </div>
+          <div id="t3" class="tile" style="left: 560px; top: 870px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><circle class="ln" cx="44" cy="12" r="7" /><path class="ln" d="M42 22 L34 44 L46 52 L42 72 M36 34 L22 40 M40 30 L58 36 M34 44 L22 70" /></svg>
+            <div class="tl">Rehabili-<br />tación</div>
+            <span class="ok"><svg viewBox="0 0 30 30" style="position: static; width: 34px; height: 34px"><path d="M6 15 L12 21 L24 9" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+          </div>
+        </div>
+
+        <!-- W3 · según el caso puede reconocer (22.6 – 27.07) -->
+        <div id="w3" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -200px; top: 700px; width: 900px; height: 900px"></i>
+          <div id="w3-k" class="kick" style="top: 200px">Según el caso, puede</div>
+          <div id="w3-t" class="ttl" style="top: 270px; font-size: 110px"><b>reconocer</b>:</div>
+          <div id="r0" class="row" style="top: 480px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><rect class="ln" x="8" y="14" width="64" height="58" rx="10" /><path class="ln" d="M8 32 H72 M26 6 V20 M54 6 V20 M32 46 L48 62 M48 46 L32 62" /></svg>
+            <div class="rt">Incapacidades</div>
+            <div class="rn">1</div>
+          </div>
+          <div id="r1" class="row" style="top: 740px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><rect class="ln" x="6" y="22" width="68" height="40" rx="8" /><circle class="ln" cx="40" cy="42" r="9" /><path class="ln" d="M16 32 V52 M64 32 V52" /></svg>
+            <div class="rt" style="font-size: 58px; top: 56px">Indemnizaciones</div>
+            <div class="rn">2</div>
+          </div>
+          <div id="r2" class="row" style="top: 1000px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><path class="ln" d="M40 6 L68 16 V38 C68 56, 56 68, 40 75 C24 68, 12 56, 12 38 V16 Z" /><path class="ln" d="M40 26 V56 M48 32 C46 28, 34 28, 33 34 C32 40, 48 40, 47 47 C46 53, 34 53, 32 48" /></svg>
+            <div class="rt">Pensiones</div>
+            <div class="rn">3</div>
+          </div>
+          <div id="coin" style="position: absolute; left: 470px; top: -140px; width: 120px; height: 120px; border-radius: 50%; background: #ffd34d; border: 6px solid #17304d; display: grid; place-items: center; font-weight: 900; font-size: 64px; color: #17304d">$</div>
+        </div>
+
+        <!-- W4 · afiliación según el riesgo (36.45 – 42.03) -->
+        <div id="w4" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: 300px; top: 900px; width: 900px; height: 900px"></i>
+          <div id="w4-k" class="kick" style="top: 180px">Si eres</div>
+          <div id="w4-t" class="ttl" style="top: 250px; font-size: 104px"><b>INDEPENDIENTE</b></div>
+          <div id="w4-s" class="kick" style="top: 410px; color: #17304d">tu afiliación depende del <b style="font-weight: 900; color: #1f6fe5">riesgo</b></div>
+          <div id="lvls" style="position: absolute; left: 105px; top: 560px; width: 870px; height: 620px">
+            <div class="lvl" style="left: 0; height: 160px; background: #2ebd6b">I</div>
+            <div class="lvl" style="left: 180px; height: 260px; background: #9ccc3c">II</div>
+            <div class="lvl" style="left: 360px; height: 360px; background: #f2c230">III</div>
+            <div class="lvl" style="left: 540px; height: 460px; background: #f08a2c">IV</div>
+            <div class="lvl" style="left: 720px; height: 560px; background: #e5484d">V</div>
+          </div>
+          <svg id="ptr" style="position: absolute; left: 140px; top: 1210px; width: 80px; height: 70px; overflow: visible" viewBox="0 0 40 34" aria-hidden="true"><path d="M20 2 L38 32 H2 Z" fill="#17304d" /></svg>
+          <div id="w4-a" class="pill" style="left: 290px; top: 1310px">+ tu actividad</div>
+        </div>
+
+        <!-- W5 · CORNABIS T.I.A. end (46.9 – end) -->
+        <div id="w5" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -100px; top: 300px; width: 1300px; height: 1300px"></i>
+          <svg id="lg-mark" viewBox="0 0 203 470" style="position: absolute; left: 430px; top: 330px; width: 220px; height: 509px; overflow: visible" aria-hidden="true">
+            <g fill="#17304d">
+              <path class="fb" d="M28 98 C12 98, 6 118, 14 145 C30 200, 66 270, 70 330 L70 468 L80 468 L80 320 C78 240, 66 160, 50 118 C44 104, 37 98, 28 98 Z" />
+              <path class="fb" d="M101 262 C92 262, 88 272, 90 290 C94 340, 96 400, 96 468 L106 468 C107 400, 110 340, 113 290 C115 272, 110 262, 101 262 Z" />
+              <path class="fb" d="M176 176 C160 168, 142 184, 134 218 C122 272, 120 340, 122 400 C123 440, 124 460, 124 468 L192 468 C158 440, 144 396, 147 336 C150 276, 168 240, 182 212 C189 196, 187 181, 176 176 Z" />
+              <ellipse class="fh" cx="63" cy="52" rx="24" ry="46" transform="rotate(14 63 52)" />
+              <ellipse class="fh" cx="103" cy="222" rx="19" ry="31" />
+              <ellipse class="fh" cx="145" cy="128" rx="22" ry="40" transform="rotate(-14 145 128)" />
+            </g>
+          </svg>
+          <div id="lg-w" class="ttl" style="top: 900px; font-size: 150px; font-weight: 800; color: #17304d">CORNABIS</div>
+          <div id="lg-tia" class="ttl" style="top: 1080px; font-size: 40px; font-weight: 800; color: #17304d; letter-spacing: 0.2em">T.I.A.</div>
+          <div id="lg-t" class="ttl" style="top: 1160px; font-size: 44px; font-weight: 800; font-style: italic; color: #6d6e70">Unidos Construyendo Bienestar Social</div>
+        </div>
+
+        <div id="caps"></div>
+      </div>
+
+      <audio id="sfx-01" src="assets/sfx/flash.wav" data-start="0.38" data-duration="1.05" data-track-index="20" data-volume="0.35"></audio>
+      <audio id="sfx-02" src="assets/sfx/shutter.wav" data-start="1.0" data-duration="0.34" data-track-index="21" data-volume="0.45"></audio>
+      <audio id="sfx-03" src="assets/sfx/whoosh-1.wav" data-start="3.25" data-duration="0.57" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="sfx-04" src="assets/sfx/falla.wav" data-start="3.56" data-duration="0.9" data-track-index="23" data-volume="0.22"></audio>
+      <audio id="sfx-05" src="assets/sfx/whoosh-2.wav" data-start="10.75" data-duration="0.98" data-track-index="22" data-volume="0.38"></audio>
+      <audio id="sfx-06" src="assets/sfx/snap.wav" data-start="12.92" data-duration="0.88" data-track-index="24" data-volume="0.35"></audio>
+      <audio id="sfx-07" src="assets/sfx/correct.wav" data-start="13.98" data-duration="1.44" data-track-index="25" data-volume="0.3"></audio>
+      <audio id="sfx-08" src="assets/sfx/whoosh-3.wav" data-start="15.4" data-duration="1.44" data-track-index="22" data-volume="0.34"></audio>
+      <audio id="sfx-09" src="assets/sfx/click.wav" data-start="15.86" data-duration="0.9" data-track-index="26" data-volume="0.4"></audio>
+      <audio id="sfx-10" src="assets/sfx/click.wav" data-start="17.08" data-duration="0.9" data-track-index="27" data-volume="0.4"></audio>
+      <audio id="sfx-11" src="assets/sfx/click.wav" data-start="18.36" data-duration="0.9" data-track-index="26" data-volume="0.4"></audio>
+      <audio id="sfx-12" src="assets/sfx/correct.wav" data-start="19.64" data-duration="1.44" data-track-index="25" data-volume="0.3"></audio>
+      <audio id="sfx-13" src="assets/sfx/cam-click.wav" data-start="20.5" data-duration="0.82" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="sfx-14" src="assets/sfx/whoosh-1.wav" data-start="22.55" data-duration="0.57" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="sfx-15" src="assets/sfx/digits.wav" data-start="23.5" data-duration="1.26" data-track-index="24" data-volume="0.22"></audio>
+      <audio id="sfx-16" src="assets/sfx/cash.wav" data-start="24.6" data-duration="1.59" data-track-index="28" data-volume="0.3"></audio>
+      <audio id="sfx-17" src="assets/sfx/correct.wav" data-start="26.1" data-duration="1.44" data-track-index="25" data-volume="0.3"></audio>
+      <audio id="sfx-18" src="assets/sfx/shutter.wav" data-start="27.07" data-duration="0.34" data-track-index="21" data-volume="0.4"></audio>
+      <audio id="sfx-19" src="assets/sfx/cash.wav" data-start="31.42" data-duration="1.59" data-track-index="28" data-volume="0.22"></audio>
+      <audio id="sfx-20" src="assets/sfx/riser.wav" data-start="34.7" data-duration="1.7" data-track-index="29" data-volume="0.26"></audio>
+      <audio id="sfx-21" src="assets/sfx/whoosh-2.wav" data-start="36.35" data-duration="0.98" data-track-index="22" data-volume="0.38"></audio>
+      <audio id="sfx-22" src="assets/sfx/loading.wav" data-start="39.4" data-duration="1.6" data-track-index="24" data-volume="0.2"></audio>
+      <audio id="sfx-23" src="assets/sfx/snap.wav" data-start="41.36" data-duration="0.88" data-track-index="26" data-volume="0.35"></audio>
+      <audio id="sfx-24" src="assets/sfx/typing.wav" data-start="42.34" data-duration="1.2" data-track-index="27" data-volume="0.22"></audio>
+      <audio id="sfx-25" src="assets/sfx/whoosh-3.wav" data-start="46.8" data-duration="1.44" data-track-index="22" data-volume="0.34"></audio>
+      <audio id="sfx-26" src="assets/sfx/correct.wav" data-start="47.6" data-duration="1.37" data-track-index="25" data-volume="0.3"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+
+        // ---------- captions (local Whisper small; wording cleaned) ----------
+        const CAPS = [
+          [1.36, [["¿Crees", 0.16], ["que", 0.28], ["la", 0.48], ["ARL", 0.72, 1], ["solo", 1.18]]],
+          [3.5, [["te", 1.4], ["protege", 1.64], ["cuando", 2.0], ["tienes", 2.38], ["un", 2.56], ["accidente?", 2.8, 1]]],
+          [4.26, [["¡Ojo!", 3.58, 1]]],
+          [5.18, [["porque", 4.3], ["su", 4.48], ["protección", 4.7, 1]]],
+          [6.6, [["va", 5.22], ["mucho", 5.7], ["más", 5.88], ["allá.", 6.16]]],
+          [8.66, [["La", 6.66], ["ARL", 6.94, 1], ["te", 7.42], ["protege", 7.8], ["frente", 8.24], ["a", 8.46]]],
+          [9.82, [["accidentes", 8.7, 1], ["de", 9.08], ["trabajo", 9.48]]],
+          [11.68, [["y", 9.84], ["enfermedades laborales.", 10.24, 1]]],
+          [13.68, [["También", 11.7], ["promueve", 12.16], ["la", 12.6], ["prevención", 12.92]]],
+          [14.62, [["en", 13.7], ["riesgos.", 13.98, 1]]],
+          [15.84, [["Pero", 14.64], ["¿qué", 14.82], ["cubre?", 15.17, 1]]],
+          [18.34, [["Atención médica,", 15.86], ["medicamentos,", 17.08]]],
+          [20.8, [["hospitalización", 18.36], ["y", 19.2], ["rehabilitación.", 19.64]]],
+          [22.3, [["Además,", 20.84], ["según", 21.38], ["el", 21.58], ["caso,", 21.88]]],
+          [24.6, [["puede", 22.32], ["reconocer", 22.72], ["incapacidades,", 23.54]]],
+          [27.44, [["indemnizaciones", 24.64], ["y", 25.76], ["también", 26.1], ["pensiones.", 26.46]]],
+          [29.06, [["Por", 27.46], ["eso", 27.62], ["es", 27.76], ["tan", 28.12], ["importante:", 28.7, 1]]],
+          [30.64, [["no", 29.08], ["solo", 29.32], ["protege", 29.64], ["tu", 29.97], ["salud,", 30.22, 1]]],
+          [33.02, [["también", 30.66], ["es", 30.92], ["el", 31.06], ["respaldo económico", 31.42, 1]]],
+          [34.46, [["si", 33.05], ["un", 33.2], ["riesgo laboral", 33.39, 1]]],
+          [36.46, [["afecta", 34.48], ["tu", 34.78], ["capacidad", 35.13, 1], ["para", 35.72], ["trabajar.", 36.19]]],
+          [37.9, [["Si", 36.5], ["eres", 36.66], ["independiente,", 36.98]]],
+          [40.0, [["recuerda", 37.94], ["que", 38.57], ["tu", 38.8], ["afiliación", 39.0]]],
+          [42.3, [["depende", 40.02], ["del", 40.34], ["riesgo", 40.58], ["y", 41.22], ["tu", 41.36], ["actividad.", 41.53]]],
+          [44.24, [["Guarda", 42.34, 1], ["este", 42.62], ["video", 42.87], ["y", 43.22], ["compártelo", 43.57, 1]]],
+          [45.8, [["con", 44.27], ["otro", 44.62], ["independiente.", 45.12, 1]]],
+          [46.96, [["Con", 45.82], ["Cornabis:", 46.1, 1]]],
+          [48.97, [["seguridad", 47.0], ["social", 47.6], ["sin enredos.", 48.14, 1]]],
+        ];
+        const caps = $("#caps");
+        CAPS.forEach(([end, words]) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          const els = words.map(([w, t, kw]) => {
+            const s = document.createElement("span");
+            s.className = "cw" + (kw ? " kw" : "");
+            if (kw) {
+              const hl = document.createElement("i");
+              hl.className = "hl";
+              s.appendChild(hl);
+            }
+            s.appendChild(document.createTextNode(w));
+            gsap.set(s, { opacity: 0 });
+            inner.appendChild(s);
+            return [s, t, kw];
+          });
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          tl.set(cap, { visibility: "visible" }, words[0][1] - 0.06);
+          els.forEach(([s, t, kw]) => {
+            if (kw) {
+              tl.set(s, { opacity: 1 }, t).fromTo(s, { scale: 0.6, y: 10 }, { scale: 1, y: 0, duration: 0.35, ease: "back.out(2.6)" }, t);
+              tl.fromTo(s.querySelector(".hl"), { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.3 }, t + 0.04);
+            } else tl.set(s, { opacity: 1 }, t).fromTo(s, { y: 22, scale: 0.9 }, { y: 0, scale: 1, duration: 0.26, ease: "back.out(2)" }, t);
+          });
+          if (end < 48.9) tl.set(cap, { visibility: "hidden" }, end);
+        });
+
+        // ---------- camera: reframe the wide shots, punch-ins on the rest ----------
+        // [t, scale, origin]
+        const Z = [
+          [0, 1.75, "48% 46%"], [1.03, 1.0, "50% 35%"], [3.3, 1.12, "50% 30%"], [6.66, 1.0, "50% 30%"],
+          [14.47, 1.12, "50% 30%"], [20.5, 1.6, "48% 38%"], [21.27, 1.0, "50% 30%"], [27.07, 1.55, "46% 34%"],
+          [30.37, 1.0, "50% 30%"], [33.05, 1.12, "50% 30%"], [42.03, 1.0, "50% 30%"], [44.27, 1.12, "50% 30%"], [45.7, 1.0, "50% 30%"], [48.97, 1, "50% 30%"],
+        ];
+        Z.slice(0, -1).forEach(([t, s, o], i) => {
+          const next = Z[i + 1][0];
+          // the walk-in shot gets bigger on its own, so it eases back out as she arrives
+          const end = t === 27.07 ? 1.12 : s + 0.035;
+          tl.set("#zoom", { scale: s, transformOrigin: o }, t).to("#zoom", { scale: end, duration: next - t - 0.02, ease: t === 27.07 ? "sine.inOut" : "none" }, t);
+        });
+
+        // ---------- helpers ----------
+        const scene = (id, a, b) => {
+          tl.set("#caps", { attr: { "data-dark": 1 } }, a + 0.25);
+          if (b < 48.9) tl.set("#caps", { attr: { "data-dark": 0 } }, b - 0.2);
+          tl.set(id, { visibility: "visible" }, a)
+            .fromTo(id, { clipPath: "circle(0% at 50% 40%)" }, { clipPath: "circle(100% at 50% 40%)", duration: 0.5, ease: "power3.inOut" }, a)
+            .fromTo(id + " .dots", { x: 0, y: 0 }, { x: -60, y: -60, duration: b - a, ease: "none" }, a)
+            .fromTo(id + " .blob", { scale: 0.85 }, { scale: 1.15, duration: b - a, ease: "sine.inOut" }, a);
+          if (b < 48.9) tl.to(id, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.35, ease: "power3.in" }, b - 0.35).set(id, { visibility: "hidden" }, b);
+        };
+        const pop = (sel, t, from = { scale: 0 }, d = 0.45, ease = "back.out(2.4)") =>
+          tl.fromTo(sel, { opacity: 0, ...from }, { opacity: 1, scale: 1, x: 0, y: 0, rotation: 0, duration: d, ease }, t);
+        const wipe = (sel, t, d = 0.5) => tl.fromTo(sel, { clipPath: "inset(-10% 100% -10% 0%)" }, { clipPath: "inset(-10% -2% -10% -2%)", duration: d, ease: "power3.out" }, t);
+
+        // ===== W1 (10.85 – 14.47): prevención en riesgos =====
+        scene("#w1", 10.85, 14.47);
+        tl.to("#helmet .dr", { attr: { "stroke-dashoffset": 0 }, duration: 0.8, ease: "power2.inOut", stagger: 0.18 }, 11.0);
+        tl.fromTo("#helmet", { y: 30 }, { y: -10, duration: 3.4, ease: "sine.out" }, 11.0);
+        pop("#w1-k", 11.7, { y: 24 }, 0.4, "power3.out");
+        wipe("#w1-t", 12.92, 0.55);
+        pop("#w1-p", 13.7, { scale: 0.4 }, 0.45);
+        pop("#w1-warn", 13.0, { scale: 0, rotation: -40 }, 0.5);
+        tl.to("#w1-warn", { rotation: 8, duration: 0.1, ease: "sine.inOut", yoyo: true, repeat: 5 }, 13.5);
+        pop("#w1-chk", 13.98, { scale: 0, rotation: 40 }, 0.5);
+        tl.to("#w1-chk path", { attr: { "stroke-dashoffset": 0 }, duration: 0.35, ease: "power2.out" }, 14.1);
+
+        // ===== W2 (15.5 – 20.5): ¿qué cubre? four tiles =====
+        scene("#w2", 15.5, 20.5);
+        pop("#w2-k", 15.55, { y: 20 }, 0.35, "power3.out");
+        pop("#w2-t", 15.6, { scale: 0.6 }, 0.45, "back.out(2)");
+        gsap.set(".tile .ok", { scale: 0 });
+        [["#t0", 15.86], ["#t1", 17.08], ["#t2", 18.36], ["#t3", 19.64]].forEach(([id, t], i) => {
+          pop(id, t - 0.05, { y: 120, scale: 0.7, rotation: i % 2 ? 4 : -4 }, 0.5, "back.out(1.8)");
+          tl.fromTo(id + " .ok", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(3)" }, t + 0.35);
+          tl.to(id + " svg", { y: -10, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 3 }, t + 0.5);
+        });
+
+        // ===== W3 (22.6 – 27.07): incapacidades · indemnizaciones · pensiones =====
+        scene("#w3", 22.6, 27.07);
+        pop("#w3-k", 22.65, { y: 20 }, 0.35, "power3.out");
+        wipe("#w3-t", 22.72, 0.5);
+        [["#r0", 23.54], ["#r1", 24.64], ["#r2", 26.1]].forEach(([id, t]) => {
+          pop(id, t - 0.05, { x: -200 }, 0.5, "expo.out");
+          pop(id + " .rn", t + 0.15, { scale: 0, rotation: -180 }, 0.45, "back.out(2.6)");
+        });
+        tl.set("#coin", { y: 0 }, 0);
+        tl.fromTo("#coin", { y: 0, rotation: 0 }, { y: 940, rotation: 360, duration: 0.55, ease: "power2.in" }, 24.6);
+        tl.to("#coin", { y: 980, scale: 0, duration: 0.2, ease: "power2.in" }, 25.15);
+
+        // ===== W4 (36.45 – 42.03): afiliación según riesgo I–V =====
+        scene("#w4", 36.45, 42.03);
+        pop("#w4-k", 36.5, { y: 20 }, 0.35, "power3.out");
+        wipe("#w4-t", 36.98, 0.55);
+        pop("#w4-s", 38.8, { y: 24 }, 0.4, "power3.out");
+        document.querySelectorAll("#lvls .lvl").forEach((l, i) => {
+          tl.fromTo(l, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.45, ease: "back.out(1.6)" }, 39.1 + i * 0.12);
+        });
+        pop("#ptr", 39.6, { y: 40 }, 0.35, "back.out(2)");
+        tl.to("#ptr", { x: 720, duration: 0.9, ease: "power2.inOut" }, 40.0)
+          .to("#ptr", { x: 360, duration: 0.5, ease: "power2.inOut" }, 40.9)
+          .to("#lvls .lvl:nth-child(3)", { scale: 1.08, duration: 0.2, ease: "power2.out", yoyo: true, repeat: 1 }, 41.3);
+        pop("#w4-a", 41.36, { scale: 0.4 }, 0.45);
+
+        // ===== W5 (46.9 – end): CORNABIS T.I.A. =====
+        scene("#w5", 46.9, 49);
+        tl.fromTo("#lg-mark .fb", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.55, ease: "expo.out", stagger: 0.1 }, 47.0);
+        tl.fromTo("#lg-mark .fh", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.45, ease: "back.out(2.6)", stagger: 0.1 }, 47.3);
+        wipe("#lg-w", 47.4, 0.6);
+        pop("#lg-tia", 47.8, { scale: 0.3 }, 0.35);
+        pop("#lg-t", 48.0, { y: 30 }, 0.45, "back.out(2)");
+
+        tl.set({}, {}, 48.97);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
