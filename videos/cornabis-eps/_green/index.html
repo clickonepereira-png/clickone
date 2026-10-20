@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="es" data-mode="green">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Cornabis — ¿qué es una EPS?</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-italic.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: italic;
+      }
+
+      /* Cornabis: navy from the logo + action blue */
+      :root {
+        --blue: #1f6fe5;
+        --navy: #17304d;
+        --navy-2: #0d3a91;
+        --sky: #eaf3ff;
+        --gray: #5d6b85;
+        --gray-2: #cfdaf0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #zoom {
+        display: none;
+      }
+      #zoom {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions (Cornabis) ---------- */
+      .cap {
+        position: absolute;
+        left: 50px;
+        right: 50px;
+        top: 1300px;
+        display: flex;
+        justify-content: center;
+        visibility: hidden;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 15px;
+        row-gap: 4px;
+        text-align: center;
+      }
+      .cw {
+        position: relative;
+        display: inline-block;
+        font-weight: 300;
+        font-size: 64px;
+        line-height: 1.3;
+        color: #fff;
+        -webkit-text-stroke: 6px var(--navy);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      .cw.kw {
+        font-weight: 800;
+        isolation: isolate;
+        -webkit-text-stroke: 0;
+        padding: 0 12px;
+        margin: 0 -4px;
+      }
+      .cw .hl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 10px;
+        bottom: 6px;
+        border-radius: 14px;
+        background: var(--blue);
+        border: 4px solid var(--navy);
+        z-index: -1;
+      }
+
+      /* on the white scenes the captions turn navy (no white-on-white) */
+      #caps[data-dark="1"] .cw {
+        color: var(--navy);
+        -webkit-text-stroke: 0;
+        font-weight: 400;
+      }
+      #caps[data-dark="1"] .cw.kw {
+        color: #fff;
+        font-weight: 800;
+      }
+
+      /* ---------- white motion-graphic scenes ---------- */
+      .ws {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: #fff;
+        visibility: hidden;
+      }
+      .ws .dots {
+        position: absolute;
+        inset: -60px;
+        background-image: radial-gradient(circle, #dfe9fa 3px, transparent 3.5px);
+        background-size: 60px 60px;
+      }
+      .ws .blob {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(61, 139, 255, 0.18) 0%, rgba(61, 139, 255, 0) 70%);
+      }
+      .kick {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-weight: 400;
+        font-size: 50px;
+        color: var(--gray);
+        white-space: nowrap;
+      }
+      .ttl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-weight: 900;
+        color: var(--navy);
+        white-space: nowrap;
+        line-height: 1;
+      }
+      .ttl b {
+        color: var(--blue);
+      }
+      .ln {
+        fill: none;
+        stroke: var(--blue);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .pill {
+        position: absolute;
+        height: 100px;
+        padding: 0 40px;
+        border-radius: 50px;
+        background: var(--blue);
+        border: 4px solid var(--navy);
+        color: #fff;
+        font-weight: 800;
+        font-size: 48px;
+        line-height: 92px;
+        white-space: nowrap;
+      }
+      .tile {
+        position: absolute;
+        width: 440px;
+        height: 380px;
+        border-radius: 40px;
+        background: #fff;
+        border: 4px solid var(--gray-2);
+        box-shadow: 0 14px 0 var(--gray-2);
+        text-align: center;
+      }
+      .tile svg {
+        position: absolute;
+        left: 140px;
+        top: 50px;
+        width: 160px;
+        height: 160px;
+        overflow: visible;
+      }
+      .tile .tl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 250px;
+        font-weight: 800;
+        font-size: 44px;
+        line-height: 1.1;
+        color: var(--navy);
+      }
+      .ok {
+        position: absolute;
+        right: -14px;
+        top: -14px;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: var(--blue);
+        border: 5px solid #fff;
+        display: grid;
+        place-items: center;
+      }
+      .row {
+        position: absolute;
+        left: 90px;
+        right: 90px;
+        height: 200px;
+        border-radius: 40px;
+        background: #fff;
+        border: 4px solid var(--gray-2);
+        box-shadow: 0 12px 0 var(--gray-2);
+      }
+      .row svg {
+        position: absolute;
+        left: 40px;
+        top: 30px;
+        width: 140px;
+        height: 140px;
+        overflow: visible;
+      }
+      .row .rt {
+        position: absolute;
+        left: 220px;
+        top: 52px;
+        font-weight: 800;
+        font-size: 64px;
+        color: var(--navy);
+        white-space: nowrap;
+      }
+      .row .rn {
+        position: absolute;
+        right: 40px;
+        top: 50px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--sky);
+        color: var(--blue);
+        font-weight: 900;
+        font-size: 54px;
+        display: grid;
+        place-items: center;
+      }
+      .lvl {
+        position: absolute;
+        bottom: 0;
+        width: 150px;
+        border-radius: 22px 22px 10px 10px;
+        color: #fff;
+        font-weight: 900;
+        font-size: 50px;
+        text-align: center;
+        padding-top: 18px;
+      }
+      /* stories scenes */
+      .phone {
+        position: absolute;
+        left: 290px;
+        top: 300px;
+        width: 500px;
+        height: 900px;
+        border-radius: 70px;
+        background: #17304d;
+        padding: 22px;
+      }
+      .phone .scr {
+        position: absolute;
+        inset: 22px;
+        border-radius: 52px;
+        background: linear-gradient(180deg, #eaf3ff, #ffffff);
+        overflow: hidden;
+      }
+      .notif {
+        position: absolute;
+        left: 22px;
+        right: 22px;
+        top: 120px;
+        height: 170px;
+        border-radius: 32px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(23, 48, 77, 0.18);
+        padding: 24px 24px 0 110px;
+      }
+      .notif .ap {
+        position: absolute;
+        left: 22px;
+        top: 26px;
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+        background: #1f6fe5;
+        display: grid;
+        place-items: center;
+      }
+      .notif .h {
+        font-weight: 800;
+        font-size: 36px;
+        color: #17304d;
+        white-space: nowrap;
+      }
+      .notif .b {
+        margin-top: 6px;
+        font-weight: 400;
+        font-size: 31px;
+        line-height: 1.25;
+        color: #5d6b85;
+      }
+      .cal {
+        position: absolute;
+        left: 110px;
+        top: 470px;
+        width: 860px;
+        height: 700px;
+        border-radius: 44px;
+        background: #fff;
+        border: 4px solid #cfdaf0;
+        box-shadow: 0 14px 0 #cfdaf0;
+        overflow: hidden;
+      }
+      .cal .top {
+        height: 120px;
+        background: #1f6fe5;
+        color: #fff;
+        font-weight: 800;
+        font-size: 50px;
+        line-height: 120px;
+        text-align: center;
+        letter-spacing: 0.06em;
+      }
+      .day {
+        position: absolute;
+        width: 100px;
+        height: 90px;
+        border-radius: 22px;
+        font-weight: 700;
+        font-size: 40px;
+        line-height: 90px;
+        text-align: center;
+        color: #17304d;
+      }
+      .receipt {
+        position: absolute;
+        left: 340px;
+        top: 380px;
+        width: 400px;
+        height: 520px;
+        background: #fff;
+        border: 4px solid #cfdaf0;
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 14px 0 #cfdaf0;
+      }
+      .big {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-weight: 900;
+        color: var(--blue);
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .acr {
+        position: absolute;
+        left: 120px;
+        display: flex;
+        align-items: center;
+        gap: 34px;
+      }
+      .acr .sq {
+        width: 150px;
+        height: 150px;
+        border-radius: 36px;
+        background: var(--blue);
+        border: 5px solid var(--navy);
+        color: #fff;
+        font-weight: 900;
+        font-size: 100px;
+        display: grid;
+        place-items: center;
+      }
+      .acr .w {
+        font-weight: 300;
+        font-size: 76px;
+        color: var(--navy);
+      }
+      .acr .w b {
+        font-weight: 900;
+        color: var(--blue);
+      }
+      .rg2 {
+        position: absolute;
+        top: 560px;
+        width: 420px;
+        height: 560px;
+        border-radius: 44px;
+        background: #fff;
+        border: 4px solid var(--gray-2);
+        box-shadow: 0 14px 0 var(--gray-2);
+        text-align: center;
+      }
+      .rg2 svg {
+        position: absolute;
+        left: 120px;
+        top: 60px;
+        width: 180px;
+        height: 180px;
+        overflow: visible;
+      }
+      .rg2 .t {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 290px;
+        font-weight: 900;
+        font-size: 50px;
+        color: var(--navy);
+      }
+      .rg2 .s {
+        position: absolute;
+        left: 30px;
+        right: 30px;
+        top: 370px;
+        font-weight: 400;
+        font-size: 32px;
+        line-height: 1.3;
+        color: var(--gray);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="59.9" data-width="1080" data-height="1920">
+      <div id="zoom">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="59.9" data-track-index="0" muted playsinline></video>
+      </div>
+
+      <div id="stage" class="clip" data-start="0" data-duration="59.9" data-track-index="1">
+        <!-- W1 · EPS = Entidad Promotora de Salud (6.9 – 11.7) -->
+        <div id="w1" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -250px; top: 200px; width: 1000px; height: 1000px"></i>
+          <div id="w1-k" class="kick" style="top: 290px">Una EPS es una</div>
+          <div id="a0" class="acr" style="top: 420px"><span class="sq">E</span><span class="w"><b>E</b>ntidad</span></div>
+          <div id="a1" class="acr" style="top: 610px"><span class="sq">P</span><span class="w"><b>P</b>romotora de</span></div>
+          <div id="a2" class="acr" style="top: 800px"><span class="sq">S</span><span class="w"><b>S</b>alud</span></div>
+          <div id="w1-p" class="pill" style="left: 110px; top: 1020px; font-size: 40px">organiza tu acceso al sistema de salud</div>
+        </div>
+
+        <!-- W2 · independiente 12,5 % del IBC (12.77 – 18.8) -->
+        <div id="w2" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: 300px; top: 100px; width: 900px; height: 900px"></i>
+          <div id="w2-k" class="kick" style="top: 280px">Si eres</div>
+          <div id="w2-t" class="ttl" style="top: 350px; font-size: 96px"><b>independiente</b></div>
+          <svg id="donut" style="position: absolute; left: 290px; top: 500px; width: 500px; height: 500px" viewBox="0 0 400 400" aria-hidden="true">
+            <circle cx="200" cy="200" r="150" fill="none" stroke="#eaf3ff" stroke-width="44" />
+            <circle id="dn" cx="200" cy="200" r="150" fill="none" stroke="#1f6fe5" stroke-width="44" stroke-linecap="round" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="100" transform="rotate(-90 200 200)" />
+          </svg>
+          <div id="w2-n" class="big" style="top: 680px; font-size: 130px"><span id="n125">0</span>%</div>
+          <div id="w2-s" class="kick" style="top: 1060px; color: #17304d">de tu <b style="font-weight: 900; color: #1f6fe5">ingreso base de cotización</b></div>
+          <div id="w2-g" class="kick" style="top: 1130px; font-size: 36px; font-style: italic">(generalmente)</div>
+        </div>
+
+        <!-- W3 · empleado 4 % + empleador 8,5 % (22.3 – 24.7) -->
+        <div id="w3" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -200px; top: 500px; width: 1000px; height: 1000px"></i>
+          <div id="w3-k" class="kick" style="top: 300px">Si eres</div>
+          <div id="w3-t" class="ttl" style="top: 370px; font-size: 104px"><b>empleado</b></div>
+          <div style="position: absolute; left: 110px; top: 620px; width: 860px; height: 170px; border-radius: 30px; overflow: hidden; background: #eaf3ff">
+            <div id="b4" style="position: absolute; left: 0; top: 0; width: 275px; height: 170px; background: #1f6fe5"></div>
+            <div id="b85" style="position: absolute; left: 275px; top: 0; width: 585px; height: 170px; background: #17304d"></div>
+          </div>
+          <div id="l4" style="position: absolute; left: 110px; width: 275px; top: 820px; text-align: center; font-weight: 900; font-size: 64px; color: #1f6fe5">4 %<div style="font-weight: 600; font-size: 34px; color: #5d6b85">tú</div></div>
+          <div id="l85" style="position: absolute; left: 385px; width: 585px; top: 820px; text-align: center; font-weight: 900; font-size: 64px; color: #17304d">8,5 %<div style="font-weight: 600; font-size: 34px; color: #5d6b85">tu empleador</div></div>
+          <div id="l125" class="pill" style="left: 345px; top: 1010px; font-size: 52px">= 12,5 %</div>
+        </div>
+
+        <!-- W4 · dos regímenes (25.0 – 29.1) -->
+        <div id="w4" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: 200px; top: 100px; width: 1000px; height: 1000px"></i>
+          <div id="w4-k" class="kick" style="top: 290px">Existen dos</div>
+          <div id="w4-t" class="ttl" style="top: 360px; font-size: 104px"><b>regímenes</b></div>
+          <div id="g0" class="rg2" style="left: 80px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><rect class="ln" x="10" y="22" width="60" height="44" rx="8" /><path class="ln" d="M30 22 V14 H50 V22 M10 40 H70 M36 40 V46 H44 V40" /></svg>
+            <div class="t">Contributivo</div>
+            <div class="s">si tienes ingresos y aportas</div>
+          </div>
+          <div id="g1" class="rg2" style="left: 580px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><path class="ln" d="M40 70 C14 52, 6 38, 6 26 C6 14, 15 6, 25 6 C32 6, 37 10, 40 16 C43 10, 48 6, 55 6 C65 6, 74 14, 74 26 C74 38, 66 52, 40 70 Z" /><path class="ln" d="M24 40 L34 50 L56 28" /></svg>
+            <div class="t">Subsidiado</div>
+            <div class="s">según tus condiciones</div>
+          </div>
+        </div>
+
+        <!-- W5 · urgencias (40.95 – 46.83) -->
+        <div id="w5" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -200px; top: 200px; width: 1000px; height: 1000px"></i>
+          <div id="w5-k" class="kick" style="top: 280px">En una</div>
+          <div id="w5-t" class="ttl" style="top: 350px; font-size: 120px; color: #e5484d">URGENCIA</div>
+          <svg id="amb" style="position: absolute; left: 290px; top: 520px; width: 500px; height: 300px; overflow: visible" viewBox="0 0 200 120" aria-hidden="true">
+            <rect id="siren" x="66" y="6" width="28" height="16" rx="6" fill="#e5484d" />
+            <path d="M10 30 H120 V96 H10 Z" fill="#fff" stroke="#17304d" stroke-width="6" stroke-linejoin="round" />
+            <path d="M120 46 H160 L188 72 V96 H120 Z" fill="#fff" stroke="#17304d" stroke-width="6" stroke-linejoin="round" />
+            <path d="M65 44 V82 M46 63 H84" stroke="#e5484d" stroke-width="10" stroke-linecap="round" />
+            <circle cx="46" cy="100" r="14" fill="#17304d" /><circle cx="152" cy="100" r="14" fill="#17304d" />
+          </svg>
+          <div id="w5-a" class="ttl" style="top: 900px; font-size: 64px">atención inicial</div>
+          <div id="w5-b" class="pill" style="left: 170px; top: 1010px; font-size: 44px">sin autorización previa ✓</div>
+        </div>
+
+        <!-- W6 · derecho de petición → Supersalud (50.0 – 56.47) -->
+        <div id="w6" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: 200px; top: 300px; width: 1000px; height: 1000px"></i>
+          <div id="w6-k" class="kick" style="top: 280px">Si tu EPS no responde:</div>
+          <div id="d0" class="rg2" style="left: 80px; top: 420px; height: 520px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><path class="ln" d="M16 6 H50 L66 22 V74 H16 Z M50 6 V22 H66 M26 36 H56 M26 48 H56 M26 60 H46" /></svg>
+            <div class="t" style="font-size: 44px">Derecho de<br />petición</div>
+            <div class="s" style="top: 410px">puedes presentarlo</div>
+          </div>
+          <svg id="arr" style="position: absolute; left: 500px; top: 640px; width: 80px; height: 60px; overflow: visible" viewBox="0 0 80 60" aria-hidden="true"><path d="M4 30 H64 M46 10 L68 30 L46 50" fill="none" stroke="#1f6fe5" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" /></svg>
+          <div id="d1" class="rg2" style="left: 580px; top: 420px; height: 520px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><path class="ln" d="M8 28 L40 8 L72 28 Z M12 72 H68 M16 34 V64 M30 34 V64 M50 34 V64 M64 34 V64 M10 72 V66 H70 V72" /></svg>
+            <div class="t" style="font-size: 40px">Superintendencia<br />Nacional de Salud</div>
+            <div class="s" style="top: 410px">si es necesario</div>
+          </div>
+        </div>
+
+        <!-- W7 · CORNABIS T.I.A. end (57.6 – end) -->
+        <div id="w9" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -100px; top: 300px; width: 1300px; height: 1300px"></i>
+          <svg id="lg-mark" viewBox="0 0 203 470" style="position: absolute; left: 430px; top: 300px; width: 220px; height: 509px; overflow: visible" aria-hidden="true">
+            <g fill="#17304d">
+              <path class="fb" d="M28 98 C12 98, 6 118, 14 145 C30 200, 66 270, 70 330 L70 468 L80 468 L80 320 C78 240, 66 160, 50 118 C44 104, 37 98, 28 98 Z" />
+              <path class="fb" d="M101 262 C92 262, 88 272, 90 290 C94 340, 96 400, 96 468 L106 468 C107 400, 110 340, 113 290 C115 272, 110 262, 101 262 Z" />
+              <path class="fb" d="M176 176 C160 168, 142 184, 134 218 C122 272, 120 340, 122 400 C123 440, 124 460, 124 468 L192 468 C158 440, 144 396, 147 336 C150 276, 168 240, 182 212 C189 196, 187 181, 176 176 Z" />
+              <ellipse class="fh" cx="63" cy="52" rx="24" ry="46" transform="rotate(14 63 52)" />
+              <ellipse class="fh" cx="103" cy="222" rx="19" ry="31" />
+              <ellipse class="fh" cx="145" cy="128" rx="22" ry="40" transform="rotate(-14 145 128)" />
+            </g>
+          </svg>
+          <div id="lg-w" class="ttl" style="top: 860px; font-size: 150px; font-weight: 800; color: #17304d">CORNABIS</div>
+          <div id="lg-tia" class="ttl" style="top: 1040px; font-size: 40px; font-weight: 800; color: #17304d; letter-spacing: 0.2em">T.I.A.</div>
+          <div id="lg-f" class="pill" style="left: 365px; top: 1130px; font-size: 44px">Síguenos</div>
+        </div>
+
+        <div id="caps"></div>
+      </div>
+
+      <audio id="sfx-01" src="assets/sfx/flash.wav" data-start="0.2" data-duration="1.05" data-track-index="20" data-volume="0.3"></audio>
+      <audio id="sfx-02" src="assets/sfx/cam-click.wav" data-start="1.57" data-duration="0.82" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="sfx-03" src="assets/sfx/falla.wav" data-start="4.2" data-duration="0.9" data-track-index="22" data-volume="0.2"></audio>
+      <audio id="sfx-04" src="assets/sfx/whoosh-2.wav" data-start="6.85" data-duration="0.98" data-track-index="23" data-volume="0.38"></audio>
+      <audio id="sfx-05" src="assets/sfx/click.wav" data-start="7.14" data-duration="0.9" data-track-index="24" data-volume="0.38"></audio>
+      <audio id="sfx-06" src="assets/sfx/click.wav" data-start="8.6" data-duration="0.9" data-track-index="25" data-volume="0.38"></audio>
+      <audio id="sfx-07" src="assets/sfx/click.wav" data-start="9.26" data-duration="0.9" data-track-index="24" data-volume="0.38"></audio>
+      <audio id="sfx-08" src="assets/sfx/whoosh-1.wav" data-start="12.7" data-duration="0.57" data-track-index="23" data-volume="0.4"></audio>
+      <audio id="sfx-09" src="assets/sfx/digits.wav" data-start="15.84" data-duration="1.26" data-track-index="26" data-volume="0.22"></audio>
+      <audio id="sfx-10" src="assets/sfx/whoosh-3.wav" data-start="22.25" data-duration="1.44" data-track-index="23" data-volume="0.32"></audio>
+      <audio id="sfx-11" src="assets/sfx/cash.wav" data-start="23.5" data-duration="1.59" data-track-index="27" data-volume="0.22"></audio>
+      <audio id="sfx-12" src="assets/sfx/whoosh-2.wav" data-start="24.95" data-duration="0.98" data-track-index="22" data-volume="0.36"></audio>
+      <audio id="sfx-13" src="assets/sfx/snap.wav" data-start="27.58" data-duration="0.88" data-track-index="24" data-volume="0.34"></audio>
+      <audio id="sfx-14" src="assets/sfx/snap.wav" data-start="28.78" data-duration="0.88" data-track-index="25" data-volume="0.34"></audio>
+      <audio id="sfx-15" src="assets/sfx/shutter.wav" data-start="32.03" data-duration="0.34" data-track-index="21" data-volume="0.4"></audio>
+      <audio id="sfx-16" src="assets/sfx/riser.wav" data-start="39.3" data-duration="1.7" data-track-index="28" data-volume="0.22"></audio>
+      <audio id="sfx-17" src="assets/sfx/whoosh-3.wav" data-start="40.9" data-duration="1.44" data-track-index="23" data-volume="0.32"></audio>
+      <audio id="sfx-18" src="assets/sfx/falla.wav" data-start="41.78" data-duration="0.9" data-track-index="22" data-volume="0.18"></audio>
+      <audio id="sfx-19" src="assets/sfx/correct.wav" data-start="45.88" data-duration="1.44" data-track-index="26" data-volume="0.28"></audio>
+      <audio id="sfx-20" src="assets/sfx/whoosh-1.wav" data-start="49.95" data-duration="0.57" data-track-index="23" data-volume="0.4"></audio>
+      <audio id="sfx-21" src="assets/sfx/typing.wav" data-start="50.6" data-duration="1.2" data-track-index="27" data-volume="0.2"></audio>
+      <audio id="sfx-22" src="assets/sfx/loading.wav" data-start="53.3" data-duration="1.6" data-track-index="28" data-volume="0.18"></audio>
+      <audio id="sfx-23" src="assets/sfx/correct.wav" data-start="54.6" data-duration="1.44" data-track-index="26" data-volume="0.26"></audio>
+      <audio id="sfx-24" src="assets/sfx/whoosh-3.wav" data-start="57.55" data-duration="1.44" data-track-index="23" data-volume="0.32"></audio>
+      <audio id="sfx-25" src="assets/sfx/click.wav" data-start="58.6" data-duration="0.9" data-track-index="24" data-volume="0.38"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+
+        // ---------- captions (local Whisper small; wording cleaned) ----------
+        const CAPS = [
+          [1.6, [["¿Sabes", 0.34], ["qué", 0.66], ["es", 0.78], ["una", 0.9], ["EPS?", 1.18, 1]]],
+          [2.8, [["¿Cuánto", 1.64], ["debes", 2.04], ["cotizar?", 2.24, 1]]],
+          [4.86, [["¿Y", 2.84], ["qué", 3.06], ["hacer", 3.4], ["si", 3.74], ["no", 3.94], ["te", 4.06], ["quieren", 4.22], ["atender?", 4.42, 1]]],
+          [6.9, [["Te", 4.9], ["lo", 5.0], ["explicamos", 5.2], ["sin enredos.", 6.04, 1]]],
+          [9.58, [["Una", 6.94], ["EPS", 7.14], ["es", 7.86], ["una", 8.02], ["entidad", 8.2], ["promotora", 8.66], ["de", 9.0], ["salud,", 9.28]]],
+          [11.84, [["encargada", 9.62], ["de", 10.36], ["organizar", 10.54], ["tu", 11.06], ["acceso", 11.38]]],
+          [13.0, [["al", 11.86], ["sistema de salud.", 12.22, 1]]],
+          [14.42, [["Si", 13.04], ["eres", 13.22], ["independiente,", 13.58]]],
+          [17.04, [["generalmente", 14.44], ["cotizas", 15.06], ["el", 15.58], ["12,5 %", 15.84]]],
+          [18.96, [["de", 17.06], ["tu", 17.18], ["ingreso", 17.32], ["base", 17.92], ["de", 18.1], ["cotización.", 18.26]]],
+          [21.96, [["Si", 19.0], ["eres", 19.2], ["empleado,", 19.5, 1], ["aportas", 20.16], ["el", 20.76], ["4 %", 21.06, 1]]],
+          [25.0, [["y", 22.0], ["tu", 22.12], ["empleador", 22.36], ["el", 23.12], ["8,5 %.", 23.5]]],
+          [27.22, [["Existen", 25.02], ["dos", 25.7], ["regímenes", 26.12], ["principales:", 26.7]]],
+          [29.38, [["el", 27.24], ["contributivo", 27.58], ["y", 28.3], ["el", 28.44], ["subsidiado,", 28.78]]],
+          [32.2, [["según", 29.4], ["tus", 29.6], ["condiciones", 30.22], ["y", 30.6], ["los", 30.74], ["requisitos", 31.0], ["de", 31.46], ["afiliación.", 31.6, 1]]],
+          [34.24, [["Pero", 32.22], ["esto", 32.5], ["te", 32.7], ["lo", 32.78], ["explico", 32.98], ["en", 33.48], ["otro", 33.82], ["video.", 34.08, 1]]],
+          [37.0, [["¿Y", 34.26], ["qué", 34.4], ["pasa", 34.72], ["si", 35.02], ["necesitas", 35.28], ["atención médica?", 36.02, 1]]],
+          [39.74, [["Tienes", 37.04], ["derecho", 37.34, 1], ["a", 37.62], ["acceder", 37.68], ["a", 38.12], ["servicios", 38.58], ["cubiertos", 39.02]]],
+          [40.92, [["según", 39.78], ["tu", 39.94], ["afiliación.", 40.14]]],
+          [43.56, [["Además,", 40.98], ["en", 41.48], ["una", 41.64], ["urgencia", 41.78], ["deben", 42.8], ["brindarte", 43.04]]],
+          [45.86, [["la", 43.58], ["atención", 43.9], ["inicial", 44.44], ["sin", 44.82], ["exigir", 45.08]]],
+          [46.92, [["autorización", 45.88], ["previa.", 46.58]]],
+          [50.2, [["Si", 46.96], ["tu", 47.16], ["EPS", 47.34, 1], ["no", 48.06], ["responde", 48.48], ["a", 48.96], ["una", 49.14], ["solicitud,", 49.44]]],
+          [52.52, [["puedes", 50.22], ["presentar", 50.64], ["un", 51.22], ["derecho", 51.46], ["de", 51.68], ["petición", 51.82]]],
+          [54.56, [["y,", 52.56], ["si", 52.74], ["es", 52.9], ["necesario,", 53.34], ["acudir", 53.78], ["a", 54.14], ["la", 54.22]]],
+          [56.6, [["Superintendencia", 54.58], ["Nacional", 55.62], ["de", 56.04], ["Salud.", 56.3]]],
+          [58.08, [["Sigue", 56.62], ["a", 56.84], ["Cornabis", 56.98, 1]]],
+          [59.9, [["y", 57.8], ["aprende", 58.1], ["más", 58.46], ["sobre", 58.74], ["tu", 58.96], ["seguridad social.", 59.36, 1]]],
+        ];
+        const caps = $("#caps");
+        CAPS.forEach(([end, words]) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          const els = words.map(([w, t, kw]) => {
+            const s = document.createElement("span");
+            s.className = "cw" + (kw ? " kw" : "");
+            if (kw) {
+              const hl = document.createElement("i");
+              hl.className = "hl";
+              s.appendChild(hl);
+            }
+            s.appendChild(document.createTextNode(w));
+            gsap.set(s, { opacity: 0 });
+            inner.appendChild(s);
+            return [s, t, kw];
+          });
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          tl.set(cap, { visibility: "visible" }, words[0][1] - 0.06);
+          els.forEach(([s, t, kw]) => {
+            if (kw) {
+              tl.set(s, { opacity: 1 }, t).fromTo(s, { scale: 0.6, y: 10 }, { scale: 1, y: 0, duration: 0.35, ease: "back.out(2.6)" }, t);
+              tl.fromTo(s.querySelector(".hl"), { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.3 }, t + 0.04);
+            } else tl.set(s, { opacity: 1 }, t).fromTo(s, { y: 22, scale: 0.9 }, { y: 0, scale: 1, duration: 0.26, ease: "back.out(2)" }, t);
+          });
+          if (end < 59.8) tl.set(cap, { visibility: "hidden" }, end);
+        });
+
+        // ---------- camera: reframe the wide shots, punch-ins elsewhere ----------
+        const Z = [
+          [0, 1.7, "50% 32%"], [1.57, 1.0, "50% 25%"], [2.84, 1.1, "50% 25%"], [4.8, 1.0, "50% 25%"], [5.2, 1.12, "50% 25%"],
+          [11.7, 1.1, "50% 25%"], [18.8, 1.0, "50% 25%"], [21.0, 1.12, "50% 25%"], [29.1, 1.0, "50% 25%"], [30.6, 1.12, "50% 25%"],
+          [32.03, 1.0, "50% 40%"], [34.17, 1.5, "50% 30%"], [36.73, 1.0, "50% 25%"], [39.47, 1.12, "50% 25%"],
+          [46.83, 1.0, "50% 25%"], [48.48, 1.12, "50% 25%"], [56.47, 1.0, "50% 25%"], [59.9, 1, "50% 25%"],
+        ];
+        Z.slice(0, -1).forEach(([t, s, o], i) => {
+          const next = Z[i + 1][0];
+          const end = t === 34.17 ? 1.2 : s + 0.035;
+          tl.set("#zoom", { scale: s, transformOrigin: o }, t).to("#zoom", { scale: end, duration: next - t - 0.02, ease: t === 34.17 ? "sine.inOut" : "none" }, t);
+        });
+
+        // ---------- helpers ----------
+        const scene = (id, a, b) => {
+          tl.set("#caps", { attr: { "data-dark": 1 } }, a + 0.25);
+          if (b < 59.8) tl.set("#caps", { attr: { "data-dark": 0 } }, b - 0.2);
+          tl.set(id, { visibility: "visible" }, a)
+            .fromTo(id, { clipPath: "circle(0% at 50% 40%)" }, { clipPath: "circle(100% at 50% 40%)", duration: 0.45, ease: "power3.inOut" }, a)
+            .fromTo(id + " .dots", { x: 0, y: 0 }, { x: -60, y: -60, duration: b - a, ease: "none" }, a)
+            .fromTo(id + " .blob", { scale: 0.85 }, { scale: 1.15, duration: b - a, ease: "sine.inOut" }, a);
+          if (b < 59.8) tl.to(id, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.3, ease: "power3.in" }, b - 0.3).set(id, { visibility: "hidden" }, b);
+        };
+        const pop = (sel, t, from = { scale: 0 }, d = 0.45, ease = "back.out(2.4)") =>
+          tl.fromTo(sel, { opacity: 0, ...from }, { opacity: 1, scale: 1, x: 0, y: 0, rotation: 0, duration: d, ease }, t);
+        const wipe = (sel, t, d = 0.5) => tl.fromTo(sel, { clipPath: "inset(-10% 100% -10% 0%)" }, { clipPath: "inset(-10% -2% -10% -2%)", duration: d, ease: "power3.out" }, t);
+        const count = (sel, from, to, t, d, fmt) => {
+          const o = { v: from };
+          tl.fromTo(o, { v: from }, { v: to, duration: d, ease: "power2.out", onUpdate: () => ($(sel).textContent = fmt(o.v)) }, t);
+        };
+
+        // ===== W1 (6.9 – 11.7): E · P · S =====
+        scene("#w1", 6.9, 11.7);
+        pop("#w1-k", 6.96, { y: 20 }, 0.35, "power3.out");
+        [["#a0", 8.2], ["#a1", 8.66], ["#a2", 9.28]].forEach(([id, t]) => {
+          pop(id, t - 0.05, { x: -120 }, 0.45, "expo.out");
+          pop(id + " .sq", t - 0.05, { scale: 0, rotation: -90 }, 0.45, "back.out(2.6)");
+        });
+        pop("#w1-p", 10.54, { scale: 0.5, y: 40 }, 0.5, "back.out(1.8)");
+
+        // ===== W2 (12.77 – 18.8): independiente · 12,5 % del IBC =====
+        scene("#w2", 12.77, 18.8);
+        pop("#w2-k", 13.0, { y: 20 }, 0.35, "power3.out");
+        wipe("#w2-t", 13.58, 0.5);
+        pop("#donut", 14.4, { scale: 0.6, rotation: -60 }, 0.55, "back.out(1.6)");
+        tl.to("#dn", { attr: { "stroke-dashoffset": 87.5 }, duration: 1.2, ease: "power2.inOut" }, 15.6);
+        count("#n125", 0, 12.5, 15.6, 1.2, (v) => v.toFixed(1).replace(".", ","));
+        pop("#w2-n", 15.6, { scale: 0.5 }, 0.45);
+        pop("#w2-s", 17.32, { y: 24 }, 0.4, "power3.out");
+        pop("#w2-g", 17.9, { y: 16 }, 0.35, "power3.out");
+
+        // ===== W3 (22.3 – 24.7): 4 % + 8,5 % = 12,5 % =====
+        scene("#w3", 22.3, 24.7);
+        pop("#w3-k", 22.32, { y: 20 }, 0.3, "power3.out");
+        wipe("#w3-t", 22.36, 0.4);
+        tl.fromTo("#b4", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.35, ease: "power2.out" }, 22.5);
+        pop("#l4", 22.6, { y: 30 }, 0.35, "back.out(2)");
+        tl.fromTo("#b85", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.45, ease: "power2.out" }, 23.4);
+        pop("#l85", 23.5, { y: 30 }, 0.35, "back.out(2)");
+        pop("#l125", 24.0, { scale: 0.4 }, 0.4);
+
+        // ===== W4 (25.0 – 29.1): contributivo · subsidiado =====
+        scene("#w4", 25.0, 29.6);
+        pop("#w4-k", 25.02, { y: 20 }, 0.35, "power3.out");
+        wipe("#w4-t", 26.12, 0.5);
+        pop("#g0", 27.45, { y: 160, rotation: -4 }, 0.5, "back.out(1.8)");
+        pop("#g1", 28.6, { y: 160, rotation: 4 }, 0.5, "back.out(1.8)");
+
+        // ===== W5 (40.95 – 46.83): urgencia → atención inicial sin autorización =====
+        scene("#w5", 40.95, 46.83);
+        pop("#w5-k", 41.0, { y: 20 }, 0.35, "power3.out");
+        pop("#w5-t", 41.78, { scale: 0.5 }, 0.45, "back.out(2.6)");
+        tl.fromTo("#amb", { x: -900 }, { x: 0, duration: 0.7, ease: "expo.out" }, 42.0);
+        tl.to("#siren", { fill: "#1f6fe5", duration: 0.01, yoyo: true, repeat: 15, repeatDelay: 0.18 }, 42.2);
+        tl.to("#amb", { y: -6, duration: 0.12, ease: "sine.inOut", yoyo: true, repeat: 19 }, 42.6);
+        wipe("#w5-a", 43.9, 0.5);
+        pop("#w5-b", 45.08, { scale: 0.4 }, 0.45);
+
+        // ===== W6 (50.0 – 56.47): derecho de petición → Supersalud =====
+        scene("#w6", 50.0, 56.47);
+        pop("#w6-k", 50.05, { y: 20 }, 0.35, "power3.out");
+        pop("#d0", 51.46, { y: 160, rotation: -4 }, 0.5, "back.out(1.8)");
+        tl.to("#arr path", { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.out" }, 53.3);
+        tl.to("#arr", { x: 12, duration: 0.3, ease: "sine.inOut", yoyo: true, repeat: 5 }, 53.8);
+        pop("#d1", 54.58, { y: 160, rotation: 4 }, 0.5, "back.out(1.8)");
+
+        // ===== W9 (57.6 – end): CORNABIS T.I.A. + síguenos =====
+        scene("#w9", 57.6, 61);
+        tl.fromTo("#lg-mark .fb", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.55, ease: "expo.out", stagger: 0.1 }, 57.7);
+        tl.fromTo("#lg-mark .fh", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.45, ease: "back.out(2.6)", stagger: 0.1 }, 58.0);
+        wipe("#lg-w", 58.1, 0.6);
+        pop("#lg-tia", 58.5, { scale: 0.3 }, 0.35);
+        pop("#lg-f", 58.6, { scale: 0.4 }, 0.45);
+        tl.to("#lg-f", { scale: 0.92, duration: 0.1, ease: "power2.in", yoyo: true, repeat: 1 }, 59.3);
+
+        tl.set({}, {}, 59.9);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
