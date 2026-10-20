@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Boda Diana &amp; Germán</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Cormorant";
+        src: url("assets/fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Cormorant";
+        src: url("assets/fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2");
+        font-weight: 500;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Cormorant";
+        src: url("assets/fonts/cormorant-garamond-latin-600-italic.woff2") format("woff2");
+        font-weight: 600;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Vibes";
+        src: url("assets/fonts/great-vibes-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      /* champagne · ivory */
+      :root {
+        --ivory: #fbf6ee;
+        --champ: #d9bf8c;
+        --champ-l: #efdcb4;
+        --gold: #c8a560;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #cam,
+      html[data-mode="green"] .fullonly {
+        display: none;
+      }
+      #cam {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      /* soft floor shade so the small captions read over bright, washed shots */
+      #shade {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 360px;
+        background: linear-gradient(180deg, rgba(10, 6, 2, 0) 0%, rgba(10, 6, 2, 0.42) 70%, rgba(10, 6, 2, 0.55) 100%);
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- subtle captions ---------- */
+      .cap {
+        position: absolute;
+        left: 160px;
+        right: 160px;
+        top: 948px;
+        text-align: center;
+        font-family: "Cormorant", serif;
+        font-weight: 500;
+        font-size: 52px;
+        line-height: 1.15;
+        color: #fff;
+        white-space: nowrap;
+        visibility: hidden;
+        -webkit-mask-image: linear-gradient(90deg, #000 42%, transparent 58%);
+        mask-image: linear-gradient(90deg, #000 42%, transparent 58%);
+        -webkit-mask-size: 260% 100%;
+        mask-size: 260% 100%;
+        -webkit-mask-position: 100% 0;
+        mask-position: 100% 0;
+      }
+      html[data-mode="full"] .cap {
+        text-shadow: 0 2px 16px rgba(0, 0, 0, 0.7);
+      }
+      .cap em {
+        font-style: italic;
+        font-weight: 600;
+        color: var(--champ-l);
+      }
+      .cap.lyric {
+        font-style: italic;
+        color: var(--ivory);
+      }
+      .cap.lyric::before,
+      .cap.lyric::after {
+        content: "";
+        display: inline-block;
+        width: 70px;
+        height: 1px;
+        margin: 0 26px;
+        vertical-align: middle;
+        background: var(--champ);
+      }
+
+      /* ---------- ornaments ---------- */
+      .orn {
+        position: absolute;
+        overflow: visible;
+        visibility: hidden;
+      }
+      .draw {
+        fill: none;
+        stroke: var(--champ-l);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      html[data-mode="full"] .orn {
+        filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.55));
+      }
+      .script {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Vibes", cursive;
+        color: var(--champ-l);
+        white-space: nowrap;
+        visibility: hidden;
+        -webkit-mask-image: linear-gradient(90deg, #000 42%, transparent 58%);
+        mask-image: linear-gradient(90deg, #000 42%, transparent 58%);
+        -webkit-mask-size: 260% 100%;
+        mask-size: 260% 100%;
+        -webkit-mask-position: 100% 0;
+        mask-position: 100% 0;
+      }
+      html[data-mode="full"] .script {
+        text-shadow: 0 3px 22px rgba(0, 0, 0, 0.65);
+      }
+      #motes {
+        position: absolute;
+        inset: 0;
+        visibility: hidden;
+      }
+      .mote {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 244, 214, 1) 0%, rgba(239, 220, 180, 0.6) 45%, rgba(239, 220, 180, 0) 70%);
+      }
+
+      /* ---------- verse on the black tail ---------- */
+      #verse {
+        position: absolute;
+        inset: 0;
+        visibility: hidden;
+      }
+      .vl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Cormorant", serif;
+        font-style: italic;
+        font-weight: 500;
+        color: var(--ivory);
+        white-space: nowrap;
+      }
+      .vl.big {
+        font-weight: 600;
+        color: var(--champ-l);
+      }
+      #v-ref {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Cormorant", serif;
+        font-weight: 500;
+        font-size: 30px;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: var(--champ);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="99" data-width="1920" data-height="1080">
+      <div id="cam">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="94.7" data-track-index="0" muted playsinline></video>
+        <div id="shade" class="fullonly"></div>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="94.7" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="99" data-track-index="1">
+        <div id="motes"></div>
+        <div id="caps"></div>
+
+        <!-- interlocking rings ("promesa sagrada" · "mi sí") -->
+        <svg id="rings" class="orn" style="left: 885px; top: 790px; width: 150px; height: 110px" viewBox="-75 -55 150 110" aria-hidden="true">
+          <circle class="draw" cx="-22" cy="8" r="34" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" transform="rotate(-90 -22 8)" />
+          <circle class="draw" cx="22" cy="8" r="34" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" transform="rotate(90 22 8)" />
+          <path class="draw" d="M22 -38 L28 -30 L22 -22 L16 -30 Z" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+        </svg>
+
+        <!-- "te elijo" -->
+        <div id="h-elijo" class="script" style="top: 700px; font-size: 170px">te elijo</div>
+        <svg id="fl-elijo" class="orn" style="left: 660px; top: 900px; width: 600px; height: 40px" viewBox="-300 -20 600 40" aria-hidden="true">
+          <path class="draw" d="M-280 4 C -200 4, -150 -14, -90 -2 C -40 8, -20 -12, 0 -12 C 20 -12, 40 8, 90 -2 C 150 -14, 200 4, 280 4" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" stroke-width="2.5" />
+        </svg>
+
+        <!-- "mi sí" -->
+        <div id="h-si" class="script" style="top: 745px; font-size: 175px">mi sí</div>
+
+        <!-- "Te amo" -->
+        <svg id="heart" class="orn" style="left: 910px; top: 620px; width: 100px; height: 92px" viewBox="-50 -46 100 92" aria-hidden="true">
+          <path class="draw" d="M0 38 C -30 14, -46 -2, -46 -18 C -46 -34, -32 -42, -20 -42 C -10 -42, -3 -36, 0 -28 C 3 -36, 10 -42, 20 -42 C 32 -42, 46 -34, 46 -18 C 46 -2, 30 14, 0 38 Z" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" stroke-width="3.5" />
+        </svg>
+        <div id="h-amo" class="script" style="top: 700px; font-size: 180px">Te amo</div>
+
+        <!-- Eclesiastés 4:12 on the black tail -->
+        <div id="verse">
+          <div id="v1" class="vl" style="top: 250px; font-size: 62px">“Y si alguno prevaleciere contra uno,</div>
+          <div id="v2" class="vl" style="top: 338px; font-size: 62px">dos le resistirán;</div>
+          <div id="v3" class="vl big" style="top: 460px; font-size: 96px">y cordón de tres dobleces</div>
+          <div id="v4" class="vl" style="top: 584px; font-size: 62px">no se rompe pronto.”</div>
+          <svg id="braid" style="position: absolute; left: 560px; top: 700px; width: 800px; height: 80px; overflow: visible" viewBox="0 -40 800 80" aria-hidden="true"></svg>
+          <div id="v-ref" style="top: 812px">Eclesiastés 4:12</div>
+          <div id="v-names" class="script" style="top: 880px; font-size: 76px">Diana &amp; Germán</div>
+        </div>
+      </div>
+
+      <audio id="sfx-01" src="assets/sfx/bowl-high.wav" data-start="8.6" data-duration="2.4" data-track-index="21" data-volume="0.12"></audio>
+      <audio id="sfx-02" src="assets/sfx/bowl-high.wav" data-start="68.7" data-duration="2.4" data-track-index="22" data-volume="0.12"></audio>
+      <audio id="sfx-03" src="assets/sfx/bowl-high.wav" data-start="81.6" data-duration="2.4" data-track-index="21" data-volume="0.13"></audio>
+      <audio id="sfx-04" src="assets/sfx/bowl-high.wav" data-start="88.8" data-duration="2.4" data-track-index="22" data-volume="0.13"></audio>
+      <audio id="sfx-05" src="assets/sfx/whoosh-soft.wav" data-start="90.7" data-duration="0.55" data-track-index="23" data-volume="0.16"></audio>
+      <audio id="sfx-06" src="assets/sfx/bowl.wav" data-start="93.4" data-duration="3.2" data-track-index="24" data-volume="0.22"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const tl = gsap.timeline({ paused: true });
+        const MASK_IN = { webkitMaskPosition: "0% 0", maskPosition: "0% 0" };
+        const MASK_OUT = { webkitMaskPosition: "100% 0", maskPosition: "100% 0" };
+        const reveal = (el, t, d) => tl.fromTo(el, { ...MASK_OUT }, { ...MASK_IN, duration: d, ease: "power1.inOut" }, t);
+
+        // ---------- subtle captions (local Whisper small, checked by ear-context) ----------
+        // [start, end, html, lyric?]
+        const CAPS = [
+          [8.0, 10.95, "Yo hago una <em>promesa sagrada</em> contigo, delante de Dios."],
+          [11.25, 14.95, "La vida me ha traído hasta aquí, enseñándome lecciones profundas,"],
+          [15.05, 17.65, "y hoy sé perfectamente que un <em>matrimonio</em>"],
+          [17.7, 20.05, "no se sostiene solo con las fuerzas humanas,"],
+          [20.1, 22.2, "sino también con la <em>ayuda del Señor</em>."],
+          [31.0, 32.45, "Dicen que las flores", 1],
+          [32.45, 36.45, "no dejaban de cantar tu nombre", 1],
+          [36.55, 38.6, "tu nombre, cariño", 1],
+          [46.4, 49.9, "y la luna no se convenció", 1],
+          [50.0, 53.7, "y bajó a mirarte el corazón", 1],
+          [56.6, 59.8, "Hoy te miro y me alegro de saber"],
+          [59.85, 63.6, "que eres tú con quien voy a compartir el resto de mi vida,"],
+          [64.0, 67.4, "y voy a compartir esta aventura llamada <em>matrimonio</em>."],
+          [68.0, 70.35, "Hoy te elijo, amor mío,"],
+          [70.4, 72.2, "te elijo con amor,"],
+          [72.25, 74.2, "con <em>esperanza</em> y con la decisión"],
+          [74.25, 76.5, "de construir contigo y a tu lado."],
+          [76.75, 80.2, "Amor mío, gracias por <em>caminar conmigo</em>."],
+          [80.75, 82.95, "Hoy te doy mi sí,"],
+          [83.0, 84.95, "te recibo como mi esposo"],
+          [85.0, 88.6, "y pongo contigo nuestra historia en las manos de Dios."],
+        ];
+        const caps = $("#caps");
+        CAPS.forEach(([a, b, html, lyric]) => {
+          const c = document.createElement("div");
+          c.className = "cap" + (lyric ? " lyric" : "");
+          c.innerHTML = html;
+          caps.appendChild(c);
+          tl.set(c, { visibility: "visible" }, a);
+          reveal(c, a, lyric ? 0.9 : 0.55);
+          tl.set(c, { visibility: "hidden" }, b);
+        });
+
+        // ---------- rings: "promesa sagrada" (8.6) and "mi sí" (81.6) ----------
+        const ringParts = document.querySelectorAll("#rings .draw");
+        const drawRings = (t, y) => {
+          tl.set("#rings", { visibility: "visible", y: y }, t);
+          tl.fromTo(ringParts[0], { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.9, ease: "power2.inOut" }, t);
+          tl.fromTo(ringParts[1], { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.9, ease: "power2.inOut" }, t + 0.25);
+          tl.fromTo(ringParts[2], { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power1.out" }, t + 1.0);
+          tl.fromTo("#rings", { scale: 0.9, transformOrigin: "50% 50%" }, { scale: 1, duration: 1.6, ease: "power1.out" }, t);
+        };
+        drawRings(8.55, 0);
+        tl.to(ringParts, { attr: { "stroke-dashoffset": -1 }, duration: 0.7, ease: "power2.in" }, 10.4);
+        tl.set("#rings", { visibility: "hidden" }, 11.15);
+
+        // ---------- song: drifting champagne motes ----------
+        const motes = $("#motes");
+        for (let i = 0; i < 34; i++) {
+          const m = document.createElement("i");
+          m.className = "mote";
+          const sz = 10 + ((i * 7) % 6) * 5;
+          m.style.cssText = "left:" + ((i * 211 + 37) % 1880) + "px;top:" + (420 + ((i * 157) % 640)) + "px;width:" + sz + "px;height:" + sz + "px";
+          motes.appendChild(m);
+          const t0 = 30.6 + (i % 9) * 0.35;
+          tl.fromTo(m, { y: 0, x: 0, opacity: 0 }, { y: -(260 + (i % 5) * 70), x: ((i % 3) - 1) * 60, duration: 25 - (i % 9) * 0.35, ease: "none" }, t0);
+          tl.to(m, { opacity: 0.35 + (i % 4) * 0.15, duration: 1.2, ease: "sine.out" }, t0);
+          tl.to(m, { opacity: 0.15, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 7 }, t0 + 1.4 + (i % 5) * 0.4);
+          tl.to(m, { opacity: 0, duration: 1.0, ease: "sine.in" }, 55.0);
+        }
+        tl.set("#motes", { visibility: "visible" }, 30.6);
+        tl.set("#motes", { visibility: "hidden" }, 56.1);
+
+        // ---------- "te elijo" (68.7) ----------
+        tl.set("#h-elijo, #fl-elijo", { visibility: "visible" }, 68.7);
+        reveal("#h-elijo", 68.7, 1.1);
+        tl.fromTo("#fl-elijo path", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.2, ease: "power2.inOut" }, 69.3);
+        tl.to("#h-elijo", { ...MASK_OUT, duration: 0.6, ease: "power1.in" }, 71.7);
+        tl.to("#fl-elijo path", { attr: { "stroke-dashoffset": -1 }, duration: 0.6, ease: "power2.in" }, 71.7);
+        tl.set("#h-elijo, #fl-elijo", { visibility: "hidden" }, 72.35);
+
+        // ---------- "mi sí" (81.6) with the rings above ----------
+        tl.set("#h-si", { visibility: "visible" }, 81.6);
+        reveal("#h-si", 81.6, 0.9);
+        drawRings(81.5, -120);
+        tl.to("#h-si", { ...MASK_OUT, duration: 0.6, ease: "power1.in" }, 84.3);
+        tl.to(ringParts, { attr: { "stroke-dashoffset": -1 }, duration: 0.6, ease: "power2.in" }, 84.3);
+        tl.set("#h-si, #rings", { visibility: "hidden" }, 84.95);
+
+        // ---------- "Te amo" (88.8): heart draws, then the script ----------
+        tl.set("#heart, #h-amo", { visibility: "visible" }, 88.75);
+        tl.fromTo("#heart path", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.9, ease: "power2.inOut" }, 88.75);
+        tl.fromTo("#heart", { scale: 0.8, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.9, ease: "back.out(2)" }, 88.75);
+        tl.to("#heart", { scale: 1.12, duration: 0.18, ease: "power1.out", yoyo: true, repeat: 3 }, 89.7);
+        reveal("#h-amo", 89.0, 0.9);
+        tl.to("#h-amo", { ...MASK_OUT, duration: 0.5, ease: "power1.in" }, 90.35);
+        tl.to("#heart path", { attr: { "stroke-dashoffset": -1 }, duration: 0.5, ease: "power2.in" }, 90.35);
+        tl.set("#heart, #h-amo", { visibility: "hidden" }, 90.9);
+
+        // ---------- Eclesiastés 4:12: three strands braid into one cord ----------
+        const braid = $("#braid");
+        const COLORS = ["#efdcb4", "#c8a560", "#fbf6ee"];
+        const strands = [0, 1, 2].map((k) => {
+          let d = "";
+          for (let x = 0; x <= 800; x += 8) {
+            const env = Math.sin((Math.PI * x) / 800);
+            const y = 22 * env * Math.sin((2 * Math.PI * x) / 160 + (k * 2 * Math.PI) / 3);
+            d += (x ? " L" : "M") + x + " " + y.toFixed(2);
+          }
+          const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          p.setAttribute("d", d);
+          p.setAttribute("fill", "none");
+          p.setAttribute("stroke", COLORS[k]);
+          p.setAttribute("stroke-width", "3");
+          p.setAttribute("stroke-linecap", "round");
+          p.setAttribute("pathLength", "1");
+          p.setAttribute("stroke-dasharray", "1 1");
+          p.setAttribute("stroke-dashoffset", "1");
+          braid.appendChild(p);
+          return p;
+        });
+        tl.set("#verse", { visibility: "visible" }, 90.8);
+        [["#v1", 90.9, 1.0], ["#v2", 92.0, 0.8], ["#v3", 93.4, 1.2], ["#v4", 94.9, 0.9]].forEach(([el, t, d]) => {
+          tl.fromTo(el, { y: 16, clipPath: "inset(-20% 100% -20% 0%)" }, { y: 0, clipPath: "inset(-20% -2% -20% -2%)", duration: d, ease: "power2.inOut" }, t);
+        });
+        strands.forEach((p, k) => {
+          tl.fromTo(p, { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 2.0, ease: "power1.inOut" }, 93.5 + k * 0.25);
+        });
+        tl.fromTo("#v-ref", { y: 14, clipPath: "inset(-20% 50% -20% 50%)" }, { y: 0, clipPath: "inset(-20% 0% -20% 0%)", duration: 0.8, ease: "power2.out" }, 96.0);
+        tl.set("#v-names", { visibility: "visible" }, 96.6);
+        reveal("#v-names", 96.6, 1.1);
+        tl.to("#verse", { opacity: 0, duration: 0.6, ease: "power1.in" }, 98.35);
+
+        tl.set({}, {}, 99);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
