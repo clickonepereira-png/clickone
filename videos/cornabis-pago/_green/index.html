@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="es" data-mode="green">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Cornabis — paga a tiempo</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-italic.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: italic;
+      }
+
+      /* Cornabis: navy from the logo + action blue */
+      :root {
+        --blue: #1f6fe5;
+        --navy: #17304d;
+        --navy-2: #0d3a91;
+        --sky: #eaf3ff;
+        --gray: #5d6b85;
+        --gray-2: #cfdaf0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #zoom {
+        display: none;
+      }
+      #zoom {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions (Cornabis) ---------- */
+      .cap {
+        position: absolute;
+        left: 50px;
+        right: 50px;
+        top: 1300px;
+        display: flex;
+        justify-content: center;
+        visibility: hidden;
+      }
+      .inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: baseline;
+        column-gap: 15px;
+        row-gap: 4px;
+        text-align: center;
+      }
+      .cw {
+        position: relative;
+        display: inline-block;
+        font-weight: 300;
+        font-size: 64px;
+        line-height: 1.3;
+        color: #fff;
+        -webkit-text-stroke: 6px var(--navy);
+        paint-order: stroke fill;
+        white-space: nowrap;
+      }
+      .cw.kw {
+        font-weight: 800;
+        isolation: isolate;
+        -webkit-text-stroke: 0;
+        padding: 0 12px;
+        margin: 0 -4px;
+      }
+      .cw .hl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 10px;
+        bottom: 6px;
+        border-radius: 14px;
+        background: var(--blue);
+        border: 4px solid var(--navy);
+        z-index: -1;
+      }
+
+      /* on the white scenes the captions turn navy (no white-on-white) */
+      #caps[data-dark="1"] .cw {
+        color: var(--navy);
+        -webkit-text-stroke: 0;
+        font-weight: 400;
+      }
+      #caps[data-dark="1"] .cw.kw {
+        color: #fff;
+        font-weight: 800;
+      }
+
+      /* ---------- white motion-graphic scenes ---------- */
+      .ws {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: #fff;
+        visibility: hidden;
+      }
+      .ws .dots {
+        position: absolute;
+        inset: -60px;
+        background-image: radial-gradient(circle, #dfe9fa 3px, transparent 3.5px);
+        background-size: 60px 60px;
+      }
+      .ws .blob {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(61, 139, 255, 0.18) 0%, rgba(61, 139, 255, 0) 70%);
+      }
+      .kick {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-weight: 400;
+        font-size: 50px;
+        color: var(--gray);
+        white-space: nowrap;
+      }
+      .ttl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-weight: 900;
+        color: var(--navy);
+        white-space: nowrap;
+        line-height: 1;
+      }
+      .ttl b {
+        color: var(--blue);
+      }
+      .ln {
+        fill: none;
+        stroke: var(--blue);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .pill {
+        position: absolute;
+        height: 100px;
+        padding: 0 40px;
+        border-radius: 50px;
+        background: var(--blue);
+        border: 4px solid var(--navy);
+        color: #fff;
+        font-weight: 800;
+        font-size: 48px;
+        line-height: 92px;
+        white-space: nowrap;
+      }
+      .tile {
+        position: absolute;
+        width: 440px;
+        height: 380px;
+        border-radius: 40px;
+        background: #fff;
+        border: 4px solid var(--gray-2);
+        box-shadow: 0 14px 0 var(--gray-2);
+        text-align: center;
+      }
+      .tile svg {
+        position: absolute;
+        left: 140px;
+        top: 50px;
+        width: 160px;
+        height: 160px;
+        overflow: visible;
+      }
+      .tile .tl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 250px;
+        font-weight: 800;
+        font-size: 44px;
+        line-height: 1.1;
+        color: var(--navy);
+      }
+      .ok {
+        position: absolute;
+        right: -14px;
+        top: -14px;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: var(--blue);
+        border: 5px solid #fff;
+        display: grid;
+        place-items: center;
+      }
+      .row {
+        position: absolute;
+        left: 90px;
+        right: 90px;
+        height: 200px;
+        border-radius: 40px;
+        background: #fff;
+        border: 4px solid var(--gray-2);
+        box-shadow: 0 12px 0 var(--gray-2);
+      }
+      .row svg {
+        position: absolute;
+        left: 40px;
+        top: 30px;
+        width: 140px;
+        height: 140px;
+        overflow: visible;
+      }
+      .row .rt {
+        position: absolute;
+        left: 220px;
+        top: 52px;
+        font-weight: 800;
+        font-size: 64px;
+        color: var(--navy);
+        white-space: nowrap;
+      }
+      .row .rn {
+        position: absolute;
+        right: 40px;
+        top: 50px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--sky);
+        color: var(--blue);
+        font-weight: 900;
+        font-size: 54px;
+        display: grid;
+        place-items: center;
+      }
+      .lvl {
+        position: absolute;
+        bottom: 0;
+        width: 150px;
+        border-radius: 22px 22px 10px 10px;
+        color: #fff;
+        font-weight: 900;
+        font-size: 50px;
+        text-align: center;
+        padding-top: 18px;
+      }
+      /* stories scenes */
+      .phone {
+        position: absolute;
+        left: 290px;
+        top: 300px;
+        width: 500px;
+        height: 900px;
+        border-radius: 70px;
+        background: #17304d;
+        padding: 22px;
+      }
+      .phone .scr {
+        position: absolute;
+        inset: 22px;
+        border-radius: 52px;
+        background: linear-gradient(180deg, #eaf3ff, #ffffff);
+        overflow: hidden;
+      }
+      .notif {
+        position: absolute;
+        left: 22px;
+        right: 22px;
+        top: 120px;
+        height: 170px;
+        border-radius: 32px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(23, 48, 77, 0.18);
+        padding: 24px 24px 0 110px;
+      }
+      .notif .ap {
+        position: absolute;
+        left: 22px;
+        top: 26px;
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+        background: #1f6fe5;
+        display: grid;
+        place-items: center;
+      }
+      .notif .h {
+        font-weight: 800;
+        font-size: 36px;
+        color: #17304d;
+        white-space: nowrap;
+      }
+      .notif .b {
+        margin-top: 6px;
+        font-weight: 400;
+        font-size: 31px;
+        line-height: 1.25;
+        color: #5d6b85;
+      }
+      .cal {
+        position: absolute;
+        left: 110px;
+        top: 470px;
+        width: 860px;
+        height: 700px;
+        border-radius: 44px;
+        background: #fff;
+        border: 4px solid #cfdaf0;
+        box-shadow: 0 14px 0 #cfdaf0;
+        overflow: hidden;
+      }
+      .cal .top {
+        height: 120px;
+        background: #1f6fe5;
+        color: #fff;
+        font-weight: 800;
+        font-size: 50px;
+        line-height: 120px;
+        text-align: center;
+        letter-spacing: 0.06em;
+      }
+      .day {
+        position: absolute;
+        width: 100px;
+        height: 90px;
+        border-radius: 22px;
+        font-weight: 700;
+        font-size: 40px;
+        line-height: 90px;
+        text-align: center;
+        color: #17304d;
+      }
+      .receipt {
+        position: absolute;
+        left: 340px;
+        top: 380px;
+        width: 400px;
+        height: 520px;
+        background: #fff;
+        border: 4px solid #cfdaf0;
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 14px 0 #cfdaf0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="30.5" data-width="1080" data-height="1920">
+      <div id="zoom">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="30.5" data-track-index="0" muted playsinline></video>
+      </div>
+
+      <div id="stage" class="clip" data-start="0" data-duration="30.5" data-track-index="1">
+        <!-- W1 · no lo dejes para última hora (2.27 – 3.97) -->
+        <div id="w1" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -200px; top: 300px; width: 1000px; height: 1000px"></i>
+          <svg id="clock" style="position: absolute; left: 365px; top: 330px; width: 350px; height: 350px; overflow: visible" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="54" r="38" fill="#fff" stroke="#17304d" stroke-width="5" />
+            <path d="M22 18 L32 10 M78 18 L68 10" stroke="#17304d" stroke-width="5" stroke-linecap="round" />
+            <path id="hh" d="M50 54 V34" stroke="#1f6fe5" stroke-width="6" stroke-linecap="round" />
+            <path id="mh" d="M50 54 V24" stroke="#e5484d" stroke-width="4" stroke-linecap="round" />
+            <circle cx="50" cy="54" r="4" fill="#17304d" />
+          </svg>
+          <div id="w1-t" class="ttl" style="top: 760px; font-size: 110px">No lo dejes</div>
+          <div id="w1-p" class="pill" style="left: 215px; top: 900px; background: #e5484d; font-size: 60px; height: 120px; line-height: 112px; padding: 0 50px">para última hora</div>
+        </div>
+
+        <!-- W2 · mejor control de… (9.47 – 15.57) -->
+        <div id="w2" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: 400px; top: -100px; width: 900px; height: 900px"></i>
+          <div id="w2-k" class="kick" style="top: 290px">Lleva un mejor</div>
+          <div id="w2-t" class="ttl" style="top: 360px; font-size: 120px"><b>control</b> de</div>
+          <div id="r0" class="row" style="top: 560px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><path class="ln" d="M40 70 C14 52, 6 38, 6 26 C6 14, 15 6, 25 6 C32 6, 37 10, 40 16 C43 10, 48 6, 55 6 C65 6, 74 14, 74 26 C74 38, 66 52, 40 70 Z" /><path class="ln" d="M40 24 V48 M28 36 H52" /></svg>
+            <div class="rt">Tu salud</div>
+          </div>
+          <div id="r1" class="row" style="top: 800px">
+            <svg viewBox="0 0 200 170" aria-hidden="true"><path class="ln" d="M30 120 C30 60, 60 30, 100 30 C140 30, 170 60, 170 120" stroke-width="10" /><path class="ln" d="M14 122 H186 C190 122, 192 136, 186 140 H14 C8 136, 10 122, 14 122 Z" stroke-width="10" /><path class="ln" d="M86 32 V80 M114 32 V80 M86 80 H114" stroke-width="10" /></svg>
+            <div class="rt" style="font-size: 56px; top: 58px">Riesgos laborales</div>
+          </div>
+          <div id="r2" class="row" style="top: 1040px">
+            <svg viewBox="0 0 80 80" aria-hidden="true"><path class="ln" d="M40 6 L68 16 V38 C68 56, 56 68, 40 75 C24 68, 12 56, 12 38 V16 Z" /><path class="ln" d="M40 26 V56 M48 32 C46 28, 34 28, 33 34 C32 40, 48 40, 47 47 C46 53, 34 53, 32 48" /></svg>
+            <div class="rt">Tu pensión</div>
+          </div>
+        </div>
+
+        <!-- W3 · consejo: recordatorio + primeros 5 días + comprobante (15.57 – 21.5) -->
+        <div id="w3" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -300px; top: 600px; width: 1100px; height: 1100px"></i>
+          <div id="w3a">
+            <div id="w3-k" class="kick" style="top: 270px">Un consejo:</div>
+            <div id="w3-t" class="ttl" style="top: 340px; font-size: 72px">programa <b>recordatorios</b></div>
+            <div id="ph" class="phone" style="top: 500px; height: 760px">
+              <div class="scr">
+                <div style="position: absolute; left: 0; right: 0; top: 40px; text-align: center; font-weight: 300; font-size: 72px; color: #17304d">8:00</div>
+                <div id="nt" class="notif" style="top: 170px; height: 220px">
+                  <span class="ap"><svg viewBox="0 0 40 40" style="width: 40px; height: 40px"><path d="M20 6 C13 6, 10 12, 10 18 V26 L6 30 H34 L30 26 V18 C30 12, 27 6, 20 6 Z M16 32 C16 35, 18 36, 20 36 C22 36, 24 35, 24 32" fill="#fff" /></svg></span>
+                  <div class="h">Recordatorio</div>
+                  <div class="b">Paga tu seguridad social en los primeros 5 días</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="w3b">
+            <div id="w3b-k" class="kick" style="top: 270px">Lo ideal:</div>
+            <div id="w3b-t" class="ttl" style="top: 340px; font-size: 70px">paga los <b>primeros 5 días</b></div>
+            <div id="cal" class="cal">
+              <div class="top">CADA MES</div>
+              <div id="days"></div>
+            </div>
+            <div id="rc" class="receipt" style="left: 560px; top: 820px; width: 380px; height: 420px">
+              <div style="position: absolute; left: 40px; top: 40px; font-weight: 800; font-size: 34px; color: #17304d">Comprobante</div>
+              <div style="position: absolute; left: 40px; top: 100px; width: 300px; height: 14px; border-radius: 7px; background: #e3eaf6"></div>
+              <div style="position: absolute; left: 40px; top: 136px; width: 220px; height: 14px; border-radius: 7px; background: #e3eaf6"></div>
+              <div style="position: absolute; left: 40px; top: 172px; width: 260px; height: 14px; border-radius: 7px; background: #e3eaf6"></div>
+              <div id="stamp" style="position: absolute; left: 60px; top: 230px; width: 260px; height: 120px; border-radius: 20px; border: 6px solid #2ebd6b; color: #2ebd6b; font-weight: 900; font-size: 50px; line-height: 108px; text-align: center; transform: rotate(-8deg)">PAGADO</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- W4 · CORNABIS T.I.A. end (28.0 – end) -->
+        <div id="w5" class="ws">
+          <div class="dots"></div>
+          <i class="blob" style="left: -100px; top: 300px; width: 1300px; height: 1300px"></i>
+          <svg id="lg-mark" viewBox="0 0 203 470" style="position: absolute; left: 430px; top: 300px; width: 220px; height: 509px; overflow: visible" aria-hidden="true">
+            <g fill="#17304d">
+              <path class="fb" d="M28 98 C12 98, 6 118, 14 145 C30 200, 66 270, 70 330 L70 468 L80 468 L80 320 C78 240, 66 160, 50 118 C44 104, 37 98, 28 98 Z" />
+              <path class="fb" d="M101 262 C92 262, 88 272, 90 290 C94 340, 96 400, 96 468 L106 468 C107 400, 110 340, 113 290 C115 272, 110 262, 101 262 Z" />
+              <path class="fb" d="M176 176 C160 168, 142 184, 134 218 C122 272, 120 340, 122 400 C123 440, 124 460, 124 468 L192 468 C158 440, 144 396, 147 336 C150 276, 168 240, 182 212 C189 196, 187 181, 176 176 Z" />
+              <ellipse class="fh" cx="63" cy="52" rx="24" ry="46" transform="rotate(14 63 52)" />
+              <ellipse class="fh" cx="103" cy="222" rx="19" ry="31" />
+              <ellipse class="fh" cx="145" cy="128" rx="22" ry="40" transform="rotate(-14 145 128)" />
+            </g>
+          </svg>
+          <div id="lg-w" class="ttl" style="top: 860px; font-size: 150px; font-weight: 800; color: #17304d">CORNABIS</div>
+          <div id="lg-tia" class="ttl" style="top: 1040px; font-size: 40px; font-weight: 800; color: #17304d; letter-spacing: 0.2em">T.I.A.</div>
+          <div id="lg-t" class="ttl" style="top: 1120px; font-size: 44px; font-weight: 800; font-style: italic; color: #6d6e70">Unidos Construyendo Bienestar Social</div>
+        </div>
+
+        <div id="caps"></div>
+      </div>
+
+      <audio id="sfx-01" src="assets/sfx/whoosh-1.wav" data-start="2.2" data-duration="0.57" data-track-index="20" data-volume="0.4"></audio>
+      <audio id="sfx-02" src="assets/sfx/digits.wav" data-start="2.4" data-duration="1.26" data-track-index="21" data-volume="0.2"></audio>
+      <audio id="sfx-03" src="assets/sfx/falla.wav" data-start="3.2" data-duration="0.9" data-track-index="22" data-volume="0.22"></audio>
+      <audio id="sfx-04" src="assets/sfx/cam-click.wav" data-start="3.97" data-duration="0.82" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="sfx-05" src="assets/sfx/correct.wav" data-start="7.0" data-duration="1.44" data-track-index="24" data-volume="0.26"></audio>
+      <audio id="sfx-06" src="assets/sfx/whoosh-2.wav" data-start="9.4" data-duration="0.98" data-track-index="20" data-volume="0.38"></audio>
+      <audio id="sfx-07" src="assets/sfx/click.wav" data-start="11.44" data-duration="0.9" data-track-index="25" data-volume="0.4"></audio>
+      <audio id="sfx-08" src="assets/sfx/click.wav" data-start="12.04" data-duration="0.9" data-track-index="26" data-volume="0.4"></audio>
+      <audio id="sfx-09" src="assets/sfx/click.wav" data-start="13.28" data-duration="0.9" data-track-index="25" data-volume="0.4"></audio>
+      <audio id="sfx-10" src="assets/sfx/whoosh-3.wav" data-start="15.5" data-duration="1.44" data-track-index="20" data-volume="0.34"></audio>
+      <audio id="sfx-11" src="assets/sfx/typing.wav" data-start="16.7" data-duration="1.2" data-track-index="27" data-volume="0.18"></audio>
+      <audio id="sfx-12" src="assets/sfx/snap.wav" data-start="17.87" data-duration="0.88" data-track-index="22" data-volume="0.35"></audio>
+      <audio id="sfx-13" src="assets/sfx/digits.wav" data-start="18.1" data-duration="1.26" data-track-index="21" data-volume="0.2"></audio>
+      <audio id="sfx-14" src="assets/sfx/shutter.wav" data-start="20.86" data-duration="0.34" data-track-index="23" data-volume="0.45"></audio>
+      <audio id="sfx-15" src="assets/sfx/correct.wav" data-start="21.0" data-duration="1.44" data-track-index="24" data-volume="0.26"></audio>
+      <audio id="sfx-16" src="assets/sfx/riser.wav" data-start="26.3" data-duration="1.7" data-track-index="28" data-volume="0.24"></audio>
+      <audio id="sfx-17" src="assets/sfx/whoosh-3.wav" data-start="27.95" data-duration="1.44" data-track-index="20" data-volume="0.34"></audio>
+      <audio id="sfx-18" src="assets/sfx/correct.wav" data-start="28.9" data-duration="1.44" data-track-index="24" data-volume="0.28"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+
+        // ---------- captions (local Whisper small; wording cleaned) ----------
+        const CAPS = [
+          [2.56, [["¿Ya", 0.14], ["pagaste", 0.32], ["tu", 0.72], ["seguridad social", 1.0, 1], ["este", 1.82], ["mes?", 2.02]]],
+          [4.26, [["No", 2.6], ["lo", 2.74], ["dejes", 2.9], ["para", 3.2], ["última", 3.48], ["hora.", 3.8]]],
+          [5.54, [["Pagar", 4.3], ["oportunamente", 4.76, 1]]],
+          [7.6, [["te", 5.56], ["ayuda", 5.74], ["a", 5.86], ["mantener", 6.12], ["tus", 6.42], ["aportes", 6.6], ["al día.", 7.02, 1]]],
+          [9.58, [["Evita", 7.64], ["retrasos", 8.12, 1], ["en", 8.56], ["tus", 8.68], ["trámites", 8.92]]],
+          [10.98, [["y", 9.6], ["llevar", 9.9], ["un", 10.2], ["mejor", 10.42], ["control", 10.8]]],
+          [12.94, [["de", 11.0], ["tu", 11.12], ["salud,", 11.48], ["tus", 11.9], ["riesgos", 12.1], ["laborales", 12.44]]],
+          [15.7, [["y", 12.96], ["tu", 13.06], ["pensión,", 13.32], ["según", 13.78], ["corresponda", 14.42], ["tu", 14.74], ["afiliación.", 14.86]]],
+          [16.66, [["Un", 15.74], ["consejo:", 16.06, 1]]],
+          [18.0, [["programa", 16.7], ["recordatorios.", 17.16]]],
+          [20.18, [["Verifica", 18.04], ["tu", 18.62], ["fecha límite", 18.78, 1], ["de", 19.5], ["pago", 19.68]]],
+          [21.58, [["y", 20.2], ["guarda", 20.4], ["tu", 20.64], ["comprobante.", 20.86]]],
+          [22.76, [["La", 21.6], ["prevención", 21.84, 1]]],
+          [24.82, [["empieza", 22.78], ["con", 23.22], ["pequeñas", 23.58], ["acciones.", 24.06, 1]]],
+          [27.04, [["En", 24.86], ["Cornabis", 25.04, 1], ["te", 25.86], ["ayudamos", 26.08], ["a", 26.54], ["cumplir", 26.78]]],
+          [28.62, [["con", 27.06], ["tu", 27.18], ["seguridad social", 27.62, 1]]],
+          [30.5, [["de", 28.64], ["forma", 28.9], ["fácil", 29.46, 1], ["y", 29.76], ["oportuna.", 30.08, 1]]],
+        ];
+        const caps = $("#caps");
+        CAPS.forEach(([end, words]) => {
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          const inner = document.createElement("div");
+          inner.className = "inner";
+          const els = words.map(([w, t, kw]) => {
+            const s = document.createElement("span");
+            s.className = "cw" + (kw ? " kw" : "");
+            if (kw) {
+              const hl = document.createElement("i");
+              hl.className = "hl";
+              s.appendChild(hl);
+            }
+            s.appendChild(document.createTextNode(w));
+            gsap.set(s, { opacity: 0 });
+            inner.appendChild(s);
+            return [s, t, kw];
+          });
+          cap.appendChild(inner);
+          caps.appendChild(cap);
+          tl.set(cap, { visibility: "visible" }, words[0][1] - 0.06);
+          els.forEach(([s, t, kw]) => {
+            if (kw) {
+              tl.set(s, { opacity: 1 }, t).fromTo(s, { scale: 0.6, y: 10 }, { scale: 1, y: 0, duration: 0.35, ease: "back.out(2.6)" }, t);
+              tl.fromTo(s.querySelector(".hl"), { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.3 }, t + 0.04);
+            } else tl.set(s, { opacity: 1 }, t).fromTo(s, { y: 22, scale: 0.9 }, { y: 0, scale: 1, duration: 0.26, ease: "back.out(2)" }, t);
+          });
+          if (end < 30.4) tl.set(cap, { visibility: "hidden" }, end);
+        });
+
+        // ---------- camera: punch-ins on the jump cuts ----------
+        const Z = [[0, 1.0], [1.82, 1.1], [3.97, 1.0], [5.56, 1.13], [7.43, 1.0], [21.5, 1.08], [22.78, 1.17], [24.47, 1.0], [27.06, 1.1], [30.5, 1.0]];
+        Z.slice(0, -1).forEach(([t, s], i) => {
+          const next = Z[i + 1][0];
+          tl.set("#zoom", { scale: s, transformOrigin: "50% 38%" }, t).to("#zoom", { scale: s + 0.035, duration: next - t - 0.02, ease: "none" }, t);
+        });
+
+        // ---------- helpers ----------
+        const scene = (id, a, b) => {
+          tl.set("#caps", { attr: { "data-dark": 1 } }, a + 0.25);
+          if (b < 30.4) tl.set("#caps", { attr: { "data-dark": 0 } }, b - 0.2);
+          tl.set(id, { visibility: "visible" }, a)
+            .fromTo(id, { clipPath: "circle(0% at 50% 40%)" }, { clipPath: "circle(100% at 50% 40%)", duration: 0.45, ease: "power3.inOut" }, a)
+            .fromTo(id + " .dots", { x: 0, y: 0 }, { x: -60, y: -60, duration: b - a, ease: "none" }, a)
+            .fromTo(id + " .blob", { scale: 0.85 }, { scale: 1.15, duration: b - a, ease: "sine.inOut" }, a);
+          if (b < 30.4) tl.to(id, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.3, ease: "power3.in" }, b - 0.3).set(id, { visibility: "hidden" }, b);
+        };
+        const pop = (sel, t, from = { scale: 0 }, d = 0.45, ease = "back.out(2.4)") =>
+          tl.fromTo(sel, { opacity: 0, ...from }, { opacity: 1, scale: 1, x: 0, y: 0, rotation: 0, duration: d, ease }, t);
+        const wipe = (sel, t, d = 0.5) => tl.fromTo(sel, { clipPath: "inset(-10% 100% -10% 0%)" }, { clipPath: "inset(-10% -2% -10% -2%)", duration: d, ease: "power3.out" }, t);
+
+        // ===== W1 (2.27 – 3.97): no lo dejes para última hora — the clock races =====
+        scene("#w1", 2.27, 3.97);
+        pop("#clock", 2.3, { scale: 0.4, rotation: -20 }, 0.45);
+        tl.fromTo("#mh", { rotation: 0, svgOrigin: "50 54" }, { rotation: 1440, svgOrigin: "50 54", duration: 1.6, ease: "power2.in" }, 2.35);
+        tl.fromTo("#hh", { rotation: 0, svgOrigin: "50 54" }, { rotation: 120, svgOrigin: "50 54", duration: 1.6, ease: "power2.in" }, 2.35);
+        tl.to("#clock", { rotation: 6, duration: 0.06, ease: "sine.inOut", yoyo: true, repeat: 9 }, 3.3);
+        wipe("#w1-t", 2.6, 0.4);
+        pop("#w1-p", 3.2, { scale: 0.4 }, 0.4);
+
+        // ===== W2 (9.47 – 15.57): control de salud · riesgos · pensión =====
+        scene("#w2", 9.47, 15.57);
+        pop("#w2-k", 9.6, { y: 20 }, 0.35, "power3.out");
+        wipe("#w2-t", 10.8, 0.5);
+        [["#r0", 11.48], ["#r1", 12.08], ["#r2", 13.32]].forEach(([id, t]) => pop(id, t - 0.05, { x: -200 }, 0.5, "expo.out"));
+        tl.to("#r0 svg", { scale: 1.12, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 5, transformOrigin: "50% 50%" }, 11.9);
+
+        // ===== W3 (15.57 – 21.5): recordatorio → primeros 5 días → comprobante =====
+        scene("#w3", 15.57, 21.5);
+        pop("#w3-k", 15.74, { y: 20 }, 0.35, "power3.out");
+        wipe("#w3-t", 16.7, 0.5);
+        pop("#ph", 15.75, { y: 300 }, 0.6, "expo.out");
+        pop("#nt", 16.75, { y: -120, scale: 0.9 }, 0.5, "back.out(1.8)");
+        tl.to("#nt", { x: 8, duration: 0.05, ease: "sine.inOut", yoyo: true, repeat: 5 }, 17.25);
+        tl.to("#w3a", { y: -80, opacity: 0, duration: 0.25, ease: "power2.in" }, 17.62);
+        // calendar: days 1–5 light up
+        const days = $("#days");
+        for (let d = 1; d <= 31; d++) {
+          const el = document.createElement("div");
+          el.className = "day";
+          el.textContent = d;
+          const i = d - 1;
+          el.style.left = 26 + (i % 7) * 116 + "px";
+          el.style.top = 140 + Math.floor(i / 7) * 108 + "px";
+          days.appendChild(el);
+          if (d <= 5) tl.to(el, { backgroundColor: "#1f6fe5", color: "#ffffff", duration: 0.12, ease: "none" }, 18.1 + i * 0.12).fromTo(el, { scale: 1 }, { scale: 1.18, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 18.1 + i * 0.12);
+        }
+        tl.fromTo("#w3b", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 17.86);
+        pop("#cal", 17.88, { y: 200, scale: 0.9 }, 0.55, "back.out(1.6)");
+        pop("#w3b-k", 17.9, { y: 20 }, 0.35, "power3.out");
+        wipe("#w3b-t", 18.0, 0.5);
+        pop("#rc", 20.4, { y: 300, rotation: 6 }, 0.55, "back.out(1.6)");
+        pop("#stamp", 20.86, { scale: 2.4, rotation: -30 }, 0.35, "back.out(1.4)");
+
+        // ===== W5 (28.0 – end): CORNABIS T.I.A. =====
+        scene("#w5", 28.0, 31);
+        tl.fromTo("#lg-mark .fb", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.55, ease: "expo.out", stagger: 0.1 }, 28.1);
+        tl.fromTo("#lg-mark .fh", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.45, ease: "back.out(2.6)", stagger: 0.1 }, 28.4);
+        wipe("#lg-w", 28.5, 0.6);
+        pop("#lg-tia", 28.9, { scale: 0.3 }, 0.35);
+        pop("#lg-t", 29.1, { y: 30 }, 0.45, "back.out(2)");
+
+        tl.set({}, {}, 30.5);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
