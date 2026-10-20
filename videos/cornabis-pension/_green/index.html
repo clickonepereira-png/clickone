@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" data-mode="green">
+<html lang="es" data-mode="green-front">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
@@ -50,17 +50,61 @@
         background: #000;
         font-family: "Montserrat", sans-serif;
       }
-      html[data-mode="green"],
-      html[data-mode="green"] body,
-      html[data-mode="green"] #root {
+      html[data-mode^="green"],
+      html[data-mode^="green"] body,
+      html[data-mode^="green"] #root {
         background: #00b140;
       }
-      /* green layers: no footage and no camera moves, so the cut-out lines up 1:1 over the original in CapCut */
-      html[data-mode="green"] #footage {
+      /* green layers: no footage, no cut-out and no camera moves — in CapCut: original → BACK layer → her cut-out → FRONT layer */
+      html[data-mode^="green"] #footage,
+      html[data-mode^="green"] #subj {
         display: none;
       }
-      html[data-mode="green"] #zoom {
+      html[data-mode^="green"] #zoom {
         transform: none !important;
+      }
+      html[data-mode="green-front"] #back {
+        display: none;
+      }
+      html[data-mode="green-back"] #stage {
+        display: none;
+      }
+      /* white "rest" plates behind her */
+      .wp {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: #ffffff;
+        visibility: hidden;
+      }
+      .wp .dots {
+        position: absolute;
+        inset: -60px;
+        background-image: radial-gradient(circle, #dbe7fb 3px, transparent 3.5px);
+        background-size: 60px 60px;
+      }
+      .wp .blob {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(61, 139, 255, 0.22) 0%, rgba(61, 139, 255, 0) 70%);
+      }
+      .wp .rg {
+        position: absolute;
+        border-radius: 50%;
+        border: 4px solid #cfe0ff;
+      }
+      .sem {
+        position: absolute;
+        height: 78px;
+        padding: 0 30px;
+        border-radius: 39px;
+        background: #1f6fe5;
+        color: #fff;
+        font-weight: 800;
+        font-size: 38px;
+        line-height: 78px;
+        white-space: nowrap;
+        visibility: hidden;
       }
       #zoom {
         position: absolute;
@@ -452,25 +496,6 @@
           <div id="c4-b" class="ttl" style="left: 50px; top: 412px; font-size: 54px; color: #fff">pensión de <b style="color: #7fb4ff">sobrevivientes</b></div>
         </div>
 
-        <!-- C5 · no solo sumar semanas → entender tu protección (42.0 – 47.75) -->
-        <div id="c5" class="card" style="height: 470px">
-          <div class="kick" style="left: 0; width: 470px; text-align: center; top: 40px">No se trata solo de</div>
-          <div id="c5-sum" class="ttl" style="left: 0; width: 470px; text-align: center; top: 110px; font-size: 54px">sumar semanas</div>
-          <div id="c5-n" class="ttl" style="left: 0; width: 470px; text-align: center; top: 200px; font-size: 130px; color: #cfdaf0">+<span id="n-acc">0</span></div>
-          <div id="c5-strike" style="position: absolute; left: 60px; width: 350px; top: 250px; height: 12px; border-radius: 6px; background: #e5484d"></div>
-          <div style="position: absolute; left: 470px; top: 0; width: 470px; height: 470px; overflow: hidden">
-            <img id="c5-ph" class="photo" src="assets/img/manos.jpg" alt="" style="left: 0; top: 0; width: 470px; height: 470px" />
-            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 42, 110, 0.15) 0%, rgba(10, 42, 110, 0.85) 100%)"></div>
-            <svg id="c5-sh" class="ic" style="left: 175px; top: 90px; width: 120px; height: 130px" viewBox="0 0 80 86" aria-hidden="true">
-              <path d="M40 4 L70 15 V40 C70 60, 57 73, 40 81 C23 73, 10 60, 10 40 V15 Z" fill="#1f6fe5" stroke="#fff" stroke-width="4" stroke-linejoin="round" />
-              <path id="c5-chk" d="M26 42 L36 52 L55 32" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
-            </svg>
-            <div id="c5-t" class="ttl" style="left: 0; right: 0; text-align: center; top: 270px; font-size: 40px; color: #fff; font-weight: 400">entender qué</div>
-            <div id="c5-t2" class="ttl" style="left: 0; right: 0; text-align: center; top: 320px; font-size: 58px; color: #fff">protección</div>
-            <div id="c5-t3" class="ttl" style="left: 0; right: 0; text-align: center; top: 386px; font-size: 40px; color: #fff; font-weight: 400">tienes</div>
-          </div>
-        </div>
-
         <!-- C6 · CTA guarda / comparte (47.8 – 52.3) -->
         <div id="b-save" class="btn" style="left: 90px">
           <svg viewBox="0 0 64 64"><path id="bm" d="M16 8 H48 V58 L32 46 L16 58 Z" fill="none" stroke="#1f6fe5" stroke-width="6" stroke-linejoin="round" /></svg>Guárdalo
@@ -484,7 +509,7 @@
         </svg>
 
         <!-- C7 · end: CORNABIS T.I.A. (official logo, redrawn as vector) (52.3 – end) -->
-        <div id="c7" class="card" style="height: 470px">
+        <div id="c7" class="card" style="height: 470px; background: transparent; border: none; box-shadow: none">
           <svg id="lg-mark" viewBox="0 0 203 470" style="position: absolute; left: 70px; top: 50px; width: 120px; height: 278px; overflow: visible" aria-hidden="true">
             <g fill="#17304d">
               <path class="fb" d="M28 98 C12 98, 6 118, 14 145 C30 200, 66 270, 70 330 L70 468 L80 468 L80 320 C78 240, 66 160, 50 118 C44 104, 37 98, 28 98 Z" />
@@ -502,26 +527,28 @@
       </div>
 
       <audio id="sfx-01" src="assets/sfx/impact.wav" data-start="0.5" data-duration="0.6" data-track-index="20" data-volume="0.35"></audio>
-      <audio id="sfx-02" src="assets/sfx/whoosh.wav" data-start="2.3" data-duration="0.5" data-track-index="21" data-volume="0.3"></audio>
-      <audio id="sfx-03" src="assets/sfx/pop-up-1.wav" data-start="4.84" data-duration="0.3" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="sfx-02" src="assets/sfx/whoosh.wav" data-start="5.88" data-duration="0.5" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="sfx-03" src="assets/sfx/pop-up-1.wav" data-start="9.95" data-duration="0.3" data-track-index="22" data-volume="0.4"></audio>
       <audio id="sfx-04" src="assets/sfx/impact.wav" data-start="6.38" data-duration="0.6" data-track-index="20" data-volume="0.3"></audio>
-      <audio id="sfx-05" src="assets/sfx/pop-up-2.wav" data-start="10.28" data-duration="0.3" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="sfx-05" src="assets/sfx/pop-up-2.wav" data-start="10.45" data-duration="0.3" data-track-index="22" data-volume="0.4"></audio>
       <audio id="sfx-06" src="assets/sfx/pop-up-3.wav" data-start="13.62" data-duration="0.3" data-track-index="23" data-volume="0.4"></audio>
-      <audio id="sfx-07" src="assets/sfx/whoosh.wav" data-start="15.3" data-duration="0.5" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="sfx-07" src="assets/sfx/whoosh.wav" data-start="19.85" data-duration="0.5" data-track-index="21" data-volume="0.3"></audio>
       <audio id="sfx-08" src="assets/sfx/tick.wav" data-start="22.1" data-duration="0.05" data-track-index="24" data-volume="0.4"></audio>
       <audio id="sfx-09" src="assets/sfx/impact.wav" data-start="22.7" data-duration="0.6" data-track-index="20" data-volume="0.32"></audio>
       <audio id="sfx-10" src="assets/sfx/confirm.wav" data-start="26.9" data-duration="0.4" data-track-index="25" data-volume="0.3"></audio>
       <audio id="sfx-11" src="assets/sfx/impact.wav" data-start="28.8" data-duration="0.6" data-track-index="20" data-volume="0.36"></audio>
-      <audio id="sfx-12" src="assets/sfx/pop-up-4.wav" data-start="29.44" data-duration="0.3" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="sfx-12" src="assets/sfx/pop-up-4.wav" data-start="32.5" data-duration="0.3" data-track-index="22" data-volume="0.4"></audio>
       <audio id="sfx-13" src="assets/sfx/confirm.wav" data-start="34.8" data-duration="0.4" data-track-index="25" data-volume="0.3"></audio>
       <audio id="sfx-14" src="assets/sfx/whoosh.wav" data-start="36.7" data-duration="0.5" data-track-index="21" data-volume="0.3"></audio>
       <audio id="sfx-15" src="assets/sfx/pop-up-5.wav" data-start="40.4" data-duration="0.3" data-track-index="22" data-volume="0.4"></audio>
       <audio id="sfx-16" src="assets/sfx/whoosh.wav" data-start="42.0" data-duration="0.5" data-track-index="21" data-volume="0.3"></audio>
-      <audio id="sfx-17" src="assets/sfx/whoosh-fast.wav" data-start="44.86" data-duration="0.3" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="sfx-17" src="assets/sfx/pop-up-6.wav" data-start="43.84" data-duration="0.3" data-track-index="23" data-volume="0.3"></audio>
       <audio id="sfx-18" src="assets/sfx/impact.wav" data-start="46.3" data-duration="0.6" data-track-index="20" data-volume="0.32"></audio>
       <audio id="sfx-19" src="assets/sfx/click.wav" data-start="48.55" data-duration="0.03" data-track-index="26" data-volume="0.6"></audio>
       <audio id="sfx-20" src="assets/sfx/click.wav" data-start="49.65" data-duration="0.03" data-track-index="27" data-volume="0.6"></audio>
       <audio id="sfx-21" src="assets/sfx/whoosh.wav" data-start="52.3" data-duration="0.5" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="sfx-23" src="assets/sfx/whoosh-fast.wav" data-start="44.86" data-duration="0.22" data-track-index="28" data-volume="0.3"></audio>
+      <audio id="sfx-24" src="assets/sfx/whoosh.wav" data-start="28.76" data-duration="0.32" data-track-index="29" data-volume="0.28"></audio>
       <audio id="sfx-22" src="assets/sfx/pop-high.wav" data-start="53.56" data-duration="0.07" data-track-index="24" data-volume="0.4"></audio>
     </div>
 
@@ -625,11 +652,58 @@
           tl.to(chars, { yPercent: -120, duration: 0.25, ease: "power2.in", stagger: 0.015 }, b - 0.3);
           tl.set(box, { visibility: "hidden" }, b);
         };
+        // white rest plates: wall → white with a soft circle wipe from behind her, slow drifting shapes
+        const plate = (a, b) => {
+          const w = document.createElement("div");
+          w.className = "wp";
+          w.innerHTML = '<div class="dots"></div><i class="blob" style="left:-260px;top:120px;width:900px;height:900px"></i><i class="blob" style="left:520px;top:980px;width:820px;height:820px"></i><i class="rg" style="left:640px;top:180px;width:300px;height:300px"></i><i class="rg" style="left:80px;top:1180px;width:200px;height:200px"></i>';
+          back.appendChild(w);
+          tl.set(w, { visibility: "visible" }, a);
+          tl.fromTo(w, { clipPath: "circle(0% at 50% 48%)" }, { clipPath: "circle(80% at 50% 48%)", duration: 0.55, ease: "power3.inOut" }, a);
+          tl.fromTo(w.querySelector(".dots"), { x: 0, y: 0 }, { x: -60, y: -60, duration: b - a, ease: "none" }, a);
+          w.querySelectorAll(".blob").forEach((el, i) => tl.fromTo(el, { x: 0, y: 0, scale: 0.9 }, { x: i ? -90 : 90, y: i ? -60 : 60, scale: 1.1, duration: b - a, ease: "sine.inOut" }, a));
+          w.querySelectorAll(".rg").forEach((el, i) => tl.fromTo(el, { scale: 0.4, rotation: 0 }, { scale: 1.15, duration: b - a, ease: "sine.out" }, a));
+          if (b < 55.2) {
+            tl.to(w, { clipPath: "circle(0% at 50% 48%)", duration: 0.4, ease: "power3.in" }, b - 0.4);
+            tl.set(w, { visibility: "hidden" }, b);
+          }
+        };
+        plate(5.88, 9.76);
+        plate(28.76, 32.42);
+        plate(42.02, 47.76);
+        plate(52.3, 55.24);
         behind([["SECRETO", 205]], 0.5, 2.25, 590);
         behind([["TRABAJADOR", 128], ["INDEPENDIENTE", 98, "bl"]], 6.38, 7.66, 590);
         behind([["+50%", 270]], 22.6, 23.62, 600);
-        behind([["¡OJO!", 260, "bl"]], 28.8, 29.95, 600);
-        behind([["PROTECCIÓN", 128]], 46.28, 47.74, 640);
+        behind([["¡OJO!", 260, "bl"]], 28.95, 29.95, 600);
+        behind([["MENOS DE", 92], ["20 AÑOS", 165, "bl"]], 31.1, 32.38, 520);
+        behind([["PROTECCIÓN", 128]], 46.28, 47.4, 640);
+        // "no se trata solo de sumar semanas": chips float up behind her, then pop away
+        [[90, 760, 43.84], [700, 700, 43.98], [150, 470, 44.12], [640, 420, 44.26], [380, 300, 44.4]].forEach(([x, y, t], i) => {
+          const c = document.createElement("div");
+          c.className = "sem";
+          c.textContent = "+1 semana";
+          c.style.left = x + "px";
+          c.style.top = y + "px";
+          back.appendChild(c);
+          tl.set(c, { visibility: "visible" }, t);
+          tl.fromTo(c, { scale: 0, rotation: i % 2 ? 8 : -8 }, { scale: 1, rotation: i % 2 ? -4 : 4, duration: 0.4, ease: "back.out(2.6)" }, t);
+          tl.to(c, { y: -40, duration: 1.0, ease: "none" }, t + 0.3);
+          tl.to(c, { scale: 0, duration: 0.2, ease: "back.in(2)" }, 44.86 + i * 0.04);
+          tl.set(c, { visibility: "hidden" }, 45.15 + i * 0.04);
+        });
+        // shield draws above her head on "entender qué protección"
+        const sh = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        sh.setAttribute("viewBox", "0 0 80 86");
+        sh.style.cssText = "position:absolute;left:420px;top:290px;width:240px;height:258px;overflow:visible;visibility:hidden";
+        sh.innerHTML = '<path d="M40 4 L70 15 V40 C70 60, 57 73, 40 81 C23 73, 10 60, 10 40 V15 Z" fill="none" stroke="#1f6fe5" stroke-width="5" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/><path d="M26 42 L36 52 L55 32" fill="none" stroke="#1f6fe5" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/>';
+        back.appendChild(sh);
+        tl.set(sh, { visibility: "visible" }, 45.7);
+        tl.to(sh.children[0], { attr: { "stroke-dashoffset": 0 }, duration: 0.6, ease: "power2.inOut" }, 45.7);
+        tl.to(sh.children[1], { attr: { "stroke-dashoffset": 0 }, duration: 0.35, ease: "power2.out" }, 46.2);
+        tl.fromTo(sh, { scale: 0.85 }, { scale: 1, y: -30, duration: 1.8, ease: "power1.out" }, 45.7);
+        tl.to(sh, { scale: 0, duration: 0.25, ease: "back.in(2)" }, 47.4);
+        tl.set(sh, { visibility: "hidden" }, 47.7);
 
         // card helpers
         const cardIn = (id, a, b) => {
@@ -646,10 +720,10 @@
         };
 
         // ===== C1 (2.3 – 15.25): vejez → invalidez → familia =====
-        cardIn("#c1", 2.3, 15.25);
+        cardIn("#c1", 9.7, 15.25);
         gsap.set(["#n0", "#n1", "#n2"], { opacity: 0.35 });
         gsap.set([".disc .ok"], { scale: 0 });
-        [["#n0", 2.45], ["#n1", 2.55], ["#n2", 2.65]].forEach(([n, t]) => pop(n + " .disc", t, { scale: 0.3 }, 0.5));
+        [["#n0", 9.85], ["#n1", 9.95], ["#n2", 10.05]].forEach(([n, t]) => pop(n + " .disc", t, { scale: 0.3 }, 0.5));
         const activate = (n, t, k) => {
           tl.to(n, { opacity: 1, duration: 0.2, ease: "none" }, t);
           tl.to(n + " .disc", { borderColor: "#1f6fe5", backgroundColor: "#ffffff", duration: 0.2, ease: "none" }, t);
@@ -657,14 +731,14 @@
           tl.fromTo(n + " .ok", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(3)" }, t + 0.1);
           if (k) tl.to("#c1-fill", { attr: { "stroke-dashoffset": 1 - k * 0.5 }, duration: 0.6, ease: "power2.inOut" }, t - 0.35);
         };
-        activate("#n0", 4.84, 0);
-        activate("#n1", 10.28, 1);
+        activate("#n0", 9.95, 0);
+        activate("#n1", 10.45, 1);
         activate("#n2", 13.62, 2);
 
         // ===== C2 (15.3 – 28.74): invalidez → 50 % + 50 semanas =====
-        cardIn("#c2", 15.3, 28.74);
-        tl.fromTo("#c2-ph", { scale: 1.25 }, { scale: 1.05, duration: 13.4, ease: "none" }, 15.3);
-        pop("#rq0", 19.9, { x: 120 }, 0.5, "expo.out");
+        cardIn("#c2", 19.85, 28.74);
+        tl.fromTo("#c2-ph", { scale: 1.25 }, { scale: 1.05, duration: 8.9, ease: "none" }, 19.85);
+        pop("#rq0", 20.35, { x: 120 }, 0.5, "expo.out");
         tl.to("#ring-p", { attr: { "stroke-dashoffset": 50 }, duration: 1.5, ease: "power2.inOut" }, 21.3);
         count("#n50", 0, 50, 21.3, 1.5, (v) => Math.round(v) + "%");
         tl.fromTo("#rq0", { scale: 1 }, { scale: 1.05, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1 }, 22.7);
@@ -684,9 +758,9 @@
         });
 
         // ===== C3 (29.4 – 36.66): < 20 años → 26 semanas (half a year) =====
-        cardIn("#c3", 29.4, 36.66);
-        pop("#c3-chip", 29.5, { x: -140 }, 0.5, "expo.out");
-        pop("#c3-k", 32.8, { y: 20 }, 0.35, "power3.out");
+        cardIn("#c3", 32.4, 36.66);
+        pop("#c3-chip", 32.5, { x: -140 }, 0.5, "expo.out");
+        pop("#c3-k", 33.0, { y: 20 }, 0.35, "power3.out");
         pop("#c3-big", 34.06, { scale: 0.3 }, 0.55, "back.out(2)");
         count("#n26", 0, 26, 34.1, 0.9);
         pop("#c3-yr", 35.5, { x: 40 }, 0.4, "power3.out");
@@ -706,20 +780,6 @@
         pop("#c4-q", 36.85, { x: -80 }, 0.45, "expo.out");
         pop("#c4-a", 38.17, { y: 20 }, 0.4, "power3.out");
         pop("#c4-b", 40.4, { y: 30, scale: 0.9 }, 0.5, "back.out(2)");
-
-        // ===== C5 (42.0 – 47.74): sumar semanas ✗ → entender protección ✓ =====
-        cardIn("#c5", 42.0, 47.74);
-        gsap.set(["#c5-strike", "#c5-t", "#c5-t2", "#c5-t3", "#c5-sh"], { opacity: 0 });
-        count("#n-acc", 0, 150, 43.84, 1.0);
-        tl.to("#c5-n", { color: "#0a2a6e", duration: 0.3, ease: "none" }, 43.9);
-        tl.fromTo("#c5-strike", { opacity: 1, scaleX: 0, transformOrigin: "0% 50%", rotation: -6 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 44.86);
-        tl.to(["#c5-n", "#c5-sum"], { color: "#9aa6bd", duration: 0.3, ease: "none" }, 44.9);
-        tl.fromTo("#c5-ph", { scale: 1.3 }, { scale: 1.08, duration: 5.7, ease: "none" }, 42.0);
-        pop("#c5-sh", 45.72, { scale: 0, rotation: -30 }, 0.5, "back.out(2.4)");
-        tl.to("#c5-chk", { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power2.out" }, 46.1);
-        pop("#c5-t", 45.75, { y: 20 }, 0.35, "power3.out");
-        pop("#c5-t2", 46.3, { scale: 0.5 }, 0.45, "back.out(2.4)");
-        pop("#c5-t3", 47.05, { y: 20 }, 0.35, "power3.out");
 
         // ===== C6 (47.8 – 52.3): guárdalo · compártelo with a tapping hand =====
         [["#b-save", 47.85], ["#b-share", 48.95]].forEach(([b, t]) => {
