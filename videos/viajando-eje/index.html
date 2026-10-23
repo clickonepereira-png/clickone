@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Viajando por el Eje — promo</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-normal.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-italic.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: italic;
+      }
+      :root {
+        --gold: linear-gradient(105deg, #8a6418 0%, #d9b14a 16%, #f8e7a1 30%, #d4a73a 42%, #fff6d0 50%, #c8962c 58%, #f0d27a 76%, #9a7020 100%);
+        --gold-solid: #d9b14a;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #zoom,
+      html[data-mode="green"] .shade {
+        display: none;
+      }
+      #zoom {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* soft darkening behind the text, never a box */
+      .shade {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+      }
+      #shL {
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.18) 38%, rgba(0, 0, 0, 0) 55%);
+      }
+      #shR {
+        background: linear-gradient(270deg, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.25) 42%, rgba(0, 0, 0, 0) 60%);
+      }
+      #shB {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.25) 30%, rgba(0, 0, 0, 0) 50%);
+      }
+      #shT {
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.22) 34%, rgba(0, 0, 0, 0) 50%);
+      }
+      #shC {
+        background: radial-gradient(ellipse 60% 50% at 50% 48%, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+      }
+
+      /* ---------- type system ---------- */
+      .g {
+        position: absolute;
+        filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35)) drop-shadow(0 6px 22px rgba(0, 0, 0, 0.45));
+      }
+      .m {
+        display: block;
+        overflow: hidden;
+        padding: 0.06em 0.12em 0.14em;
+        margin: -0.06em -0.12em -0.14em;
+      }
+      .m > span {
+        display: inline-block;
+      }
+      .cap {
+        font-weight: 600;
+        font-size: 34px;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: #fff;
+      }
+      .cap .n {
+        color: var(--gold-solid);
+        margin-right: 18px;
+        letter-spacing: 0.1em;
+      }
+      .ser {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 500;
+        line-height: 1.05;
+        color: #fff;
+        white-space: nowrap;
+      }
+      .rom {
+        font-family: "Playfair", serif;
+        font-weight: 500;
+        line-height: 1.05;
+        color: #fff;
+        white-space: nowrap;
+      }
+      .gold,
+      .gold .c {
+        background: var(--gold);
+        background-size: 300% 100%;
+        background-position: 0% 0;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .c {
+        display: inline-block;
+      }
+      .rule {
+        height: 3px;
+        background: var(--gold);
+        background-size: 300% 100%;
+      }
+
+      /* scene layouts */
+      #g1 {
+        left: 120px;
+        top: 300px;
+      }
+      #g2 {
+        right: 120px;
+        top: 560px;
+        text-align: right;
+      }
+      #g3 {
+        left: 0;
+        right: 0;
+        top: 150px;
+        text-align: center;
+      }
+      #g3 .row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+      }
+      #g3 .rule {
+        width: 160px;
+      }
+      .item {
+        position: absolute;
+        left: 130px;
+        top: 360px;
+      }
+      #g5 {
+        left: 0;
+        right: 0;
+        top: 735px;
+        text-align: center;
+      }
+      #url {
+        position: absolute;
+        top: 790px;
+        font-weight: 600;
+        font-size: 78px;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+        filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.55));
+      }
+      #url .c {
+        display: inline-block;
+      }
+      #cur {
+        display: inline-block;
+        width: 6px;
+        height: 70px;
+        margin-left: 8px;
+        vertical-align: -6px;
+        background: var(--gold-solid);
+      }
+      #g5b {
+        left: 0;
+        right: 0;
+        top: 905px;
+        text-align: center;
+      }
+      #g6,
+      #g7 {
+        right: 120px;
+        top: 300px;
+        text-align: right;
+      }
+      #vip {
+        font-weight: 800;
+        font-size: 230px;
+        line-height: 0.95;
+        letter-spacing: 0.1em;
+        margin-right: -0.1em;
+      }
+      #g8 {
+        left: 0;
+        right: 0;
+        top: 120px;
+        text-align: center;
+      }
+      #g9 {
+        left: 0;
+        right: 0;
+        top: 300px;
+        text-align: center;
+      }
+      #g9 .rule {
+        width: 520px;
+        margin: 26px auto 22px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="33.78" data-width="1920" data-height="1080">
+      <div id="zoom">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="33.78" data-track-index="0" muted playsinline></video>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="33.78" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="33.78" data-track-index="1">
+        <div class="shade" id="shL"></div>
+        <div class="shade" id="shR"></div>
+        <div class="shade" id="shB"></div>
+        <div class="shade" id="shT"></div>
+        <div class="shade" id="shC"></div>
+
+        <!-- 1 · ¿te imaginas descubrir los lugares más icónicos del Eje Cafetero? -->
+        <div class="g" id="g1">
+          <div class="m cap"><span id="g1a">¿Te imaginas</span></div>
+          <div class="m ser" style="font-size: 140px"><span id="g1b">descubrir</span></div>
+        </div>
+        <div class="g" id="g2">
+          <div class="m cap"><span id="g2a">los lugares más</span></div>
+          <div class="ser gold split" id="g2b" style="font-size: 150px">icónicos</div>
+          <div class="m rom" style="font-size: 60px"><span id="g2c">del Eje Cafetero</span></div>
+        </div>
+
+        <!-- 2 · title over the b-roll -->
+        <div class="g" id="g3">
+          <div class="row"><div class="rule" id="g3l"></div><div class="m cap"><span id="g3a">Colombia</span></div><div class="rule" id="g3r"></div></div>
+          <div class="m ser" style="font-size: 170px"><span class="gold" id="g3b">Eje Cafetero</span></div>
+        </div>
+
+        <!-- 3 · list, one idea at a time -->
+        <div class="g item" id="i1">
+          <div class="m cap"><span><b class="n">01</b>Hoteles</span></div>
+          <div class="m ser" style="font-size: 140px"><span class="gold">de lujo</span></div>
+        </div>
+        <div class="g item" id="i2">
+          <div class="m cap"><span><b class="n">02</b>Experiencias</span></div>
+          <div class="m ser" style="font-size: 140px"><span class="gold">únicas</span></div>
+        </div>
+        <div class="g item" id="i3">
+          <div class="m cap"><span><b class="n">03</b>Gastronomía</span></div>
+          <div class="m ser" style="font-size: 140px"><span class="gold">exquisita</span></div>
+        </div>
+        <div class="g item" id="i4">
+          <div class="m cap"><span>y destinos que</span></div>
+          <div class="m ser" style="font-size: 130px"><span class="gold">te enamorarán</span></div>
+        </div>
+
+        <!-- 4 · the link, typed in gold -->
+        <div class="g" id="g5"><div class="m cap"><span id="g5a">Entra a</span></div></div>
+        <div id="url" class="gold"><span id="cur"></span></div>
+        <div class="g" id="g5b"><div class="m ser" style="font-size: 54px"><span id="g5c">y descubre la magia de nuestro Eje Cafetero</span></div></div>
+
+        <!-- 5 · ir más allá → Club de Viajes VIP -->
+        <div class="g" id="g6">
+          <div class="m cap"><span id="g6a">Y si quieres</span></div>
+          <div class="m ser" style="font-size: 130px"><span id="g6b">ir más allá</span></div>
+        </div>
+        <div class="g" id="g7">
+          <div class="m cap"><span id="g7a">Haz parte del</span></div>
+          <div class="m rom" style="font-size: 92px"><span id="g7b">Club de Viajes</span></div>
+          <div class="gold split" id="vip">VIP</div>
+        </div>
+
+        <!-- 6 · una mejor experiencia -->
+        <div class="g" id="g8">
+          <div class="m cap"><span id="g8a">y disfruta de</span></div>
+          <div class="m ser" style="font-size: 120px"><span class="gold" id="g8b">una mejor experiencia</span></div>
+        </div>
+
+        <!-- 7 · closing line -->
+        <div class="g" id="g9">
+          <div class="rom" style="font-size: 150px"><span class="m" style="display: inline-block"><span class="gold w9">Viajando</span></span> <span class="m" style="display: inline-block"><span class="gold w9">por</span></span> <span class="m" style="display: inline-block"><span class="gold w9">el</span></span> <span class="m" style="display: inline-block"><span class="gold w9">Eje</span></span></div>
+          <div class="rule" id="g9r"></div>
+          <div class="m ser" style="font-size: 66px"><span id="g9b">el lujo está en descubrirlo</span></div>
+          <div class="m cap" style="margin-top: 26px; font-size: 30px"><span class="gold" id="g9c">www.viajandoporeleje.co</span></div>
+        </div>
+      </div>
+
+      <!-- SFX: soft and few -->
+      <audio id="sx1" src="assets/sfx/whoosh-soft.wav" data-start="1.05" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sx2" src="assets/sfx/bowl-high.wav" data-start="2.46" data-duration="2.4" data-track-index="21" data-volume="0.16"></audio>
+      <audio id="sx3" src="assets/sfx/whoosh-soft.wav" data-start="4.25" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sx4" src="assets/sfx/whoosh.wav" data-start="7.94" data-duration="0.32" data-track-index="22" data-volume="0.18"></audio>
+      <audio id="sx5" src="assets/sfx/whoosh.wav" data-start="9.18" data-duration="0.32" data-track-index="22" data-volume="0.18"></audio>
+      <audio id="sx6" src="assets/sfx/whoosh.wav" data-start="10.5" data-duration="0.32" data-track-index="22" data-volume="0.18"></audio>
+      <audio id="sx7" src="assets/sfx/bowl-high.wav" data-start="12.52" data-duration="2.4" data-track-index="21" data-volume="0.14"></audio>
+      <audio id="sx8" src="assets/sfx/typing.wav" data-start="16.08" data-duration="1.2" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="sx9" src="assets/sfx/whoosh-soft.wav" data-start="21.35" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sx10" src="assets/sfx/bowl.wav" data-start="24.86" data-duration="3.2" data-track-index="24" data-volume="0.2"></audio>
+      <audio id="sx11" src="assets/sfx/whoosh-soft.wav" data-start="30.3" data-duration="0.55" data-track-index="20" data-volume="0.22"></audio>
+      <audio id="sx12" src="assets/sfx/bowl-high.wav" data-start="31.5" data-duration="2.28" data-track-index="21" data-volume="0.14"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => document.querySelectorAll(s);
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+
+        // split gold words into letters (each letter keeps its own gold fill)
+        $$(".split").forEach((el) => {
+          const txt = el.textContent;
+          el.textContent = "";
+          [...txt].forEach((ch) => {
+            const c = document.createElement("span");
+            c.className = "c";
+            c.textContent = ch;
+            el.appendChild(c);
+          });
+        });
+
+        // masked rise: the word slides up out of its own line
+        const rise = (sel, t, d = 0.8) => tl.fromTo(sel, { yPercent: 115 }, { yPercent: 0, duration: d, ease: "expo.out" }, t);
+        const out = (sel, t, d = 0.45) => tl.to(sel, { opacity: 0, y: -18, duration: d, ease: "power2.in" }, t);
+        const shine = (sel, t, d = 1.6) => tl.fromTo(sel, { backgroundPosition: "0% 0" }, { backgroundPosition: "100% 0", duration: d, ease: "power1.inOut" }, t);
+        const shade = (id, a, b, o = 1) => {
+          tl.fromTo(id, { opacity: 0 }, { opacity: o, duration: 0.6, ease: "power1.out" }, a);
+          tl.to(id, { opacity: 0, duration: 0.5, ease: "power1.in" }, b);
+        };
+
+        // ===== 1 · 0.1 – 3.95 =====
+        shade("#shL", 0.05, 3.7, 0.8);
+        shade("#shR", 1.4, 3.7, 0.8);
+        rise("#g1a", 0.14);
+        tl.fromTo("#g1b", { yPercent: 115, skewX: -12 }, { yPercent: 0, skewX: 0, duration: 1.1, ease: "expo.out" }, 1.1);
+        rise("#g2a", 1.52);
+        tl.fromTo("#g2b .c", { opacity: 0, y: 40, rotationX: -80 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.7, ease: "back.out(1.6)", stagger: 0.045 }, 2.4);
+        shine("#g2b .c", 2.9, 1.2);
+        rise("#g2c", 3.0);
+        out("#g1", 3.75);
+        out("#g2", 3.8);
+
+        // ===== 2 · title over the houses 4.25 – 6.3 =====
+        shade("#shT", 4.1, 6.1);
+        tl.fromTo(["#g3l", "#g3r"], { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power3.out" }, 4.25);
+        rise("#g3a", 4.3);
+        tl.fromTo("#g3b", { yPercent: 115, scale: 1.08 }, { yPercent: 0, scale: 1, duration: 1.1, ease: "expo.out" }, 4.45);
+        shine("#g3b", 4.9, 1.4);
+        tl.to("#g3", { scale: 1.04, duration: 1.8, ease: "none" }, 4.5);
+        out("#g3", 6.05, 0.35);
+
+        // ===== 3 · one idea at a time 7.94 – 13.3 =====
+        shade("#shL", 7.8, 13.2, 0.85);
+        const items = [["#i1", 7.94, 9.08], ["#i2", 9.18, 10.4], ["#i3", 10.5, 11.7], ["#i4", 11.78, 13.25]];
+        items.forEach(([id, a, b], k) => {
+          rise(id + " .cap > span", a, 0.6);
+          tl.fromTo(id + " .ser > span", { yPercent: 115 }, { yPercent: 0, duration: 0.8, ease: "expo.out" }, a + (k === 3 ? 0.7 : 0.18));
+          shine(id + " .ser > span", a + 0.5, 1.1);
+          tl.to(id, { opacity: 0, x: -40, duration: 0.3, ease: "power2.in" }, b - 0.2);
+        });
+
+        // ===== 4 · the link 15.78 – 20.35 =====
+        shade("#shB", 15.6, 20.2);
+        rise("#g5a", 15.78, 0.6);
+        const URL = "www.viajandoporeleje.co";
+        const url = $("#url");
+        const cur = $("#cur");
+        const chars = [...URL].map((ch) => {
+          const c = document.createElement("span");
+          c.className = "c";
+          c.textContent = ch;
+          url.insertBefore(c, cur);
+          return c;
+        });
+        // left-anchor the typing so the text grows to the right from a centred start
+        url.style.left = Math.round((1920 - url.offsetWidth) / 2) + "px";
+        chars.forEach((c) => (c.style.display = "none"));
+        tl.set(url, { opacity: 0 }, 0);
+        tl.set(url, { opacity: 1 }, 15.95);
+        const T0 = 16.08, DT = 0.052;
+        chars.forEach((c, i) => tl.set(c, { display: "inline-block" }, T0 + i * DT));
+        // cursor blinks while waiting and after typing
+        tl.to(cur, { opacity: 0, duration: 0.01, repeat: 1, yoyo: true, repeatDelay: 0.25 }, 15.98);
+        for (let t = T0 + URL.length * DT + 0.3; t < 20.0; t += 0.55) tl.to(cur, { opacity: 0, duration: 0.01, repeat: 1, yoyo: true, repeatDelay: 0.27 }, t);
+        shine(chars, 17.6, 1.6);
+        rise("#g5c", 17.92, 0.9);
+        out(["#g5", "#g5b"], 20.2, 0.35);
+        tl.to(url, { opacity: 0, y: -18, duration: 0.35, ease: "power2.in" }, 20.2);
+
+        // ===== 5 · ir más allá → Club de Viajes VIP 20.56 – 25.5 =====
+        shade("#shR", 20.4, 25.4, 1);
+        rise("#g6a", 20.56, 0.6);
+        tl.fromTo("#g6b", { yPercent: 115, x: 60 }, { yPercent: 0, x: 0, duration: 1.0, ease: "expo.out" }, 21.35);
+        out("#g6", 22.85, 0.3);
+        rise("#g7a", 23.08, 0.6);
+        rise("#g7b", 23.9, 0.8);
+        tl.fromTo("#vip .c", { opacity: 0, scale: 2.2, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.55, ease: "power3.out", stagger: 0.09 }, 24.82);
+        shine("#vip .c", 25.2, 1.2);
+        out("#g7", 25.45, 0.4);
+
+        // ===== 6 · una mejor experiencia 25.5 – 27.8 =====
+        shade("#shT", 25.6, 27.6);
+        rise("#g8a", 25.46, 0.6);
+        rise("#g8b", 26.0, 1.0);
+        shine("#g8b", 26.6, 1.2);
+        out("#g8", 27.65, 0.4);
+
+        // ===== 7 · closing line 30.3 – end =====
+        shade("#shC", 30.1, 40, 1);
+        [30.32, 30.84, 31.0, 31.18].forEach((t, i) => tl.fromTo($$(".w9")[i], { yPercent: 115 }, { yPercent: 0, duration: 0.9, ease: "expo.out" }, t));
+        tl.fromTo("#g9r", { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: "power3.out" }, 31.3);
+        rise("#g9b", 31.5, 1.0);
+        rise("#g9c", 32.4, 0.8);
+        shine(".w9", 31.9, 1.6);
+        tl.to("#g9", { scale: 1.03, duration: 3.4, ease: "none" }, 30.38);
+
+        tl.set({}, {}, 33.78);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
