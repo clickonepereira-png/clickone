@@ -271,7 +271,7 @@
         <div id="rw"><div id="rw-t">◀◀ 1 MINUTO ANTES</div><div id="rw-s">REBOBINANDO</div></div>
 
         <!-- motorcycle plate: blurred patch that follows the plate (68.2 – 71.5) -->
-        <div id="plate" style="position: absolute; inset: 0; visibility: hidden; clip-path: inset(1845px 0px 0px 870px round 18px)">
+        <div id="plate" style="position: absolute; inset: 0; opacity: 0; clip-path: inset(1920px 0px 0px 1080px)">
           <video id="plv" src="assets/footage.mp4" data-start="0" data-duration="78.04" data-track-index="2" muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(22px)"></video>
         </div>
 
@@ -425,9 +425,9 @@
           [70.0, 800, 1610, 1080, 1870], [70.4, 860, 1590, 1080, 1820], [70.8, 880, 1600, 1080, 1850], [71.2, 920, 1700, 1080, 1920],
           [71.5, 960, 1760, 1080, 1920],
         ];
-        tl.set("#plate", { visibility: "visible", clipPath: box(...PK[0].slice(1)) }, 68.15);
+        tl.set("#plate", { opacity: 1, clipPath: box(...PK[0].slice(1)) }, 68.15);
         PK.slice(1).forEach((k, i) => tl.to("#plate", { clipPath: box(...k.slice(1)), duration: k[0] - PK[i][0], ease: "none" }, PK[i][0]));
-        tl.set("#plate", { visibility: "hidden" }, 71.6);
+        tl.set("#plate", { opacity: 0, clipPath: "inset(1920px 0px 0px 1080px)" }, 71.6);
 
         tl.set({}, {}, 78.04);
         window.__timelines = window.__timelines || {};
