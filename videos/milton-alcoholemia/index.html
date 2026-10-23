@@ -258,6 +258,45 @@
         color: var(--yellow);
         letter-spacing: 0.3em;
       }
+      /* ---------- artículo 152: free type, no box ---------- */
+      #art {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 120px;
+        text-align: center;
+        opacity: 0;
+      }
+      #art .k {
+        font-weight: 800;
+        font-size: 40px;
+        letter-spacing: 0.1em;
+        color: #fff;
+        -webkit-text-stroke: 8px var(--ink);
+        paint-order: stroke fill;
+      }
+      #art .n {
+        margin-top: 4px;
+        font-weight: 900;
+        font-size: 128px;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        white-space: nowrap;
+        color: #fff;
+        -webkit-text-stroke: 14px var(--ink);
+        paint-order: stroke fill;
+      }
+      #art .n b {
+        display: inline-block;
+        color: var(--yellow);
+      }
+      #art .rule {
+        width: 520px;
+        height: 10px;
+        margin: 14px auto 0;
+        border-radius: 5px;
+        background: var(--yellow);
+      }
     </style>
   </head>
   <body>
@@ -274,6 +313,13 @@
           <video id="plv" src="assets/footage.mp4" data-start="0" data-duration="83.77" data-track-index="2" muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(22px)"></video>
         </div>
 
+        <!-- artículo 152 title (47.5 – 61.2) -->
+        <div id="art">
+          <div class="k">CÓDIGO NACIONAL DE TRÁNSITO</div>
+          <div class="n">ARTÍCULO <b id="art-n">152</b></div>
+          <div class="rule" id="art-r"></div>
+        </div>
+
         <div id="caps"></div>
       </div>
 
@@ -285,6 +331,7 @@
       <audio id="sx05" src="assets/sfx/scratch.wav" data-start="26.62" data-duration="0.5" data-track-index="24" data-volume="0.4"></audio>
       <audio id="sx06" src="assets/sfx/dundun.wav" data-start="39.94" data-duration="2.04" data-track-index="25" data-volume="0.3"></audio>
       <audio id="sx07" src="assets/sfx/ding.wav" data-start="48.1" data-duration="1.2" data-track-index="22" data-volume="0.22"></audio>
+      <audio id="sx13" src="assets/sfx/whoosh.wav" data-start="47.45" data-duration="0.57" data-track-index="29" data-volume="0.25"></audio>
       <audio id="sx08" src="assets/sfx/kaching.wav" data-start="55.72" data-duration="1.59" data-track-index="26" data-volume="0.25"></audio>
       <audio id="sx09" src="assets/sfx/stamp.wav" data-start="59.36" data-duration="0.35" data-track-index="27" data-volume="0.5"></audio>
       <audio id="sx10" src="assets/sfx/slide-down.wav" data-start="70.52" data-duration="0.6" data-track-index="28" data-volume="0.35"></audio>
@@ -307,7 +354,7 @@
           ["A", 15.48, 18.38, [["no,", 15.5], ["no,", 15.74], ["no,", 16.12], ["yo", 16.66], ["no", 17.08], ["estoy", 17.22]], ["bajo efectos", 17.32], ["del alcohol", 17.76], "type"],
           ["M", 18.4, 20.48, [["pero", 18.42], ["por", 18.6], ["eso", 18.72], ["necesito", 18.9]], ["determinarlo", 19.22], null, "slide"],
           ["A", 20.5, 23.04, [["no,", 20.52], ["no,", 20.68], ["pero,", 20.94], ["hermano,", 21.1], ["yo", 21.46], ["no", 21.64], ["me", 21.8], ["hago", 21.94]], ["ninguna prueba", 22.46], null, "bounce"],
-          ["M", 23.06, 24.46, [["¿y", 23.08], ["por", 23.24], ["qué", 23.3]], ["no se la hace?", 23.4], null, "pop"],
+          ["M", 23.06, 24.46, [["¿y", 23.08], ["por", 23.2], ["qué", 23.28], ["no", 23.38], ["se", 23.46], ["la", 23.52]], ["va a dejar hacer?", 23.62], null, "pop"],
           ["A", 24.48, 27.3, [["no,", 24.5], ["pues", 24.78], ["porque", 24.94], ["no,", 25.2], ["yo", 25.56], ["no", 25.7], ["estoy", 25.9]], ["borracho", 26.62], null, "flip"],
           ["M", 27.32, 30.1, [["¿cómo", 27.32], ["que...?", 27.58], ["por", 27.82], ["eso", 27.98], ["necesito", 28.14]], ["determinarlo", 28.56], ["si está o no", 28.86], "slide"],
           ["A", 30.14, 32.88, [["no,", 30.14], ["yo", 30.3], ["no", 30.38], ["me", 30.5], ["voy", 30.58], ["a", 30.62], ["dejar", 30.68], ["hacer", 30.84]], ["ninguna prueba", 31.1], ["mi hermanito, pero muchas gracias", 31.58], "type"],
@@ -315,7 +362,7 @@
           ["A", 35.3, 37.68, [["no,", 35.3], ["yo", 35.54], ["no", 35.66], ["tengo", 35.84], ["por", 36.04], ["qué", 36.16]], ["dejármela hacer", 36.36], ["no quiero", 36.98], "bounce"],
           ["M", 37.7, 40.76, [["bueno,", 37.72], ["si", 37.92], ["usted", 38.1], ["no", 38.24], ["se", 38.36], ["deja", 38.5], ["hacer", 38.66], ["la", 38.76], ["prueba,", 38.88], ["le", 39.42], ["pongo", 39.56], ["la", 39.78]], ["sanción mayor", 39.94, 1], null, "flip"],
           ["A", 42.54, 45.9, [["no,", 42.54], ["no,", 42.76], ["no,", 42.94], ["pero", 43.2], ["yo", 43.42], ["no", 43.54], ["me", 43.68], ["hago", 43.82]], ["ninguna prueba", 44.1], null, "slide"],
-          ["M", 46.02, 49.0, [["no,", 46.04], ["señor,", 46.24], ["un", 46.44], ["momentico,", 46.6], ["lo", 46.94], ["que", 47.0], ["pasa", 47.1], ["es", 47.22], ["que", 47.26], ["el", 47.34]], ["artículo 152", 47.5], ["del Código Nacional de Tránsito", 48.98], "type"],
+          ["M", 46.02, 47.5, [["no,", 46.04], ["señor,", 46.24], ["un", 46.44], ["momentico,", 46.6], ["lo", 46.94], ["que", 47.0], ["pasa", 47.1], ["es", 47.22], ["que", 47.26], ["el", 47.34]], null, null, "type"],
           ["M", 49.02, 53.3, [["dice", 50.68], ["que", 51.18], ["si", 51.36], ["usted", 51.64], ["se", 51.9]], ["niega", 52.16], ["a realizarse la prueba de alcoholemia", 52.44], "pop"],
           ["M", 53.32, 55.7, [["tiene", 54.46], ["la", 54.64]], ["sanción mayor", 54.84, 1], null, "slide"],
           ["M", 55.72, 58.86, [["de", 55.56]], ["1.440 salarios", 55.72, 1], ["mínimos diarios legales vigentes", 57.1], "bounce"],
@@ -327,7 +374,8 @@
           ["A", 72.22, 74.28, [["ah,", 72.22], ["no,", 72.42]], ["hagamos la prueba", 72.56], ["hagamos la prueba", 73.2], "pop"],
           ["M", 74.3, 77.2, [["mis", 74.3], ["muchachos,", 74.54], ["recuerden", 75.32], ["que", 75.7]], ["negarse", 76.02], ["a realizarse la prueba de alcoholemia", 76.38], "flip"],
           ["M", 77.22, 81.1, [["da", 77.9], ["la", 78.0]], ["sanción mayor", 78.26, 1], ["y cancelación de la licencia", 78.96], "slide"],
-          ["M", 81.12, 83.77, [["requisito", 81.14], ["importante:", 81.92], ["no", 82.56], ["conduzcan", 82.78], ["en", 83.2]], ["embriaguez", 83.36, 1], null, "pop"],
+          ["M", 81.12, 82.5, [["requisito", 81.14]], ["importante", 81.5], null, "slide"],
+          ["M", 82.5, 83.77, [], ["NO conduzcan", 82.56, 1], ["en estado de embriaguez", 83.0], "pop"],
         ];
         const caps = $("#caps");
         G.forEach(([who, a, b, lead, big, tail, anim]) => {
@@ -408,6 +456,12 @@
           tl.fromTo(sel, { scale: 3, opacity: 0, rotation: rot - 10 }, { scale: 1, opacity: 1, rotation: rot, duration: 0.25, ease: "power4.in" }, t);
           tl.fromTo(sel, { y: 0 }, { y: 8, duration: 0.05, ease: "none", yoyo: true, repeat: 3 }, t + 0.25);
         };
+
+        // ===== artículo 152 title =====
+        tl.fromTo("#art", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 47.5);
+        tl.fromTo("#art-n", { scale: 2.6, opacity: 0, rotation: -10 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.3, ease: "power4.in" }, 48.0);
+        tl.fromTo("#art-r", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out" }, 48.4);
+        tl.to("#art", { opacity: 0, y: -60, duration: 0.4, ease: "power3.in" }, 61.0);
 
         // ===== plate blur (0 – 0.8) =====
         const box = (x0, y0, x1, y1) => "inset(" + Math.max(0, y0 - 40) + "px " + Math.max(0, 1080 - x1 - 40) + "px " + Math.max(0, 1920 - y1 - 40) + "px " + Math.max(0, x0 - 40) + "px round 18px)";
