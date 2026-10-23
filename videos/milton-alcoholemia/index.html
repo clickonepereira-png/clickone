@@ -300,17 +300,21 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="83.77" data-width="1080" data-height="1920">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="84.98" data-width="1080" data-height="1920">
       <div id="zoom">
-        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="83.77" data-track-index="0" muted playsinline></video>
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="84.98" data-track-index="0" muted playsinline></video>
       </div>
-      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="83.77" data-track-index="10" data-volume="1"></audio>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="84.98" data-track-index="10" data-volume="1"></audio>
 
-      <div id="stage" class="clip" data-start="0" data-duration="83.77" data-track-index="1">
+      <div id="stage" class="clip" data-start="0" data-duration="84.98" data-track-index="1">
 
         <!-- car plate in the opening shot: blurred patch that follows it (0 – 0.8) -->
         <div id="plate" style="position: absolute; inset: 0; opacity: 0; clip-path: inset(1920px 0px 0px 1080px)">
-          <video id="plv" src="assets/footage.mp4" data-start="0" data-duration="83.77" data-track-index="2" muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(22px)"></video>
+          <!-- the mirrored copy to the left gives the blur real pixels past the frame edge -->
+          <div style="position: absolute; inset: 0; filter: blur(22px)">
+            <video id="plv" src="assets/footage.mp4" data-start="0" data-duration="84.98" data-track-index="2" muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></video>
+            <video id="plm" src="assets/footage.mp4" data-start="0" data-duration="84.98" data-track-index="3" muted playsinline style="position: absolute; top: 0; left: -1080px; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1)"></video>
+          </div>
         </div>
 
         <!-- artículo 152 title (47.5 – 61.2) -->
@@ -336,7 +340,7 @@
       <audio id="sx09" src="assets/sfx/stamp.wav" data-start="59.36" data-duration="0.35" data-track-index="27" data-volume="0.5"></audio>
       <audio id="sx10" src="assets/sfx/slide-down.wav" data-start="70.52" data-duration="0.6" data-track-index="28" data-volume="0.35"></audio>
       <audio id="sx11" src="assets/sfx/boing.wav" data-start="72.56" data-duration="0.7" data-track-index="21" data-volume="0.3"></audio>
-      <audio id="sx12" src="assets/sfx/ding.wav" data-start="81.14" data-duration="1.2" data-track-index="22" data-volume="0.25"></audio>
+      <audio id="sx12" src="assets/sfx/ding.wav" data-start="81.92" data-duration="1.2" data-track-index="22" data-volume="0.25"></audio>
     </div>
 
     <script>
@@ -371,11 +375,13 @@
           ["A", 64.08, 67.74, [["o", 64.16], ["sea", 64.18], ["que", 64.32], ["si", 64.48], ["yo", 64.76], ["no", 64.92], ["me", 65.02], ["hago", 65.12], ["la", 65.26], ["prueba,", 65.44], ["me", 66.12], ["pone", 66.24], ["la", 66.42], ["sanción", 66.58]], ["más cara", 66.92], null, "type"],
           ["M", 67.76, 70.5, [["claro,", 67.76], ["mi", 67.98], ["muchacho,", 68.2], ["es", 68.5], ["que", 68.58]], ["lo dicta la ley", 68.7], ["papá", 69.64], "slide"],
           ["A", 70.52, 72.2, [["ay,", 70.52], ["ay,", 71.02], ["ay,", 71.1]], ["yo no sabía", 71.18], null, "bounce"],
-          ["A", 72.22, 74.28, [["ah,", 72.22], ["no,", 72.42]], ["hagamos la prueba", 72.56], ["hagamos la prueba", 73.2], "pop"],
-          ["M", 74.3, 77.2, [["mis", 74.3], ["muchachos,", 74.54], ["recuerden", 75.32], ["que", 75.7]], ["negarse", 76.02], ["a realizarse la prueba de alcoholemia", 76.38], "flip"],
-          ["M", 77.22, 81.1, [["da", 77.9], ["la", 78.0]], ["sanción mayor", 78.26, 1], ["y cancelación de la licencia", 78.96], "slide"],
-          ["M", 81.12, 82.5, [["requisito", 81.14]], ["importante", 81.5], null, "slide"],
-          ["M", 82.5, 83.77, [], ["NO conduzcan", 82.56, 1], ["en estado de embriaguez", 83.0], "pop"],
+          ["A", 72.22, 73.96, [["ah,", 72.22], ["no,", 72.42]], ["hagamos la prueba", 72.56], ["hagamos la prueba", 73.2], "pop"],
+          ["M", 73.98, 75.2, [["bien,", 74.02], ["muchachos,", 74.22], ["y", 74.62]], ["recuerden", 74.94], null, "flip"],
+          ["M", 75.22, 77.68, [["que", 75.24], ["si", 75.36], ["usted", 75.54], ["se", 75.72]], ["niega", 75.98], ["a realizarse la prueba de alcoholemia", 76.16], "slide"],
+          ["M", 77.7, 79.14, [["le", 77.72], ["ponen", 77.9], ["la", 78.16]], ["sanción mayor", 78.4, 1], null, "pop"],
+          ["M", 79.16, 81.8, [["y", 79.16], ["le", 79.24]], ["cancelan", 79.62, 1], ["la licencia de conducción", 80.12], "bounce"],
+          ["M", 81.82, 83.3, [["recomendación", 81.92]], ["importante", 82.6], null, "slide"],
+          ["M", 83.32, 84.98, [], ["NO conduzcan", 83.38, 1], ["en estado de embriaguez", 83.9], "pop"],
         ];
         const caps = $("#caps");
         G.forEach(([who, a, b, lead, big, tail, anim]) => {
@@ -464,15 +470,16 @@
         tl.to("#art", { opacity: 0, y: -60, duration: 0.4, ease: "power3.in" }, 61.0);
 
         // ===== plate blur (0 – 0.8) =====
-        const box = (x0, y0, x1, y1) => "inset(" + Math.max(0, y0 - 40) + "px " + Math.max(0, 1080 - x1 - 40) + "px " + Math.max(0, 1920 - y1 - 40) + "px " + Math.max(0, x0 - 40) + "px round 18px)";
+        const box = (x0, y0, x1, y1) => "inset(" + Math.max(0, y0 - 14) + "px " + Math.max(0, 1080 - x1 - 14) + "px " + Math.max(0, 1920 - y1 - 14) + "px " + Math.max(0, x0 - 14) + "px round 6px)";
         const PK = [
-          [0.0, 20, 1330, 290, 1520], [0.4, 0, 1360, 230, 1530], [0.75, 0, 1380, 130, 1545],
+          [0.0, 73, 1365, 223, 1454], [0.1, 57, 1370, 214, 1459], [0.2, 44, 1376, 200, 1467], [0.3, 13, 1384, 173, 1481],
+          [0.4, 0, 1391, 151, 1491], [0.5, 0, 1404, 132, 1505], [0.6, 0, 1426, 96, 1531], [0.7, 0, 1443, 60, 1549], [0.8, 0, 1458, 28, 1565],
         ];
         tl.set("#plate", { opacity: 1, clipPath: box(...PK[0].slice(1)) }, 0);
         PK.slice(1).forEach((k, i) => tl.to("#plate", { clipPath: box(...k.slice(1)), duration: k[0] - PK[i][0], ease: "none" }, PK[i][0]));
-        tl.set("#plate", { opacity: 0, clipPath: "inset(1920px 0px 0px 1080px)" }, 0.85);
+        tl.set("#plate", { opacity: 0, clipPath: "inset(1920px 0px 0px 1080px)" }, 0.86);
 
-        tl.set({}, {}, 83.77);
+        tl.set({}, {}, 84.98);
         window.__timelines = window.__timelines || {};
         window.__timelines["main"] = tl;
       });
