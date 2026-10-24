@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>MoviGym — cómo llegar</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Anton";
+        src: url("assets/fonts/anton-latin-400-normal.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+      }
+      :root {
+        --y: #ffd60a;
+        --ink: #0d0d0d;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #zoom {
+        display: none;
+      }
+      #zoom,
+      #stage,
+      #trk {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #trk {
+        width: 1080px;
+        height: 1920px;
+        overflow: visible;
+      }
+      .neon {
+        fill: none;
+        stroke: var(--y);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: drop-shadow(0 0 6px rgba(255, 214, 10, 0.9)) drop-shadow(0 0 18px rgba(255, 214, 10, 0.55));
+        opacity: 0;
+      }
+      .area {
+        fill: rgba(255, 214, 10, 0.13);
+      }
+      .ahead {
+        fill: var(--y);
+        filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.8));
+        opacity: 0;
+      }
+      .ring {
+        fill: none;
+        stroke: var(--y);
+        stroke-width: 6;
+        filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.8));
+        opacity: 0;
+      }
+
+      /* pins and road labels follow tracked points */
+      .pin,
+      .tag {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+      }
+      .pin .in {
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(-50%, -100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: 50% 100%;
+      }
+      /* labels near the frame edge open towards the centre */
+      .pin.r .in {
+        transform: translate(-52px, -100%);
+        align-items: flex-start;
+      }
+      .pin.l .in {
+        transform: translate(calc(-100% + 52px), -100%);
+        align-items: flex-end;
+      }
+      .pin.r .lbl {
+        text-align: left;
+      }
+      .pin.l .lbl {
+        text-align: right;
+      }
+      .pin svg {
+        width: 104px;
+        height: 135px;
+        filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+      }
+      .lbl {
+        font-weight: 800;
+        font-size: 58px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        color: #fff;
+        -webkit-text-stroke: 11px var(--ink);
+        paint-order: stroke fill;
+        margin-bottom: 8px;
+        text-align: center;
+        line-height: 1.05;
+      }
+      .lbl small {
+        display: block;
+        font-size: 34px;
+        letter-spacing: 0.16em;
+        -webkit-text-stroke: 8px var(--ink);
+      }
+      .tag .in {
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(-50%, -50%);
+      }
+
+      /* captions — reference style, yellow only on the key word */
+      .cap {
+        position: absolute;
+        left: 70px;
+        right: 70px;
+        top: 1330px;
+        text-align: center;
+        font-weight: 800;
+        font-size: 62px;
+        line-height: 1.12;
+        text-transform: uppercase;
+        color: #fff;
+        -webkit-text-stroke: 11px var(--ink);
+        paint-order: stroke fill;
+        visibility: hidden;
+      }
+      .cap .w {
+        display: inline-block;
+        margin: 0 15px;
+      }
+      .hot {
+        color: var(--y);
+      }
+
+      /* big condensed words */
+      .big {
+        position: absolute;
+        left: 40px;
+        right: 40px;
+        top: 700px;
+        text-align: center;
+        visibility: hidden;
+      }
+      .big .ld {
+        font-weight: 800;
+        font-size: 52px;
+        text-transform: uppercase;
+        color: #fff;
+        -webkit-text-stroke: 10px var(--ink);
+        paint-order: stroke fill;
+        margin-bottom: 4px;
+      }
+      .big .bw {
+        display: inline-block;
+        font-family: "Anton", sans-serif;
+        font-size: 210px;
+        line-height: 1;
+        text-transform: uppercase;
+        color: #fff;
+        margin: 0 14px;
+        text-shadow: 0 8px 0 rgba(0, 0, 0, 0.35), 0 0 40px rgba(0, 0, 0, 0.35);
+      }
+      .big .bw.hot {
+        color: var(--y);
+      }
+
+      /* street-level graphics */
+      #loc {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 240px;
+        text-align: center;
+        opacity: 0;
+      }
+      #loc svg {
+        width: 64px;
+        height: 84px;
+        filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+      }
+      #loc .a {
+        font-weight: 800;
+        font-size: 32px;
+        letter-spacing: 0.2em;
+        color: #fff;
+        -webkit-text-stroke: 7px var(--ink);
+        paint-order: stroke fill;
+        margin-top: 6px;
+      }
+      #loc .b {
+        font-family: "Anton", sans-serif;
+        font-size: 96px;
+        line-height: 1.02;
+        color: #fff;
+        text-transform: uppercase;
+        text-shadow: 0 6px 0 rgba(0, 0, 0, 0.35), 0 0 30px rgba(0, 0, 0, 0.4);
+      }
+      #meter {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 640px;
+        text-align: center;
+        visibility: hidden;
+      }
+      #meter .ld {
+        font-weight: 800;
+        font-size: 52px;
+        color: #fff;
+        -webkit-text-stroke: 10px var(--ink);
+        paint-order: stroke fill;
+      }
+      #meter .num {
+        font-family: "Anton", sans-serif;
+        font-size: 300px;
+        line-height: 1;
+        color: var(--y);
+        text-shadow: 0 10px 0 rgba(0, 0, 0, 0.35), 0 0 40px rgba(0, 0, 0, 0.35);
+      }
+      #meter .num span {
+        font-size: 150px;
+        color: #fff;
+        margin-left: 18px;
+      }
+      #meter .bar {
+        width: 640px;
+        height: 14px;
+        margin: 18px auto 0;
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.35);
+        overflow: hidden;
+      }
+      #meter .bar i {
+        display: block;
+        height: 100%;
+        width: 100%;
+        background: var(--y);
+        transform-origin: 0 50%;
+        box-shadow: 0 0 14px var(--y);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="60.02" data-width="1080" data-height="1920">
+      <div id="zoom">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="60.02" data-track-index="0" muted playsinline></video>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="60.02" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="60.02" data-track-index="1">
+        <svg id="trk" viewBox="0 0 1080 1920">
+          <polygon id="s-turf" class="neon area" stroke-width="9" pathLength="1"></polygon>
+          <polyline id="s-calle43" class="neon" stroke-width="18" pathLength="1"></polyline>
+          <polyline id="s-calle43b" class="neon" stroke-width="18" pathLength="1"></polyline>
+          <polyline id="s-derecha" class="neon" stroke-width="18" pathLength="1"></polyline>
+          <polyline id="s-diagonal" class="neon" stroke-width="18" pathLength="1"></polyline>
+          <polygon id="h-derecha" class="ahead" points="0,-30 52,0 0,30"></polygon>
+          <polygon id="h-calle43b" class="ahead" points="0,-30 52,0 0,30"></polygon>
+          <polygon id="h-diagonal" class="ahead" points="0,-30 52,0 0,30"></polygon>
+          <ellipse id="r-escuela" class="ring" rx="90" ry="54"></ellipse>
+          <!-- left turn at street level -->
+          <path id="turnL" class="neon" stroke-width="26" pathLength="1" d="M 600 1230 L 600 900 Q 600 720 420 720 L 300 720"></path>
+          <polygon id="turnH" class="ahead" points="0,-46 -74,0 0,46" transform="translate(300 720)"></polygon>
+        </svg>
+
+        <div class="pin" id="p-gympin"><div class="in"><div class="lbl">MoviGym</div>__PIN__</div></div>
+        <div class="pin l" id="p-progreso"><div class="in"><div class="lbl"><small>Sector</small>El Progreso</div>__PIN__</div></div>
+        <div class="pin" id="p-molinos"><div class="in"><div class="lbl"><small>Avenida</small>Molinos</div>__PIN__</div></div>
+        <div class="pin" id="p-escuela"><div class="in"><div class="lbl">Escuela</div>__PIN__</div></div>
+        <div class="pin l" id="p-gymsign"><div class="in"><div class="lbl"><small>¡Llegaste!</small>MoviGym</div>__PIN__</div></div>
+        <div class="tag" id="t-calle43"><div class="in lbl">Calle 43</div></div>
+        <div class="tag" id="t-diagonal"><div class="in lbl">Diagonal 42</div></div>
+
+        <div id="loc">
+          __PIN2__
+          <div class="a">CONJUNTO RESIDENCIAL</div>
+          <div class="b">Quintas de<br />Jardín Colonial</div>
+        </div>
+
+        <div id="meter">
+          <div class="ld">Y A TAN SOLO</div>
+          <div class="num"><b id="mnum">0</b><span>METROS</span></div>
+          <div class="bar"><i id="mbar"></i></div>
+        </div>
+
+        <div id="caps"></div>
+      </div>
+
+      <!-- SFX from the client pack, no bells -->
+      <audio id="x1" src="assets/sfx/swoosh.wav" data-start="3.3" data-duration="0.98" data-track-index="20" data-volume="0.3"></audio>
+      <audio id="x2" src="assets/sfx/camclick.wav" data-start="3.75" data-duration="0.82" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="x3" src="assets/sfx/snap.wav" data-start="7.45" data-duration="0.89" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="x4" src="assets/sfx/click.wav" data-start="8.6" data-duration="0.9" data-track-index="23" data-volume="0.35"></audio>
+      <audio id="x5" src="assets/sfx/whoosh.wav" data-start="10.95" data-duration="0.57" data-track-index="24" data-volume="0.35"></audio>
+      <audio id="x6" src="assets/sfx/click.wav" data-start="13.9" data-duration="0.9" data-track-index="23" data-volume="0.35"></audio>
+      <audio id="x7" src="assets/sfx/swoosh2.wav" data-start="15.2" data-duration="1.44" data-track-index="25" data-volume="0.3"></audio>
+      <audio id="x8" src="assets/sfx/click.wav" data-start="17.4" data-duration="0.9" data-track-index="23" data-volume="0.35"></audio>
+      <audio id="x9" src="assets/sfx/whoosh.wav" data-start="19.9" data-duration="0.57" data-track-index="24" data-volume="0.35"></audio>
+      <audio id="x10" src="assets/sfx/camclick.wav" data-start="25.15" data-duration="0.82" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="x11" src="assets/sfx/swoosh.wav" data-start="27.2" data-duration="0.98" data-track-index="20" data-volume="0.3"></audio>
+      <audio id="x12" src="assets/sfx/digits.wav" data-start="29.0" data-duration="1.4" data-track-index="26" data-volume="0.3"></audio>
+      <audio id="x13" src="assets/sfx/camclick.wav" data-start="34.6" data-duration="0.82" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="x14" src="assets/sfx/riser.wav" data-start="35.45" data-duration="1.7" data-track-index="27" data-volume="0.3"></audio>
+      <audio id="x15" src="assets/sfx/snap.wav" data-start="37.15" data-duration="0.89" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="x16" src="assets/sfx/snap.wav" data-start="46.92" data-duration="0.89" data-track-index="22" data-volume="0.35"></audio>
+      <audio id="x17" src="assets/sfx/whoosh.wav" data-start="47.88" data-duration="0.57" data-track-index="24" data-volume="0.35"></audio>
+      <audio id="x18" src="assets/sfx/click.wav" data-start="55.95" data-duration="0.9" data-track-index="23" data-volume="0.35"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+        const TR = __TRACKS__;
+        const F = 1 / 30;
+
+        // ---------- tracked shapes: one set per video frame ----------
+        const pts = (fr) => fr.map((p) => p.join(",")).join(" ");
+        const shape = (id, a, b, draw = 0.6) => {
+          const el = $("#s-" + id), T = TR[id];
+          T.frames.forEach((fr, j) => tl.set(el, { attr: { points: pts(fr) } }, T.t0 + j * F));
+          tl.fromTo(el, { opacity: 0, strokeDasharray: "1 1", strokeDashoffset: 1 }, { opacity: 1, strokeDashoffset: 0, duration: draw, ease: "power2.out" }, a);
+          tl.to(el, { opacity: 0, duration: 0.25, ease: "power1.in" }, b - 0.25);
+        };
+        // arrow head riding the last segment of a tracked line
+        const head = (id, a, b) => {
+          const el = $("#h-" + id), T = TR[id];
+          T.frames.forEach((fr, j) => {
+            const [x1, y1] = fr[fr.length - 2], [x2, y2] = fr[fr.length - 1];
+            const ang = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
+            tl.set(el, { attr: { transform: "translate(" + x2 + " " + y2 + ") rotate(" + ang + ")" } }, T.t0 + j * F);
+          });
+          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.15 }, a);
+          tl.to(el, { opacity: 0, duration: 0.25 }, b - 0.25);
+        };
+        // pins / labels glued to a tracked point
+        const glue = (sel, id, k, a, b, pop = true) => {
+          const el = $(sel), T = TR[id];
+          T.frames.forEach((fr, j) => tl.set(el, { x: fr[k][0], y: fr[k][1] }, T.t0 + j * F));
+          tl.set(el, { opacity: 1 }, a);
+          if (pop) tl.fromTo(sel + " .in", { scale: 0, y: -60 }, { scale: 1, y: 0, duration: 0.55, ease: "back.out(2.2)" }, a);
+          else tl.fromTo(sel + " .in", { opacity: 0 }, { opacity: 1, duration: 0.3 }, a);
+          tl.to(el, { opacity: 0, duration: 0.25 }, b - 0.25);
+        };
+
+        // 3.3 – 6.5 · the gym from above
+        shape("turf", 3.35, 6.53, 0.8);
+        glue("#p-gympin", "gympin", 0, 3.75, 6.53);
+        // 8.3 – 14.9 · El Progreso → Calle 43 → Av. Molinos
+        glue("#p-progreso", "progreso", 0, 8.6, 10.75);
+        shape("calle43", 10.95, 12.85, 0.9);
+        glue("#t-calle43", "calle43", 4, 11.3, 12.85, false);
+        shape("calle43b", 12.6, 14.55, 0.3);
+        head("calle43b", 12.8, 14.55);
+        glue("#p-molinos", "molinos", 0, 13.9, 14.9);
+        // 15.1 – 21.9 · right turn, school corner, Diagonal 42
+        shape("derecha", 15.2, 16.3, 0.6);
+        head("derecha", 15.75, 16.3);
+        glue("#p-escuela", "escuela", 0, 17.4, 19.4);
+        {
+          const el = $("#r-escuela"), T = TR.escuela;
+          T.frames.forEach((fr, j) => tl.set(el, { attr: { cx: fr[1][0], cy: fr[1][1] } }, T.t0 + j * F));
+          tl.set(el, { opacity: 1 }, 17.5);
+          for (let t = 17.5; t < 19.2; t += 0.6) tl.fromTo(el, { attr: { rx: 30, ry: 18 }, opacity: 1 }, { attr: { rx: 120, ry: 72 }, opacity: 0, duration: 0.6, ease: "power1.out" }, t);
+        }
+        shape("diagonal", 19.9, 21.85, 0.8);
+        head("diagonal", 20.6, 21.85);
+        glue("#t-diagonal", "diagonal", 1, 20.7, 21.45, false);
+        // 34.5 – 35.6 · arrival
+        glue("#p-gymsign", "gymsign", 0, 34.6, 35.57);
+
+        // street level: location card, left turn, 50 metres
+        tl.fromTo("#loc", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.6 }, 24.05);
+        tl.fromTo("#loc svg", { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(2.5)" }, 24.05);
+        tl.fromTo("#loc .b", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power3.out" }, 25.15);
+        tl.to("#loc", { opacity: 0, y: -30, duration: 0.3 }, 26.85);
+        tl.fromTo("#turnL", { opacity: 0, strokeDasharray: "1 1", strokeDashoffset: 1 }, { opacity: 1, strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }, 27.25);
+        tl.fromTo("#turnH", { opacity: 0, scale: 0.4, svgOrigin: "300 720" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.5)" }, 28.05);
+        tl.to(["#turnL", "#turnH"], { opacity: 0, duration: 0.3 }, 28.85);
+        tl.set("#meter", { visibility: "visible" }, 28.88);
+        tl.fromTo("#meter .ld", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3 }, 28.88);
+        tl.fromTo("#meter .num", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 29.0);
+        const m = { v: 0 };
+        tl.to(m, { v: 50, duration: 1.2, ease: "power2.out", onUpdate: () => ($("#mnum").textContent = Math.round(m.v)) }, 29.0);
+        tl.fromTo("#mbar", { scaleX: 0 }, { scaleX: 1, duration: 1.3, ease: "power2.out" }, 29.0);
+        tl.to("#meter", { opacity: 0, duration: 0.25 }, 30.75);
+        tl.set("#meter", { visibility: "hidden" }, 31.0);
+
+        // ---------- captions: [start, end, text, accent words] ----------
+        const C = [
+          [0.3, 1.25, "¿Buscas un gym", "GYM"],
+          [1.25, 2.55, "en Dosquebradas", "DOSQUEBRADAS"],
+          [2.55, 3.6, "y todavía no conoces MoviGym?", "MOVIGYM?"],
+          [3.62, 4.95, "Te mostramos cómo llegar", "LLEGAR"],
+          [4.98, 6.6, "y por qué deberías entrenar aquí", "AQUÍ"],
+          [8.45, 9.6, "Primero, ubícate", ""],
+          [9.6, 10.85, "en el sector El Progreso", "PROGRESO"],
+          [10.88, 12.15, "y toma la calle 43", "CALLE 43"],
+          [12.15, 13.3, "hacia arriba", "ARRIBA"],
+          [13.33, 14.9, "hasta llegar a la avenida Molinos", "MOLINOS"],
+          [15.0, 16.3, "Allí, gira a la derecha", "DERECHA"],
+          [16.32, 17.4, "y continúa hasta", ""],
+          [17.4, 19.1, "la esquina de la escuela", "ESCUELA"],
+          [19.18, 20.75, "Luego gira a la izquierda", "IZQUIERDA"],
+          [20.75, 22.3, "por la diagonal 42", "DIAGONAL 42"],
+          [22.34, 24.0, "y sigue hasta llegar a la esquina", ""],
+          [27.08, 28.85, "En ese punto gira a la izquierda", "IZQUIERDA"],
+          [31.0, 32.5, "encontrarás MoviGym", "MOVIGYM"],
+          [38.88, 39.7, "porque esto es lo que", ""],
+          [39.7, 40.75, "te espera cuando llegues", "LLEGUES"],
+          [40.8, 42.05, "Conoce nuestras máquinas", "MÁQUINAS"],
+          [42.05, 43.42, "los espacios de entrenamiento", "ESPACIOS"],
+          [43.44, 44.98, "y todo lo que tienes a tu disposición", "DISPOSICIÓN"],
+          [45.0, 46.15, "para trabajar por tus objetivos", "OBJETIVOS"],
+          [49.06, 50.7, "o construir el hábito de entrenar", "HÁBITO"],
+          [50.74, 51.7, "Aquí puedes empezar", ""],
+          [51.7, 52.85, "a trabajar por tu bienestar", "BIENESTAR"],
+          [52.88, 54.25, "a tu ritmo y constancia", "CONSTANCIA"],
+          [54.3, 55.9, "Ahora que ya sabes cómo llegar", "LLEGAR"],
+          [55.92, 57.1, "guarda y comparte este video", "GUARDA COMPARTE"],
+          [57.12, 58.6, "con tus compañeros de entrenamiento", "COMPAÑEROS"],
+          [58.66, 60.02, "y ven a conocer MoviGym", "MOVIGYM"],
+        ];
+        const caps = $("#caps");
+        C.forEach(([a, b, text, hot]) => {
+          const g = document.createElement("div");
+          g.className = "cap";
+          const words = text.split(" ");
+          // multi-word accents ("CALLE 43") light up every word they contain
+          const hotSet = new Set(hot.split(" ").filter(Boolean));
+          const multi = hot.includes(" ") && text.toUpperCase().includes(hot);
+          const ws = words.map((w) => {
+            const s = document.createElement("span");
+            s.className = "w";
+            s.textContent = w;
+            const W = w.toUpperCase().replace(/[,.]/g, "");
+            if (hotSet.has(W) || (multi && hot.split(" ").includes(W))) s.classList.add("hot");
+            g.appendChild(s);
+            return s;
+          });
+          caps.appendChild(g);
+          tl.set(g, { visibility: "visible" }, a);
+          const step = Math.min(0.2, ((b - a) * 0.65) / ws.length);
+          ws.forEach((s, i) => tl.fromTo(s, { opacity: 0, scale: 0.6, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "back.out(3)" }, a + i * step));
+          tl.set(g, { visibility: "hidden" }, b);
+        });
+
+        // ---------- big condensed words: [start, end, lead, words, accent] ----------
+        const B = [
+          [6.95, 8.4, "Llegar es", "MUY FÁCIL", "FÁCIL"],
+          [37.15, 38.85, "", "PERO ESPERA", "ESPERA"],
+          [46.18, 47.85, "Ya sea que quieras", "GANAR FUERZA", "FUERZA"],
+          [47.88, 49.05, "Mejorar tu", "RESISTENCIA", "RESISTENCIA"],
+        ];
+        B.forEach(([a, b, lead, big, hot], k) => {
+          const g = document.createElement("div");
+          g.className = "big";
+          if (lead) {
+            const l = document.createElement("div");
+            l.className = "ld";
+            l.textContent = lead;
+            g.appendChild(l);
+            tl.fromTo(l, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, a);
+          }
+          const tBig = lead ? Math.min(b - 0.9, a + [0.5, 0, 0.74, 0.4][k]) : a;
+          big.split(" ").forEach((w, i) => {
+            const s = document.createElement("span");
+            s.className = "bw" + (w === hot ? " hot" : "");
+            s.textContent = w;
+            if (w.length > 9) s.style.fontSize = "170px";
+            g.appendChild(s);
+            tl.fromTo(s, { opacity: 0, scale: 1.8, y: -30 }, { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "power4.out" }, tBig + i * 0.16);
+          });
+          $("#stage").appendChild(g);
+          tl.set(g, { visibility: "visible" }, a);
+          tl.to(g, { scale: 1.06, duration: b - a, ease: "none" }, a);
+          tl.set(g, { visibility: "hidden" }, b);
+        });
+
+        tl.set({}, {}, 60.02);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
