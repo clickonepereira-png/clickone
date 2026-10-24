@@ -297,18 +297,16 @@
 
       <div id="stage" class="clip" data-start="0" data-duration="60.02" data-track-index="1">
         <svg id="trk" viewBox="0 0 1080 1920">
-          <polygon id="s-turf" class="neon area" stroke-width="9" pathLength="1"></polygon>
           <polyline id="s-calle43" class="neon" stroke-width="18" pathLength="1"></polyline>
-          <polyline id="s-calle43b" class="neon" stroke-width="18" pathLength="1"></polyline>
-          <polyline id="s-derecha" class="neon" stroke-width="18" pathLength="1"></polyline>
           <polyline id="s-diagonal" class="neon" stroke-width="18" pathLength="1"></polyline>
-          <polygon id="h-derecha" class="ahead" points="0,-30 52,0 0,30"></polygon>
-          <polygon id="h-calle43b" class="ahead" points="0,-30 52,0 0,30"></polygon>
-          <polygon id="h-diagonal" class="ahead" points="0,-30 52,0 0,30"></polygon>
           <ellipse id="r-escuela" class="ring" rx="90" ry="54"></ellipse>
-          <!-- left turn at street level -->
-          <path id="turnL" class="neon" stroke-width="26" pathLength="1" d="M 600 1230 L 600 900 Q 600 720 420 720 L 300 720"></path>
-          <polygon id="turnH" class="ahead" points="0,-46 -74,0 0,46" transform="translate(300 720)"></polygon>
+          <!-- turn arrows live in screen space so they always read straight -->
+          <path id="aR" class="neon" stroke-width="26" pathLength="1" d="M 480 1230 L 480 900 Q 480 720 660 720 L 780 720"></path>
+          <polygon id="aRh" class="ahead" points="0,-46 74,0 0,46" transform="translate(780 720)"></polygon>
+          <path id="aL1" class="neon" stroke-width="26" pathLength="1" d="M 600 1230 L 600 900 Q 600 720 420 720 L 300 720"></path>
+          <polygon id="aL1h" class="ahead" points="0,-46 -74,0 0,46" transform="translate(300 720)"></polygon>
+          <path id="aL2" class="neon" stroke-width="26" pathLength="1" d="M 600 1230 L 600 900 Q 600 720 420 720 L 300 720"></path>
+          <polygon id="aL2h" class="ahead" points="0,-46 -74,0 0,46" transform="translate(300 720)"></polygon>
         </svg>
 
         <div class="pin" id="p-gympin"><div class="in"><div class="lbl">MoviGym</div>__PIN__</div></div>
@@ -317,7 +315,6 @@
         <div class="pin" id="p-escuela"><div class="in"><div class="lbl">Escuela</div>__PIN__</div></div>
         <div class="pin l" id="p-gymsign"><div class="in"><div class="lbl"><small>¡Llegaste!</small>MoviGym</div>__PIN__</div></div>
         <div class="tag" id="t-calle43"><div class="in lbl">Calle 43</div></div>
-        <div class="tag" id="t-diagonal"><div class="in lbl">Diagonal 42</div></div>
 
         <div id="loc">
           __PIN2__
@@ -335,7 +332,7 @@
       </div>
 
       <!-- SFX from the client pack, no bells -->
-      <audio id="x1" src="assets/sfx/swoosh.wav" data-start="3.3" data-duration="0.98" data-track-index="20" data-volume="0.3"></audio>
+      <audio id="x1" src="assets/sfx/swoosh.wav" data-start="3.7" data-duration="0.98" data-track-index="20" data-volume="0.2"></audio>
       <audio id="x2" src="assets/sfx/camclick.wav" data-start="3.75" data-duration="0.82" data-track-index="21" data-volume="0.35"></audio>
       <audio id="x3" src="assets/sfx/snap.wav" data-start="7.45" data-duration="0.89" data-track-index="22" data-volume="0.4"></audio>
       <audio id="x4" src="assets/sfx/click.wav" data-start="8.6" data-duration="0.9" data-track-index="23" data-volume="0.35"></audio>
@@ -370,17 +367,6 @@
           tl.fromTo(el, { opacity: 0, strokeDasharray: "1 1", strokeDashoffset: 1 }, { opacity: 1, strokeDashoffset: 0, duration: draw, ease: "power2.out" }, a);
           tl.to(el, { opacity: 0, duration: 0.25, ease: "power1.in" }, b - 0.25);
         };
-        // arrow head riding the last segment of a tracked line
-        const head = (id, a, b) => {
-          const el = $("#h-" + id), T = TR[id];
-          T.frames.forEach((fr, j) => {
-            const [x1, y1] = fr[fr.length - 2], [x2, y2] = fr[fr.length - 1];
-            const ang = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
-            tl.set(el, { attr: { transform: "translate(" + x2 + " " + y2 + ") rotate(" + ang + ")" } }, T.t0 + j * F);
-          });
-          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.15 }, a);
-          tl.to(el, { opacity: 0, duration: 0.25 }, b - 0.25);
-        };
         // pins / labels glued to a tracked point
         const glue = (sel, id, k, a, b, pop = true) => {
           const el = $(sel), T = TR[id];
@@ -392,18 +378,19 @@
         };
 
         // 3.3 – 6.5 · the gym from above
-        shape("turf", 3.35, 6.53, 0.8);
         glue("#p-gympin", "gympin", 0, 3.75, 6.53);
         // 8.3 – 14.9 · El Progreso → Calle 43 → Av. Molinos
         glue("#p-progreso", "progreso", 0, 8.6, 10.75);
-        shape("calle43", 10.95, 12.85, 0.9);
-        glue("#t-calle43", "calle43", 4, 11.3, 12.85, false);
-        shape("calle43b", 12.6, 14.55, 0.3);
-        head("calle43b", 12.8, 14.55);
+        shape("calle43", 10.95, 14.55, 0.9);
+        glue("#t-calle43", "calle43", 15, 11.3, 13.3, false);
         glue("#p-molinos", "molinos", 0, 13.9, 14.9);
         // 15.1 – 21.9 · right turn, school corner, Diagonal 42
-        shape("derecha", 15.2, 16.3, 0.6);
-        head("derecha", 15.75, 16.3);
+        const turn = (id, a, b, hx, hy) => {
+          tl.fromTo("#" + id, { opacity: 0, strokeDasharray: "1 1", strokeDashoffset: 1 }, { opacity: 1, strokeDashoffset: 0, duration: 0.7, ease: "power2.inOut" }, a);
+          tl.fromTo("#" + id + "h", { opacity: 0, scale: 0.4, svgOrigin: hx + " " + hy }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.5)" }, a + 0.62);
+          tl.to(["#" + id, "#" + id + "h"], { opacity: 0, duration: 0.3 }, b - 0.3);
+        };
+        turn("aR", 15.25, 16.4, 780, 720);
         glue("#p-escuela", "escuela", 0, 17.4, 19.4);
         {
           const el = $("#r-escuela"), T = TR.escuela;
@@ -411,9 +398,8 @@
           tl.set(el, { opacity: 1 }, 17.5);
           for (let t = 17.5; t < 19.2; t += 0.6) tl.fromTo(el, { attr: { rx: 30, ry: 18 }, opacity: 1 }, { attr: { rx: 120, ry: 72 }, opacity: 0, duration: 0.6, ease: "power1.out" }, t);
         }
-        shape("diagonal", 19.9, 21.85, 0.8);
-        head("diagonal", 20.6, 21.85);
-        glue("#t-diagonal", "diagonal", 1, 20.7, 21.45, false);
+        turn("aL1", 19.4, 20.65, 300, 720);
+        shape("diagonal", 20.7, 21.85, 0.7);
         // 34.5 – 35.6 · arrival
         glue("#p-gymsign", "gymsign", 0, 34.6, 35.57);
 
@@ -422,9 +408,7 @@
         tl.fromTo("#loc svg", { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(2.5)" }, 24.05);
         tl.fromTo("#loc .b", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power3.out" }, 25.15);
         tl.to("#loc", { opacity: 0, y: -30, duration: 0.3 }, 26.85);
-        tl.fromTo("#turnL", { opacity: 0, strokeDasharray: "1 1", strokeDashoffset: 1 }, { opacity: 1, strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }, 27.25);
-        tl.fromTo("#turnH", { opacity: 0, scale: 0.4, svgOrigin: "300 720" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.5)" }, 28.05);
-        tl.to(["#turnL", "#turnH"], { opacity: 0, duration: 0.3 }, 28.85);
+        turn("aL2", 27.25, 28.85, 300, 720);
         tl.set("#meter", { visibility: "visible" }, 28.88);
         tl.fromTo("#meter .ld", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3 }, 28.88);
         tl.fromTo("#meter .num", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 29.0);
