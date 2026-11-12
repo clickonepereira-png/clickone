@@ -258,6 +258,227 @@
         color: var(--yellow);
         letter-spacing: 0.3em;
       }
+      /* ---------- white motion-graphic scenes ---------- */
+      .ws {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        color: var(--ink);
+        clip-path: inset(0 0 0 100%);
+        overflow: hidden;
+      }
+      .ws .edge {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 26px;
+        background: var(--yellow);
+        opacity: 0;
+      }
+      .ws .ttl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-weight: 900;
+        letter-spacing: 0.2em;
+      }
+      .mk {
+        background: linear-gradient(transparent 58%, var(--yellow) 58%, var(--yellow) 92%, transparent 92%);
+      }
+      /* SOAT acronym */
+      #wsA .row {
+        position: absolute;
+        left: 150px;
+        display: flex;
+        align-items: baseline;
+        gap: 18px;
+        white-space: nowrap;
+      }
+      #wsA .L {
+        display: inline-block;
+        width: 170px;
+        font-weight: 900;
+        font-size: 210px;
+        line-height: 1;
+        text-align: center;
+      }
+      #wsA .Lw i {
+        position: absolute;
+        left: 0;
+        width: 170px;
+        bottom: 18px;
+        height: 60px;
+        background: var(--yellow);
+        transform-origin: 0 50%;
+      }
+      #wsA .Lw {
+        position: relative;
+        display: inline-block;
+        isolation: isolate;
+      }
+      #wsA .Lw .L {
+        position: relative;
+      }
+      #wsA .rest {
+        font-weight: 700;
+        font-size: 74px;
+      }
+      #wsA .rest small {
+        font-size: 44px;
+        font-weight: 600;
+        opacity: 0.7;
+        margin-right: 10px;
+      }
+      /* icon grid */
+      #wsB .grid {
+        position: absolute;
+        left: 90px;
+        right: 90px;
+        top: 620px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 100px;
+      }
+      #wsB .it {
+        text-align: center;
+      }
+      #wsB .ic {
+        width: 230px;
+        height: 230px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: var(--yellow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #wsB .ic svg {
+        width: 150px;
+        height: 150px;
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      #wsB .lb {
+        margin-top: 18px;
+        font-weight: 800;
+        font-size: 50px;
+      }
+      /* 18 months */
+      #wsC .num {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 650px;
+        text-align: center;
+        font-weight: 900;
+        font-size: 380px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+      #wsC .un {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 1050px;
+        text-align: center;
+        font-weight: 900;
+        font-size: 110px;
+        letter-spacing: 0.12em;
+      }
+      #wsC .tlw {
+        position: absolute;
+        left: 130px;
+        right: 130px;
+        top: 1400px;
+        height: 14px;
+        border-radius: 7px;
+        background: #e3e6ec;
+      }
+      #wsC .tlw i {
+        position: absolute;
+        inset: 0;
+        border-radius: 7px;
+        background: var(--yellow);
+        transform-origin: 0 50%;
+      }
+      #wsC .dot {
+        position: absolute;
+        top: -19px;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--ink);
+        border: 9px solid #fff;
+        box-shadow: 0 0 0 4px var(--ink);
+      }
+      #wsC .tl {
+        position: absolute;
+        top: 1460px;
+        width: 380px;
+        font-weight: 800;
+        font-size: 40px;
+        line-height: 1.15;
+      }
+      /* SOAT card + stamp */
+      #wsD .card {
+        position: absolute;
+        left: 150px;
+        right: 150px;
+        top: 620px;
+        height: 520px;
+        border: 10px solid var(--ink);
+        border-radius: 40px;
+        padding: 50px 60px;
+      }
+      #wsD .card .h {
+        font-weight: 900;
+        font-size: 120px;
+        line-height: 1;
+      }
+      #wsD .card .sub {
+        font-weight: 700;
+        font-size: 34px;
+        letter-spacing: 0.08em;
+        margin-top: 10px;
+      }
+      #wsD .card .ln {
+        height: 22px;
+        border-radius: 11px;
+        background: #e3e6ec;
+        margin-top: 34px;
+      }
+      #wsD .vstamp {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 960px;
+        text-align: center;
+      }
+      #wsD .vstamp b {
+        display: inline-block;
+        padding: 18px 46px;
+        border: 12px solid var(--ink);
+        border-radius: 22px;
+        background: var(--yellow);
+        font-weight: 900;
+        font-size: 120px;
+        letter-spacing: 0.06em;
+        transform: rotate(-8deg);
+      }
+      #wsD .foot {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 1330px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 52px;
+      }
     </style>
   </head>
   <body>
@@ -269,22 +490,68 @@
 
       <div id="stage" class="clip" data-start="0" data-duration="45.95" data-track-index="1">
 
+        <!-- white motion-graphic scenes (full screen, the presenter is hidden underneath) -->
+        <div class="ws" id="wsA"><div class="edge"></div>
+          <div class="row" style="top: 430px"><span class="Lw"><i></i><span class="L">S</span></span><span class="rest">eguro</span></div>
+          <div class="row" style="top: 710px"><span class="Lw"><i></i><span class="L">O</span></span><span class="rest">bligatorio</span></div>
+          <div class="row" style="top: 990px"><span class="Lw"><i></i><span class="L">A</span></span><span class="rest">ccidentes</span></div>
+          <div class="row" style="top: 1270px"><span class="Lw"><i></i><span class="L">T</span></span><span class="rest">ránsito</span></div>
+        </div>
+        <div class="ws" id="wsB"><div class="edge"></div>
+          <div class="ttl" style="top: 420px; font-size: 64px"><span class="mk">LLÁMESE</span></div>
+          <div class="grid"><div class="it"><div class="ic"><svg viewBox="0 0 150 150"><circle cx="80" cy="22" r="12"/><path d="M78 40 L70 88 L88 140 M70 88 L50 140 M76 52 L100 74 M76 52 L54 76"/></svg></div><div class="lb">Peatón</div></div><div class="it"><div class="ic"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="58"/><circle cx="75" cy="75" r="14"/><path d="M75 89 L75 133 M61 75 L19 68 M89 75 L131 68"/></svg></div><div class="lb">Conductor</div></div><div class="it"><div class="ic"><svg viewBox="0 0 150 150"><circle cx="62" cy="30" r="15"/><path d="M40 140 L40 66 Q40 52 54 52 L70 52 Q84 52 86 66 L94 104 L128 104 L128 140 Z"/></svg></div><div class="lb">Pasajero</div></div><div class="it"><div class="ic"><svg viewBox="0 0 150 150"><circle cx="50" cy="44" r="18"/><circle cx="102" cy="44" r="18"/><path d="M14 132 Q14 82 50 82 Q86 82 86 132 M66 132 Q66 82 102 82 Q138 82 138 132"/></svg></div><div class="lb">Acompañante</div></div><div class="it"><div class="ic"><svg viewBox="0 0 150 150"><circle cx="34" cy="104" r="28"/><circle cx="118" cy="104" r="28"/><path d="M34 104 L60 58 L100 58 L118 104 M60 58 L78 104 L100 58 M54 44 L72 44 M100 58 L94 40 L108 40"/></svg></div><div class="lb">Ciclista</div></div><div class="it"><div class="ic"><svg viewBox="0 0 150 150"><circle cx="32" cy="106" r="26"/><circle cx="120" cy="106" r="26"/><path d="M32 106 L62 72 L98 72 L120 106 M62 72 L80 106 L98 72 M98 72 L108 44 L126 44 M44 70 L72 70"/></svg></div><div class="lb">Motociclista</div></div></div>
+        </div>
+        <div class="ws" id="wsC"><div class="edge"></div>
+          <div class="ttl" style="top: 400px; font-size: 64px"><span class="mk">REQUISITOS</span></div>
+          <div class="ttl" id="c-hasta" style="top: 560px; font-size: 54px; letter-spacing: 0.1em">TIENES HASTA</div>
+          <div class="num" id="c-num">0</div>
+          <div class="un" id="c-un">MESES</div>
+          <div class="tlw" id="c-tl"><i id="c-fill"></i><div class="dot" style="left: -26px"></div><div class="dot" id="c-d2" style="right: -26px"></div></div>
+          <div class="tl" id="c-l1" style="left: 90px">Desde el<br />accidente</div>
+          <div class="tl" id="c-l2" style="right: 90px; text-align: right">Para solicitar la<br /><span class="mk">reclamación</span></div>
+        </div>
+        <div class="ws" id="wsD"><div class="edge"></div>
+          <div class="ttl" style="top: 420px; font-size: 56px; letter-spacing: 0.1em">EL SOAT DEBE ESTAR</div>
+          <div class="card" id="d-card"><div class="h">SOAT</div><div class="sub">SEGURO OBLIGATORIO</div><div class="ln" style="width: 80%"></div><div class="ln" style="width: 60%"></div><div class="ln" style="width: 70%"></div></div>
+          <div class="vstamp" id="d-stamp"><b>VIGENTE</b></div>
+          <div class="foot" id="d-foot">en el momento del <span class="mk">accidente</span></div>
+        </div>
+
         <div id="caps"></div>
       </div>
 
       <!-- a few SFX only -->
       <audio id="sx1" src="assets/sfx/whoosh.wav" data-start="5.2" data-duration="0.57" data-track-index="20" data-volume="0.3"></audio>
       <audio id="sx2" src="assets/sfx/ding.wav" data-start="9.48" data-duration="1.2" data-track-index="21" data-volume="0.2"></audio>
-      <audio id="sx3" src="assets/sfx/swoosh.wav" data-start="13.94" data-duration="0.5" data-track-index="22" data-volume="0.3"></audio>
-      <audio id="sx4" src="assets/sfx/whoosh.wav" data-start="19.94" data-duration="0.57" data-track-index="20" data-volume="0.25"></audio>
-      <audio id="sx5" src="assets/sfx/ding.wav" data-start="29.16" data-duration="1.2" data-track-index="21" data-volume="0.2"></audio>
-      <audio id="sx6" src="assets/sfx/stamp.wav" data-start="36.68" data-duration="0.35" data-track-index="23" data-volume="0.45"></audio>
+      <audio id="fx0" src="assets/sfx/wh1.wav" data-start="13.05" data-duration="1.0" data-track-index="30" data-volume="0.3"></audio>
+      <audio id="fx1" src="assets/sfx/click.wav" data-start="13.94" data-duration="0.3" data-track-index="31" data-volume="0.3"></audio>
+      <audio id="fx2" src="assets/sfx/click.wav" data-start="14.24" data-duration="0.3" data-track-index="32" data-volume="0.3"></audio>
+      <audio id="fx3" src="assets/sfx/click.wav" data-start="14.94" data-duration="0.3" data-track-index="33" data-volume="0.3"></audio>
+      <audio id="fx4" src="assets/sfx/click.wav" data-start="15.5" data-duration="0.3" data-track-index="34" data-volume="0.3"></audio>
+      <audio id="fx5" src="assets/sfx/wh2.wav" data-start="15.7" data-duration="1.0" data-track-index="35" data-volume="0.25"></audio>
+      <audio id="fx6" src="assets/sfx/wh3.wav" data-start="18.5" data-duration="1.0" data-track-index="30" data-volume="0.3"></audio>
+      <audio id="fx7" src="assets/sfx/pop.wav" data-start="19.3" data-duration="0.12" data-track-index="31" data-volume="0.3"></audio>
+      <audio id="fx8" src="assets/sfx/pop.wav" data-start="19.96" data-duration="0.12" data-track-index="32" data-volume="0.3"></audio>
+      <audio id="fx9" src="assets/sfx/pop.wav" data-start="20.5" data-duration="0.12" data-track-index="33" data-volume="0.3"></audio>
+      <audio id="fx10" src="assets/sfx/pop.wav" data-start="21.32" data-duration="0.12" data-track-index="34" data-volume="0.3"></audio>
+      <audio id="fx11" src="assets/sfx/pop.wav" data-start="22.08" data-duration="0.12" data-track-index="35" data-volume="0.3"></audio>
+      <audio id="fx12" src="assets/sfx/pop.wav" data-start="22.64" data-duration="0.12" data-track-index="30" data-volume="0.3"></audio>
+      <audio id="fx13" src="assets/sfx/wh1.wav" data-start="23.8" data-duration="1.0" data-track-index="31" data-volume="0.25"></audio>
+      <audio id="fx14" src="assets/sfx/wh2.wav" data-start="27.25" data-duration="1.0" data-track-index="32" data-volume="0.3"></audio>
+      <audio id="fx15" src="assets/sfx/digits.wav" data-start="29.16" data-duration="1.26" data-track-index="33" data-volume="0.3"></audio>
+      <audio id="fx16" src="assets/sfx/ding.wav" data-start="30.5" data-duration="1.2" data-track-index="34" data-volume="0.18"></audio>
+      <audio id="fx17" src="assets/sfx/whoosh.wav" data-start="31.2" data-duration="0.57" data-track-index="35" data-volume="0.25"></audio>
+      <audio id="fx18" src="assets/sfx/wh3.wav" data-start="33.75" data-duration="1.0" data-track-index="30" data-volume="0.25"></audio>
+      <audio id="fx19" src="assets/sfx/wh1.wav" data-start="35.1" data-duration="1.0" data-track-index="31" data-volume="0.3"></audio>
+      <audio id="fx20" src="assets/sfx/stamp.wav" data-start="36.68" data-duration="0.35" data-track-index="32" data-volume="0.5"></audio>
+      <audio id="fx21" src="assets/sfx/wh2.wav" data-start="37.95" data-duration="1.0" data-track-index="33" data-volume="0.25"></audio>
       <audio id="sx7" src="assets/sfx/pop.wav" data-start="45.22" data-duration="0.3" data-track-index="24" data-volume="0.35"></audio>
     </div>
 
     <script>
       document.fonts.ready.then(() => {
         const $ = (s) => document.querySelector(s);
+        const $$ = (s) => document.querySelectorAll(s);
         const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
 
         // ---------- captions: [who, start, end, lead [[w,t]], big [word,t,hot?] | null, tail [text,t] | null, anim] ----------
@@ -295,22 +562,9 @@
           ["M", 9.78, 10.75, [["paga", 9.8], ["una", 10.0]], ["indemnización", 10.24], null, "pop"],
           ["M", 10.77, 12.28, [["por", 10.78]], ["incapacidad", 10.96, 1], ["permanente?", 11.68], "slide"],
           ["M", 12.3, 13.16, [["lo", 12.32], ["voy", 12.42], ["a", 12.5]], ["explicar", 12.64], null, "bounce"],
-          ["M", 13.18, 15.82, [["el", 13.2], ["SOAT,", 13.4], ["que", 13.62], ["es", 13.7], ["el", 13.78]], ["Seguro Obligatorio", 13.94], ["de Accidentes de Tránsito", 14.94], "type"],
-          ["M", 15.84, 18.62, [["le", 15.86], ["cubre", 16.08], ["a", 16.3]], ["todas las personas", 16.52], ["involucradas en el accidente", 17.46], "slide"],
-          ["M", 18.64, 19.92, [["ya", 18.7], ["me", 18.8], ["refiero", 18.9], ["a", 19.26]], ["todo", 19.44], null, "pop"],
-          ["M", 19.94, 20.42, [], ["conductor", 19.96], null, "pop"],
-          ["M", 20.42, 21.3, [], ["pasajero", 20.44], null, "flip"],
-          ["M", 21.3, 22.06, [], ["acompañante", 21.34], null, "slide"],
-          ["M", 22.06, 22.62, [], ["ciclista", 22.1], null, "pop"],
-          ["M", 22.62, 23.9, [], ["motociclista", 22.64], null, "bounce"],
+          ["M", 15.88, 18.55, [["le", 15.88], ["cubre", 16.08], ["a", 16.3]], ["todas las personas", 16.52], ["involucradas en el accidente", 17.46], "slide"],
           ["M", 23.92, 26.9, [["absolutamente", 23.96], ["a", 24.4]], ["todas las personas", 24.7, 1], ["involucradas en el accidente", 25.84], "type"],
-          ["M", 27.4, 28.5, [], ["requisitos", 27.48], null, "flip"],
-          ["M", 28.52, 30.0, [["tenemos", 28.54], ["hasta", 28.78]], ["18 meses", 29.16, 1], null, "pop"],
-          ["M", 30.0, 32.15, [["contados", 30.0], ["a", 30.5], ["partir", 30.7], ["del", 30.96]], ["accidente", 31.22], ["de tránsito", 31.62], "slide"],
-          ["M", 32.18, 33.9, [["para", 32.2], ["solicitar", 32.62], ["la", 33.14]], ["reclamación", 33.34], null, "pop"],
           ["M", 33.9, 35.2, [["y", 33.92], ["algo", 34.16], ["muy", 34.36]], ["importante", 34.78], null, "bounce"],
-          ["M", 35.22, 37.0, [["el", 35.24], ["SOAT", 35.54], ["tuvo", 35.88], ["que", 36.04], ["haber", 36.16], ["estado", 36.4]], ["vigente", 36.68, 1], null, "flip"],
-          ["M", 37.0, 38.1, [["en", 37.04], ["el", 37.12], ["momento", 37.28], ["del", 37.52]], ["accidente", 37.72], null, "slide"],
           ["M", 38.1, 38.86, [["mis", 38.12]], ["muchachos", 38.34], null, "pop"],
           ["M", 38.88, 41.25, [["si", 38.9], ["todavía", 39.32], ["están", 39.62], ["dentro", 39.98], ["del", 40.16]], ["tiempo establecido", 40.42], null, "type"],
           ["M", 41.27, 43.2, [["y", 41.28], ["no", 41.38], ["han", 41.44], ["iniciado", 41.68], ["la", 41.92]], ["reclamación", 42.08], ["ante el SOAT", 42.6], "slide"],
@@ -372,7 +626,7 @@
         // ---------- camera: comedic punch-ins on the reactions ----------
         // [t, scale, origin, hold]
         const P = [
-          [9.48, 1.1, "50% 30%", 1.6], [27.48, 1.12, "50% 30%", 1.0], [34.78, 1.12, "50% 30%", 1.2], [44.34, 1.08, "50% 30%", 1.5],
+          [9.48, 1.1, "50% 30%", 1.6], [34.78, 1.12, "50% 30%", 1.2], [44.34, 1.08, "50% 30%", 1.5],
         ];
         P.forEach(([t, s, o, hold]) => {
           tl.set("#zoom", { transformOrigin: o }, t)
@@ -391,6 +645,54 @@
           tl.fromTo(sel, { scale: 3, opacity: 0, rotation: rot - 10 }, { scale: 1, opacity: 1, rotation: rot, duration: 0.25, ease: "power4.in" }, t);
           tl.fromTo(sel, { y: 0 }, { y: 8, duration: 0.05, ease: "none", yoyo: true, repeat: 3 }, t + 0.25);
         };
+
+        // ===== white scenes: wipe in from the right behind a yellow edge, wipe out to the left =====
+        const scene = (id, a, b) => {
+          tl.fromTo(id, { clipPath: "inset(0 0 0 100%)" }, { clipPath: "inset(0 0 0 0%)", duration: 0.45, ease: "power3.inOut" }, a);
+          tl.fromTo(id + " .edge", { opacity: 1, x: 1080 }, { x: -40, duration: 0.45, ease: "power3.inOut" }, a);
+          tl.set(id + " .edge", { opacity: 0 }, a + 0.46);
+          tl.to(id, { clipPath: "inset(0 100% 0 0)", duration: 0.4, ease: "power3.inOut" }, b - 0.4);
+        };
+        const up = (sel, t, d = 0.5) => tl.fromTo(sel, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: d, ease: "power3.out" }, t);
+
+        // A · S-O-A-T unfolds (13.1 – 15.85)
+        scene("#wsA", 13.1, 15.85);
+        $$("#wsA .row").forEach((r, i) => {
+          tl.fromTo(r.querySelector(".L"), { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2.4)" }, 13.4 + i * 0.08);
+          tl.fromTo(r.querySelector("i"), { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power2.out" }, [13.94, 14.24, 14.94, 15.5][i]);
+          tl.fromTo(r.querySelector(".rest"), { clipPath: "inset(0 100% 0 0)", x: -30 }, { clipPath: "inset(0 0% 0 0)", x: 0, duration: 0.45, ease: "power3.out" }, [13.94, 14.24, 14.94, 15.5][i]);
+        });
+
+        // B · llámese … six icons (18.6 – 23.92)
+        scene("#wsB", 18.6, 23.92);
+        up("#wsB .ttl", 18.7);
+        $$("#wsB .it").forEach((it, i) => {
+          const t = [19.3, 19.96, 20.5, 21.32, 22.08, 22.64][i];
+          tl.fromTo(it.querySelector(".ic"), { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.2)" }, t);
+          up(it.querySelector(".lb"), t + 0.1, 0.35);
+        });
+
+        // C · requisitos, 18 months, accident → claim (27.25 – 33.9)
+        scene("#wsC", 27.25, 33.9);
+        up("#wsC .ttl", 27.48);
+        up("#c-hasta", 28.54);
+        tl.fromTo("#c-num", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.8)" }, 29.1);
+        const cn = { v: 0 };
+        tl.to(cn, { v: 18, duration: 1.1, ease: "power2.out", onUpdate: () => ($("#c-num").textContent = Math.round(cn.v)) }, 29.1);
+        up("#c-un", 29.62);
+        up("#c-tl", 30.0, 0.4);
+        up("#c-l1", 31.22, 0.4);
+        tl.fromTo("#c-fill", { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: "power2.inOut" }, 31.4);
+        tl.fromTo("#c-d2", { scale: 0.6 }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 32.8);
+        up("#c-l2", 32.62, 0.45);
+
+        // D · the SOAT must be valid (35.1 – 38.05)
+        scene("#wsD", 35.1, 38.05);
+        up("#wsD .ttl", 35.15);
+        tl.fromTo("#d-card", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 35.3);
+        tl.fromTo("#d-stamp b", { scale: 3, opacity: 0, rotation: -20 }, { scale: 1, opacity: 1, rotation: -8, duration: 0.22, ease: "power4.in" }, 36.6);
+        tl.to("#d-card", { x: 10, duration: 0.04, yoyo: true, repeat: 5, ease: "none" }, 36.82);
+        up("#d-foot", 37.28, 0.4);
 
         tl.set({}, {}, 45.95);
         window.__timelines = window.__timelines || {};
