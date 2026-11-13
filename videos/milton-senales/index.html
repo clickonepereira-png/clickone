@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Profe Milton — ¿qué tanto sabe de señales?</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-normal.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/montserrat-latin-wght-italic.woff2") format("woff2");
+        font-weight: 100 900;
+        font-style: italic;
+      }
+      /* Profe Milton palette */
+      :root {
+        --ink: #0b1428;
+        --yellow: #ffd400;
+        --orange: #ff7a2f;
+        --red: #e5484d;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Montserrat", sans-serif;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #0047bb;
+      }
+      html[data-mode="green"] #zoom {
+        display: none;
+      }
+      #zoom {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- captions: cápsula hierarchy in Milton colours ---------- */
+      .cg {
+        position: absolute;
+        left: 60px;
+        right: 60px;
+        top: 1470px;
+        text-align: center;
+        visibility: hidden;
+        perspective: 900px;
+      }
+      .who {
+        display: inline-block;
+        height: 46px;
+        padding: 0 20px;
+        border-radius: 23px;
+        font-weight: 900;
+        font-size: 26px;
+        letter-spacing: 0.14em;
+        line-height: 46px;
+        margin-bottom: 10px;
+      }
+      .who.A {
+        background: var(--orange);
+        color: #fff;
+      }
+      .who.M {
+        background: var(--yellow);
+        color: var(--ink);
+      }
+      .cg .sm {
+        font-weight: 800;
+        font-size: 50px;
+        line-height: 1.1;
+        color: #fff;
+        -webkit-text-stroke: 9px var(--ink);
+        paint-order: stroke fill;
+      }
+      .cg .sm span {
+        display: inline-block;
+        margin: 0 7px;
+      }
+      .cg .bg {
+        display: inline-block;
+        margin-top: 12px;
+        font-weight: 900;
+        font-size: 124px;
+        line-height: 0.95;
+        letter-spacing: -0.035em;
+        color: #fff;
+        -webkit-text-stroke: 14px var(--ink);
+        paint-order: stroke fill;
+        white-space: nowrap;
+        transform-origin: 50% 70%;
+      }
+      .cg .bg.hot {
+        color: var(--yellow);
+      }
+      .cg .bg .c {
+        display: inline-block;
+      }
+      .cg .tn {
+        margin-top: 4px;
+        font-weight: 800;
+        font-size: 38px;
+        color: #fff;
+        -webkit-text-stroke: 7px var(--ink);
+        paint-order: stroke fill;
+      }
+
+      /* ---------- stickers ---------- */
+      .stk {
+        position: absolute;
+        visibility: hidden;
+      }
+      .tog {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        height: 96px;
+        padding: 0 28px 0 18px;
+        border-radius: 48px;
+        background: var(--ink);
+        color: #fff;
+        font-weight: 900;
+        font-size: 38px;
+        white-space: nowrap;
+        box-shadow: 0 10px 0 rgba(11, 20, 40, 0.35);
+      }
+      .flag {
+        width: 84px;
+        height: 56px;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border: 3px solid #fff;
+      }
+      .sw {
+        position: relative;
+        width: 96px;
+        height: 52px;
+        border-radius: 26px;
+        background: #3a4560;
+      }
+      .sw i {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #fff;
+      }
+      .stamp {
+        padding: 14px 40px;
+        border: 12px solid var(--red);
+        border-radius: 22px;
+        color: var(--red);
+        font-weight: 900;
+        font-size: 104px;
+        letter-spacing: 0.04em;
+        background: rgba(255, 255, 255, 0.86);
+        white-space: nowrap;
+      }
+      .burst {
+        display: grid;
+        place-items: center;
+        width: 330px;
+        height: 330px;
+        color: var(--ink);
+        font-weight: 900;
+        font-size: 64px;
+        text-align: center;
+        line-height: 0.95;
+        background: var(--yellow);
+        clip-path: polygon(50% 0%, 61% 18%, 82% 8%, 80% 30%, 100% 36%, 86% 52%, 100% 68%, 79% 72%, 82% 94%, 61% 84%, 50% 100%, 39% 84%, 18% 94%, 21% 72%, 0% 68%, 14% 52%, 0% 36%, 20% 30%, 18% 8%, 39% 18%);
+      }
+      .pill {
+        height: 76px;
+        padding: 0 32px;
+        border-radius: 38px;
+        font-weight: 900;
+        font-size: 36px;
+        letter-spacing: 0.1em;
+        line-height: 76px;
+        white-space: nowrap;
+      }
+      .ov {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        mix-blend-mode: screen;
+      }
+      html[data-mode="green"] .ov {
+        display: none;
+      }
+      #rw {
+        position: absolute;
+        inset: 0;
+        visibility: hidden;
+        background: transparent;
+      }
+      #rw-t {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 820px;
+        text-align: center;
+        font-weight: 900;
+        font-size: 92px;
+        white-space: nowrap;
+        color: #fff;
+        letter-spacing: -0.02em;
+        -webkit-text-stroke: 12px #0b1428;
+        paint-order: stroke fill;
+      }
+      #rw-s {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 970px;
+        text-align: center;
+        font-weight: 800;
+        font-size: 44px;
+        color: var(--yellow);
+        letter-spacing: 0.3em;
+      }
+      /* ---------- sign card (top) ---------- */
+      .sign {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 120px;
+        text-align: center;
+        visibility: hidden;
+      }
+      .sign .pic {
+        display: inline-block;
+        height: 330px;
+        filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45));
+      }
+      .sign .pic img,
+      .sign .pic svg {
+        height: 330px;
+        width: auto;
+      }
+      .sign .q,
+      .sign .ans {
+        position: absolute;
+        left: 40px;
+        right: 40px;
+        top: 360px;
+        font-weight: 900;
+        text-transform: uppercase;
+        -webkit-text-stroke: 11px var(--ink);
+        paint-order: stroke fill;
+        line-height: 1.05;
+      }
+      .sign .q {
+        font-size: 54px;
+        color: #fff;
+        letter-spacing: 0.04em;
+      }
+      .sign .ans {
+        font-size: 66px;
+        color: var(--yellow);
+        opacity: 0;
+      }
+      .sign .ans small {
+        display: block;
+        font-size: 38px;
+        color: #fff;
+        -webkit-text-stroke: 8px var(--ink);
+        margin-top: 4px;
+      }
+      /* ---------- side glow: green = correct, yellow = so-so, red = wrong ---------- */
+      .glow {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .glow.g {
+        background: linear-gradient(90deg, rgba(25, 210, 110, 0.85), rgba(25, 210, 110, 0) 26%, rgba(25, 210, 110, 0) 74%, rgba(25, 210, 110, 0.85));
+      }
+      .glow.y {
+        background: linear-gradient(90deg, rgba(255, 212, 0, 0.85), rgba(255, 212, 0, 0) 26%, rgba(255, 212, 0, 0) 74%, rgba(255, 212, 0, 0.85));
+      }
+      .glow.r {
+        background: linear-gradient(90deg, rgba(255, 40, 40, 0.85), rgba(255, 40, 40, 0) 26%, rgba(255, 40, 40, 0) 74%, rgba(255, 40, 40, 0.85));
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="112.15" data-width="1080" data-height="1920">
+      <div id="zoom">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="112.15" data-track-index="0" muted playsinline></video>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="112.15" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="112.15" data-track-index="1">
+
+        <!-- car plates in the opening shot: blurred patches that follow them (0 – 6.5) -->
+        <div id="plate" style="position: absolute; inset: 0; opacity: 0">
+          <div style="position: absolute; inset: 0; filter: blur(14px)">
+            <video id="plv" src="assets/footage.mp4" data-start="0" data-duration="112.15" data-track-index="2" muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></video>
+            <video id="plm" src="assets/footage.mp4" data-start="0" data-duration="112.15" data-track-index="3" muted playsinline style="position: absolute; top: 0; left: 1080px; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1)"></video>
+          </div>
+        </div>
+
+        <div id="glows"></div>
+
+        <div class="sign" id="sg-glorieta"><div class="pic"><img src="assets/signs/glorieta.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Glorieta<small>prelación: el que ya va dentro de la glorieta</small></div></div>
+        <div class="sign" id="sg-noparquear"><div class="pic"><img src="assets/signs/noparquear.png" /></div><div class="q">¿Qué significa?</div><div class="ans">No parquear ni detenerse</div></div>
+        <div class="sign" id="sg-pr63"><div class="pic"><img src="assets/signs/pr63.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Poste de referencia<small>está en el kilómetro 63 de la vía</small></div></div>
+        <div class="sign" id="sg-angosta"><div class="pic"><svg viewBox="0 0 360 360"><rect x="60" y="60" width="240" height="240" rx="22" transform="rotate(45 180 180)" fill="#ffc400"/><rect x="74" y="74" width="212" height="212" rx="14" transform="rotate(45 180 180)" fill="none" stroke="#111" stroke-width="12"/><path d="M128 278 L128 214 L158 166 L158 92 M232 278 L232 214 L202 166 L202 92" fill="none" stroke="#111" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="q">¿Qué significa?</div><div class="ans">Angostamiento de la vía<small>la calzada se reduce en ambos lados</small></div></div>
+        <div class="sign" id="sg-giro"><div class="pic"><img src="assets/signs/giro.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Curva pronunciada a la derecha<small>reduzca la velocidad</small></div></div>
+        <div class="sign" id="sg-adelantar"><div class="pic"><img src="assets/signs/adelantar.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Prohibido adelantar</div></div>
+        <div class="sign" id="sg-peso"><div class="pic"><img src="assets/signs/peso.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Peso máximo 20 toneladas</div></div>
+        <div class="sign" id="sg-altura"><div class="pic"><img src="assets/signs/altura.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Altura máxima 4,50 m</div></div>
+
+        <div id="caps"></div>
+      </div>
+
+      <!-- SFX: correct / so-so / error on the answers, whoosh when a sign comes in, a few funny ones -->
+      <audio id="xy1" src="assets/sfx/meh.wav" data-start="37.45" data-duration="0.64" data-track-index="29" data-volume="0.4"></audio>
+      <audio id="xr1" src="assets/sfx/falla.wav" data-start="77.9" data-duration="0.9" data-track-index="28" data-volume="0.3"></audio>
+      <audio id="x0" src="assets/sfx/dundun.wav" data-start="9.72" data-duration="2.04" data-track-index="20" data-volume="0.25"></audio>
+      <audio id="x1" src="assets/sfx/scratch.wav" data-start="19.82" data-duration="0.5" data-track-index="21" data-volume="0.4"></audio>
+      <audio id="x2" src="assets/sfx/boing.wav" data-start="24.5" data-duration="0.7" data-track-index="22" data-volume="0.35"></audio>
+      <audio id="x3" src="assets/sfx/pop.wav" data-start="27.04" data-duration="0.12" data-track-index="23" data-volume="0.35"></audio>
+      <audio id="x4" src="assets/sfx/whoosh.wav" data-start="29.65" data-duration="0.57" data-track-index="24" data-volume="0.28"></audio>
+      <audio id="x5" src="assets/sfx/correct.wav" data-start="31.4" data-duration="1.44" data-track-index="25" data-volume="0.35"></audio>
+      <audio id="x7" src="assets/sfx/whoosh.wav" data-start="38.4" data-duration="0.57" data-track-index="27" data-volume="0.28"></audio>
+      <audio id="x8" src="assets/sfx/correct.wav" data-start="39.9" data-duration="1.44" data-track-index="20" data-volume="0.35"></audio>
+      <audio id="x9" src="assets/sfx/correct.wav" data-start="41.95" data-duration="1.44" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="x10" src="assets/sfx/whoosh.wav" data-start="42.6" data-duration="0.57" data-track-index="22" data-volume="0.28"></audio>
+      <audio id="x14" src="assets/sfx/falla.wav" data-start="60.75" data-duration="0.9" data-track-index="26" data-volume="0.3"></audio>
+      <audio id="x15" src="assets/sfx/whoosh.wav" data-start="61.7" data-duration="0.57" data-track-index="27" data-volume="0.28"></audio>
+      <audio id="x16" src="assets/sfx/correct.wav" data-start="63.7" data-duration="1.44" data-track-index="20" data-volume="0.35"></audio>
+      <audio id="x18" src="assets/sfx/whoosh.wav" data-start="71.2" data-duration="0.57" data-track-index="22" data-volume="0.28"></audio>
+      <audio id="x19" src="assets/sfx/meh.wav" data-start="74.85" data-duration="0.64" data-track-index="23" data-volume="0.35"></audio>
+      <audio id="x20" src="assets/sfx/whoosh.wav" data-start="78.2" data-duration="0.57" data-track-index="24" data-volume="0.28"></audio>
+      <audio id="x22" src="assets/sfx/whoosh.wav" data-start="86.0" data-duration="0.57" data-track-index="26" data-volume="0.28"></audio>
+      <audio id="x23" src="assets/sfx/correct.wav" data-start="90.7" data-duration="1.44" data-track-index="27" data-volume="0.35"></audio>
+      <audio id="x25" src="assets/sfx/whoosh.wav" data-start="93.4" data-duration="0.57" data-track-index="21" data-volume="0.28"></audio>
+      <audio id="x26" src="assets/sfx/correct.wav" data-start="96.6" data-duration="1.44" data-track-index="22" data-volume="0.35"></audio>
+      <audio id="x27" src="assets/sfx/falla.wav" data-start="97.95" data-duration="0.9" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="x28" src="assets/sfx/correct.wav" data-start="101.5" data-duration="1.44" data-track-index="24" data-volume="0.35"></audio>
+      <audio id="x29" src="assets/sfx/dundun.wav" data-start="110.74" data-duration="1.4" data-track-index="25" data-volume="0.3"></audio>
+
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => document.querySelectorAll(s);
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+
+        // ---------- captions: [who, start, end, lead [[w,t]], big [word,t,hot?] | null, tail [text,t] | null, anim] ----------
+        const G = [
+          ["M", 0.4, 3.1, [["vamos", 0.44], ["a", 1.44], ["ver", 1.6], ["los", 1.74], ["conductores", 2.14], ["de", 2.6]], ["Pereira", 2.78], null, "pop"],
+          ["M", 3.12, 5.6, [["qué", 3.14], ["tanto", 3.52], ["conocen", 3.82], ["de", 4.2]], ["señales de tránsito", 4.42, 1], null, "flip"],
+          ["M", 5.62, 6.65, [["papá,", 5.64]], ["¡vamos!", 6.28], null, "bounce"],
+          ["M", 6.68, 8.0, [["¿cuánto", 6.7], ["tiempo", 6.92], ["ya", 7.14]], ["conduciendo?", 7.36], null, "slide"],
+          ["M", 8.04, 10.6, [["yo", 8.06], ["llevo", 8.24]], ["50 años", 9.72, 1], null, "pop"],
+          ["M", 10.62, 11.9, [["llevo", 10.82]], ["10 años", 11.08], null, "flip"],
+          ["M", 11.94, 13.0, [], ["un año", 11.96], null, "pop"],
+          ["M", 13.78, 15.1, [["hace", 13.8]], ["3 años", 14.32], null, "slide"],
+          ["M", 15.2, 16.8, [["no,", 15.22], ["más", 15.56], ["de", 15.74]], ["10 años", 15.96], null, "bounce"],
+          ["M", 16.86, 19.5, [["desde", 16.88], ["los", 17.18]], ["14 años", 17.4], null, "flip"],
+          ["M", 19.52, 20.9, [["no,", 19.54]], ["poquito tiempo", 19.82, 1], ["¿cierto?", 20.36], "type"],
+          ["M", 21.2, 24.4, [["ok,", 21.24], ["¿cómo", 21.86], ["le", 22.88], ["va", 22.94], ["con", 23.06], ["las", 23.18]], ["señales", 23.38], ["de tránsito?", 23.8], "slide"],
+          ["M", 24.45, 25.05, [], ["regulín", 24.5, 1], null, "bounce"],
+          ["M", 25.08, 26.5, [["muy", 25.1]], ["excelente", 25.34], null, "pop"],
+          ["M", 26.55, 28.15, [["ah", 26.6], ["no,", 26.76]], ["ningún problema", 27.04], null, "flip"],
+          ["M", 28.2, 29.6, [["ningún", 28.22], ["problema,", 28.8]], ["eso me gusta", 29.0], null, "pop"],
+          ["M", 29.62, 30.68, [["¿qué", 29.64], ["señal", 30.02]], ["es esa?", 30.3], null, "slide"],
+          ["M", 30.7, 31.9, [["¿se", 30.72], ["acerca", 30.8], ["a", 31.06], ["un", 31.16]], ["rompoi?", 31.3], null, "bounce"],
+          ["M", 31.94, 32.65, [["esta", 31.96], ["es", 32.02], ["la", 32.14]], ["glorieta", 32.24], null, "pop"],
+          ["M", 32.68, 35.6, [["o", 32.7], ["sea", 32.8], ["que", 33.0], ["deben", 33.22], ["de", 33.4]], ["esperar el turno", 33.74], null, "type"],
+          ["M", 36.1, 38.3, [["para", 36.82], ["poder", 37.14]], ["hacer el cruce", 37.4], null, "slide"],
+          ["M", 38.62, 40.6, [["esta", 38.72], ["es", 39.0]], ["prohibido estacionar", 39.3], null, "flip"],
+          ["M", 40.62, 42.4, [["no", 40.94], ["parqueo,", 41.16]], ["no parar", 41.6], null, "pop"],
+          ["M", 43.6, 45.7, [["¿cuál", 43.7], ["es", 43.88], ["el", 44.14], ["significado", 44.22], ["de", 44.5]], ["esa verdecita?", 44.6], null, "slide"],
+          ["M", 45.8, 47.9, [["a", 45.84]], ["63", 46.34], ["por kilómetro", 46.94], "pop"],
+          ["M", 48.0, 52.5, [["sí,", 48.06], ["para", 48.74], ["darle", 49.08], ["paso", 49.4], ["a", 49.6]], ["los peatones", 49.74], null, "flip"],
+          ["M", 52.6, 54.25, [], ["un kilómetro", 53.34], ["¿qué?", 54.06], "pop"],
+          ["M", 54.3, 59.3, [["¿algo", 55.42], ["de", 55.58], ["kilómetro?", 55.74]], ["el kilómetro 63", 57.26], null, "slide"],
+          ["M", 59.4, 61.6, [["¿qué", 59.44], ["es", 59.98], ["el", 59.98], ["kilómetro", 59.98], ["63?", 60.36]], ["no sé", 60.6], null, "bounce"],
+          ["M", 61.8, 63.95, [["esa", 61.9], ["es", 62.52], ["el", 62.56]], ["angostamiento de vía", 62.72], null, "flip"],
+          ["M", 64.0, 66.5, [["esta", 64.1]], ["no adelantar", 64.26], ["en doble línea", 65.08], "slide"],
+          ["M", 67.6, 69.0, [["¿no?", 67.78]], ["no", 68.72], null, "pop"],
+          ["M", 71.9, 75.5, [], ["giro a la derecha", 72.12], ["giro a la derecha… giro a la derecha", 73.18], "pop"],
+          ["M", 75.6, 78.2, [["esa:", 75.62]], ["no girará a la derecha", 75.82], null, "flip"],
+          ["M", 78.25, 80.7, [["¿a", 78.36], ["qué?", 78.52], ["no", 78.7], ["puedo", 78.9]], ["adelantar", 79.24], ["ese vehículo", 79.78], "slide"],
+          ["M", 80.8, 82.7, [["porque", 80.86], ["es", 81.06], ["peligroso,", 81.28]], ["doble carril", 81.94], null, "pop"],
+          ["M", 82.75, 84.1, [], ["prohibido adelantar", 82.88], null, "flip"],
+          ["M", 85.95, 86.6, [], ["siguiente", 85.98], null, "pop"],
+          ["M", 86.62, 88.0, [["esto", 86.66], ["es", 86.74], ["la", 86.84]], ["capacidad del carro", 87.18], null, "slide"],
+          ["M", 88.02, 89.72, [["no", 88.06], ["puede", 88.22], ["llevar", 88.4], ["más", 88.62], ["de", 88.76]], ["20 toneladas", 88.96], null, "flip"],
+          ["M", 89.75, 91.3, [], ["máximo 20 toneladas", 89.78], null, "pop"],
+          ["M", 91.4, 93.5, [["yo", 91.44], ["creo", 91.58], ["que", 91.76]], ["mínimo 20 toneladas", 92.3, 1], null, "bounce"],
+          ["M", 93.55, 96.9, [["y", 93.6], ["esta", 93.82], ["es", 94.0], ["una", 94.12]], ["altura", 94.44], ["4.5 máximo", 95.36], "slide"],
+          ["M", 97.05, 98.25, [["esa", 97.1], ["tampoco", 97.3], ["la", 97.6], ["he", 97.7]], ["visto", 97.8], null, "pop"],
+          ["M", 99.5, 101.75, [["puentes,", 99.62], ["¿no?", 99.96], ["es", 100.26], ["la", 100.38]], ["altura del camión", 100.7], null, "flip"],
+          ["M", 101.8, 103.95, [["muchos", 101.82], ["conducimos", 102.24], ["o", 102.76], ["manejamos", 102.94], ["un", 103.36]], ["vehículo", 103.5], null, "slide"],
+          ["M", 103.97, 106.1, [["pero", 103.98]], ["ignoramos", 104.3, 1], ["las señales de tránsito", 104.76], "pop"],
+          ["M", 106.15, 108.35, [["y", 106.2], ["son", 106.32], ["ellas", 106.68], ["las", 106.88], ["que", 107.0], ["nos", 107.14], ["ayudan", 107.34], ["a", 107.58]], ["minimizar", 107.98], null, "flip"],
+          ["M", 108.4, 109.6, [["el", 108.5], ["riesgo", 108.66], ["de", 108.84]], ["accidentalidad", 109.0], null, "slide"],
+          ["M", 109.65, 111.5, [["usted,", 109.68], ["¿en", 110.26], ["cuántas", 110.38], ["se", 110.58]], ["equivocó?", 110.74, 1], null, "bounce"],
+          ["M", 111.5, 112.15, [], ["¡comente!", 111.6, 1], null, "pop"],
+        ];
+        const caps = $("#caps");
+        G.forEach(([who, a, b, lead, big, tail, anim]) => {
+          const g = document.createElement("div");
+          g.className = "cg " + who;
+          const sm = document.createElement("div");
+          sm.className = "sm";
+          const leadEls = lead.map(([w, t]) => {
+            const s = document.createElement("span");
+            s.textContent = w;
+            sm.appendChild(s);
+            return [s, t];
+          });
+          g.appendChild(sm);
+          let bg = null;
+          let tn = null;
+          if (big) {
+            bg = document.createElement("div");
+            bg.className = "bg" + (big[2] ? " hot" : "");
+            // long keywords shrink so they always fit on one line
+            if (big[0].length > 11) bg.style.fontSize = Math.round(Math.min(124, 1500 / big[0].length)) + "px";
+            if (anim === "type") {
+              [...big[0]].forEach((ch) => {
+                const c = document.createElement("span");
+                c.className = "c";
+                c.textContent = ch === " " ? " " : ch;
+                bg.appendChild(c);
+              });
+            } else bg.textContent = big[0];
+            g.appendChild(bg);
+          }
+          if (tail) {
+            tn = document.createElement("div");
+            tn.className = "tn";
+            tn.textContent = tail[0];
+            g.appendChild(tn);
+          }
+          caps.appendChild(g);
+          tl.set(g, { visibility: "visible" }, a);
+          leadEls.forEach(([s, t]) => tl.fromTo(s, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.2, ease: "power2.out" }, Math.max(a, t)));
+          if (bg) {
+            const t = Math.max(a, big[1]);
+            if (anim === "pop") tl.fromTo(bg, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2.8)" }, t);
+            else if (anim === "flip") tl.fromTo(bg, { rotationX: -95, opacity: 0, y: 20 }, { rotationX: 0, opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.8)" }, t);
+            else if (anim === "slide") tl.fromTo(bg, { yPercent: 70, clipPath: "inset(0 -5% 100% -5%)" }, { yPercent: 0, clipPath: "inset(-15% -5% -15% -5%)", duration: 0.45, ease: "expo.out" }, t);
+            else if (anim === "bounce") tl.fromTo(bg, { y: -200, scale: 1.3, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.75, ease: "bounce.out" }, t);
+            else if (anim === "type") tl.fromTo(bg.querySelectorAll(".c"), { opacity: 0, y: 30, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: "back.out(3)", stagger: 0.035 }, t);
+            tl.to(bg, { scale: 1.04, duration: Math.max(0.2, b - t - 0.6), ease: "none" }, t + 0.5);
+          }
+          if (tn) tl.fromTo(tn, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }, tail[1]);
+          tl.set(g, { visibility: "hidden" }, b);
+        });
+
+        // ---------- camera: comedic punch-ins on the reactions ----------
+        // [t, scale, origin, hold]
+        const P = [
+          [9.72, 1.15, "50% 35%", 1.0], [19.82, 1.15, "50% 35%", 1.1], [24.5, 1.2, "50% 35%", 0.9], [27.04, 1.1, "50% 35%", 1.0],
+          [46.34, 1.12, "50% 40%", 1.2], [60.6, 1.15, "50% 40%", 1.0], [73.18, 1.12, "50% 40%", 1.4], [97.8, 1.15, "50% 35%", 0.9], [110.74, 1.1, "50% 30%", 1.2],
+        ];
+        P.forEach(([t, s, o, hold]) => {
+          tl.set("#zoom", { transformOrigin: o }, t)
+            .fromTo("#zoom", { scale: 1 }, { scale: s, duration: 0.18, ease: "power4.out" }, t)
+            .to("#zoom", { scale: s + 0.04, duration: hold - 0.4, ease: "none" }, t + 0.18)
+            .to("#zoom", { scale: 1, duration: 0.2, ease: "power2.inOut" }, t + hold - 0.2);
+        });
+
+        const show = (id, a, b) => {
+          tl.set(id, { visibility: "visible" }, a);
+          tl.set(id, { visibility: "hidden" }, b);
+        };
+        const pop = (sel, t, from = { scale: 0 }, d = 0.45, ease = "back.out(2.6)") =>
+          tl.fromTo(sel, { opacity: 0, ...from }, { opacity: 1, scale: 1, x: 0, y: 0, rotation: 0, duration: d, ease }, t);
+        const slam = (sel, t, rot = -8) => {
+          tl.fromTo(sel, { scale: 3, opacity: 0, rotation: rot - 10 }, { scale: 1, opacity: 1, rotation: rot, duration: 0.25, ease: "power4.in" }, t);
+          tl.fromTo(sel, { y: 0 }, { y: 8, duration: 0.05, ease: "none", yoyo: true, repeat: 3 }, t + 0.25);
+        };
+
+        // ===== plate blur (0 – 6.5): two patches, re-cut every frame =====
+        const K = 1080 / 480, PAD = 10;
+        const TRUCK = [[0, 300, 650, 336, 671], [1.0, 298, 651, 334, 671], [1.8, 334, 650, 368, 671], [2.4, 352, 649, 388, 670], [3.0, 363, 648, 398, 669], [3.6, 367, 648, 401, 668], [4.4, 390, 646, 424, 666], [5.0, 395, 646, 431, 666], [5.6, 399, 647, 438, 668], [6.2, 408, 647, 446, 668], [6.5, 412, 647, 450, 668]];
+        const CAR = [[0, 444, 622, 480, 644], [2.2, 442, 622, 480, 644]];
+        const at = (keys, t) => {
+          if (t < keys[0][0] || t > keys[keys.length - 1][0]) return null;
+          for (let i = 1; i < keys.length; i++)
+            if (t <= keys[i][0]) {
+              const a = keys[i - 1], b = keys[i], w = (t - a[0]) / (b[0] - a[0] || 1);
+              return [1, 2, 3, 4].map((k) => a[k] + (b[k] - a[k]) * w);
+            }
+          return keys[keys.length - 1].slice(1);
+        };
+        const rect = (r) => {
+          const [x0, y0, x1, y1] = [r[0] * K - PAD, r[1] * K - PAD, r[2] * K + PAD, r[3] * K + PAD];
+          return "M" + x0 + " " + y0 + " H" + x1 + " V" + y1 + " H" + x0 + " Z ";
+        };
+        tl.set("#plate", { opacity: 1 }, 0);
+        for (let f = 0; f <= 195; f++) {
+          const t = f / 30, a = at(TRUCK, t), b = at(CAR, t);
+          const d = (a ? rect(a) : "") + (b ? rect(b) : "");
+          tl.set("#plate", { clipPath: d ? "path('" + d + "')" : "inset(100%)" }, t);
+        }
+        tl.set("#plate", { opacity: 0 }, 6.55);
+
+        // ===== sign cards: in with a whoosh, "¿qué significa?", then the real meaning =====
+        const SG = [["glorieta", 29.65, 38.35, 31.4], ["noparquear", 38.4, 42.45, 39.9], ["pr63", 42.6, 61.6, 60.95], ["angosta", 61.7, 71.0, 63.7], ["giro", 71.2, 78.15, 74.85], ["adelantar", 78.2, 84.0, 83.3], ["peso", 86.0, 92.9, 90.7], ["altura", 93.4, 101.7, 96.6]];
+        SG.forEach(([k, a, b, rv]) => {
+          const id = "#sg-" + k;
+          tl.set(id, { visibility: "visible" }, a);
+          tl.fromTo(id + " .pic", { scale: 0, rotation: -25, y: -120 }, { scale: 1, rotation: 0, y: 0, duration: 0.55, ease: "back.out(1.9)" }, a);
+          tl.fromTo(id + " .q", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3 }, a + 0.25);
+          tl.to(id + " .pic", { rotation: 4, duration: 0.6, yoyo: true, repeat: Math.max(1, Math.floor((rv - a - 0.8) / 0.6)), ease: "sine.inOut" }, a + 0.6);
+          tl.to(id + " .pic", { rotation: 0, duration: 0.15 }, rv - 0.15);
+          tl.to(id + " .q", { opacity: 0, duration: 0.15 }, rv);
+          tl.fromTo(id + " .ans", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, rv);
+          tl.fromTo(id + " .pic", { scale: 1.18 }, { scale: 1, duration: 0.45, ease: "back.out(3)" }, rv);
+          tl.to(id, { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, b - 0.3);
+          tl.set(id, { visibility: "hidden" }, b);
+        });
+
+        // ===== side glow on every verdict =====
+        // one element per verdict so the pulses never fight each other when the player seeks
+        const glows = $("#glows");
+        const glow = (c, t) => {
+          const el = document.createElement("div");
+          el.className = "glow " + c;
+          glows.appendChild(el);
+          tl.set(el, { visibility: "visible" }, t);
+          tl.set(el, { visibility: "hidden" }, t + 1.42);
+          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, t);
+          tl.fromTo(el, { opacity: 1 }, { opacity: 0.35, duration: 0.25, ease: "power1.out", immediateRender: false }, t + 0.3);
+          tl.fromTo(el, { opacity: 0.35 }, { opacity: 1, duration: 0.12, immediateRender: false }, t + 0.6);
+          tl.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power1.in", immediateRender: false }, t + 0.9);
+        };
+        [31.4, 39.9, 41.95, 63.7, 90.7, 96.6, 101.5].forEach((t) => glow("g", t));
+        [37.45, 74.85].forEach((t) => glow("y", t));
+        [60.75, 77.9, 97.95].forEach((t) => glow("r", t));
+
+
+        tl.set({}, {}, 112.15);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
