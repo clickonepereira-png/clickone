@@ -479,16 +479,40 @@
         font-weight: 700;
         font-size: 52px;
       }
+      /* contact number at the very end */
+      #tel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 1660px;
+        text-align: center;
+        opacity: 0;
+        white-space: nowrap;
+      }
+      #tel svg {
+        width: 84px;
+        height: 84px;
+        vertical-align: -12px;
+        margin-right: 18px;
+      }
+      #tel b {
+        font-weight: 900;
+        font-size: 96px;
+        letter-spacing: 0.02em;
+        color: #fff;
+        -webkit-text-stroke: 14px var(--ink);
+        paint-order: stroke fill;
+      }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="45.95" data-width="1080" data-height="1920">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="48.45" data-width="1080" data-height="1920">
       <div id="zoom">
-        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="45.95" data-track-index="0" muted playsinline></video>
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="48.45" data-track-index="0" muted playsinline></video>
       </div>
-      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="45.95" data-track-index="10" data-volume="1"></audio>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="48.45" data-track-index="10" data-volume="1"></audio>
 
-      <div id="stage" class="clip" data-start="0" data-duration="45.95" data-track-index="1">
+      <div id="stage" class="clip" data-start="0" data-duration="48.45" data-track-index="1">
 
         <!-- white motion-graphic scenes (full screen, the presenter is hidden underneath) -->
         <div class="ws" id="wsA"><div class="edge"></div>
@@ -518,6 +542,7 @@
         </div>
 
         <div id="caps"></div>
+        <div id="tel"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="40" fill="#ffd400" stroke="#0b1428" stroke-width="4"/><path d="M30 22 L38 22 L42 33 L36 38 Q40 47 47 49 L52 43 L63 47 L63 55 Q63 62 55 62 Q24 60 22 30 Q22 22 30 22 Z" fill="#0b1428"/></svg><b>301 930 7974</b></div>
       </div>
 
       <!-- a few SFX only -->
@@ -545,6 +570,7 @@
       <audio id="fx19" src="assets/sfx/wh1.wav" data-start="35.1" data-duration="1.0" data-track-index="31" data-volume="0.3"></audio>
       <audio id="fx20" src="assets/sfx/stamp.wav" data-start="36.68" data-duration="0.35" data-track-index="32" data-volume="0.5"></audio>
       <audio id="fx21" src="assets/sfx/wh2.wav" data-start="37.95" data-duration="1.0" data-track-index="33" data-volume="0.25"></audio>
+      <audio id="sx8" src="assets/sfx/whoosh.wav" data-start="45.4" data-duration="0.57" data-track-index="25" data-volume="0.3"></audio>
       <audio id="sx7" src="assets/sfx/pop.wav" data-start="45.22" data-duration="0.3" data-track-index="24" data-volume="0.35"></audio>
     </div>
 
@@ -569,7 +595,7 @@
           ["M", 38.88, 41.25, [["si", 38.9], ["todavía", 39.32], ["están", 39.62], ["dentro", 39.98], ["del", 40.16]], ["tiempo establecido", 40.42], null, "type"],
           ["M", 41.27, 43.2, [["y", 41.28], ["no", 41.38], ["han", 41.44], ["iniciado", 41.68], ["la", 41.92]], ["reclamación", 42.08], ["ante el SOAT", 42.6], "slide"],
           ["M", 43.22, 44.98, [["con", 43.26], ["mucho", 43.6], ["gusto", 43.9], ["nosotros", 44.08]], ["los acompañamos", 44.34], null, "pop"],
-          ["M", 45.0, 45.95, [], ["contáctenos", 45.22, 1], null, "bounce"],
+          ["M", 45.0, 48.45, [], ["contáctenos", 45.22, 1], null, "bounce"],
         ];
         const caps = $("#caps");
         G.forEach(([who, a, b, lead, big, tail, anim]) => {
@@ -694,7 +720,11 @@
         tl.to("#d-card", { x: 10, duration: 0.04, yoyo: true, repeat: 5, ease: "none" }, 36.82);
         up("#d-foot", 37.28, 0.4);
 
-        tl.set({}, {}, 45.95);
+        // contact number under "contáctenos", held over the frozen last frame
+        tl.fromTo("#tel", { opacity: 0, y: 40, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2)" }, 45.45);
+        tl.fromTo("#tel svg", { rotation: -20 }, { rotation: 20, duration: 0.08, yoyo: true, repeat: 7, ease: "none" }, 45.9);
+
+        tl.set({}, {}, 48.45);
         window.__timelines = window.__timelines || {};
         window.__timelines["main"] = tl;
       });
