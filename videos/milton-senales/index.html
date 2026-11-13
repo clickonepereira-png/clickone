@@ -342,16 +342,15 @@
           </div>
         </div>
 
-        <div id="glows"></div>
 
-        <div class="sign" id="sg-glorieta"><div class="pic"><img src="assets/signs/glorieta.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Glorieta<small>prelación: el que ya va dentro de la glorieta</small></div></div>
-        <div class="sign" id="sg-noparquear"><div class="pic"><img src="assets/signs/noparquear.png" /></div><div class="q">¿Qué significa?</div><div class="ans">No parquear ni detenerse</div></div>
-        <div class="sign" id="sg-pr63"><div class="pic"><img src="assets/signs/pr63.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Poste de referencia<small>está en el kilómetro 63 de la vía</small></div></div>
-        <div class="sign" id="sg-angosta"><div class="pic"><svg viewBox="0 0 360 360"><rect x="60" y="60" width="240" height="240" rx="22" transform="rotate(45 180 180)" fill="#ffc400"/><rect x="74" y="74" width="212" height="212" rx="14" transform="rotate(45 180 180)" fill="none" stroke="#111" stroke-width="12"/><path d="M128 278 L128 214 L158 166 L158 92 M232 278 L232 214 L202 166 L202 92" fill="none" stroke="#111" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="q">¿Qué significa?</div><div class="ans">Angostamiento de la vía<small>la calzada se reduce en ambos lados</small></div></div>
-        <div class="sign" id="sg-giro"><div class="pic"><img src="assets/signs/giro.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Curva pronunciada a la derecha<small>reduzca la velocidad</small></div></div>
-        <div class="sign" id="sg-adelantar"><div class="pic"><img src="assets/signs/adelantar.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Prohibido adelantar</div></div>
-        <div class="sign" id="sg-peso"><div class="pic"><img src="assets/signs/peso.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Peso máximo 20 toneladas</div></div>
-        <div class="sign" id="sg-altura"><div class="pic"><img src="assets/signs/altura.png" /></div><div class="q">¿Qué significa?</div><div class="ans">Altura máxima 4,50 m</div></div>
+        <div class="sign" id="sg-glorieta"><div class="pic"><img src="assets/signs/glorieta.png" /></div></div>
+        <div class="sign" id="sg-noparquear"><div class="pic"><img src="assets/signs/noparquear.png" /></div></div>
+        <div class="sign" id="sg-pr63"><div class="pic"><img src="assets/signs/pr63.png" /></div></div>
+        <div class="sign" id="sg-angosta"><div class="pic"><svg viewBox="0 0 360 360"><rect x="60" y="60" width="240" height="240" rx="22" transform="rotate(45 180 180)" fill="#ffc400"/><rect x="74" y="74" width="212" height="212" rx="14" transform="rotate(45 180 180)" fill="none" stroke="#111" stroke-width="12"/><path d="M128 278 L128 214 L158 166 L158 92 M232 278 L232 214 L202 166 L202 92" fill="none" stroke="#111" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+        <div class="sign" id="sg-giro"><div class="pic"><img src="assets/signs/giro.png" /></div></div>
+        <div class="sign" id="sg-adelantar"><div class="pic"><img src="assets/signs/adelantar.png" /></div></div>
+        <div class="sign" id="sg-peso"><div class="pic"><img src="assets/signs/peso.png" /></div></div>
+        <div class="sign" id="sg-altura"><div class="pic"><img src="assets/signs/altura.png" /></div></div>
 
         <div id="caps"></div>
       </div>
@@ -552,33 +551,15 @@
           const id = "#sg-" + k;
           tl.set(id, { visibility: "visible" }, a);
           tl.fromTo(id + " .pic", { scale: 0, rotation: -25, y: -120 }, { scale: 1, rotation: 0, y: 0, duration: 0.55, ease: "back.out(1.9)" }, a);
-          tl.fromTo(id + " .q", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3 }, a + 0.25);
           tl.to(id + " .pic", { rotation: 4, duration: 0.6, yoyo: true, repeat: Math.max(1, Math.floor((rv - a - 0.8) / 0.6)), ease: "sine.inOut" }, a + 0.6);
           tl.to(id + " .pic", { rotation: 0, duration: 0.15 }, rv - 0.15);
-          tl.to(id + " .q", { opacity: 0, duration: 0.15 }, rv);
-          tl.fromTo(id + " .ans", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, rv);
           tl.fromTo(id + " .pic", { scale: 1.18 }, { scale: 1, duration: 0.45, ease: "back.out(3)" }, rv);
           tl.to(id, { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, b - 0.3);
           tl.set(id, { visibility: "hidden" }, b);
         });
 
         // ===== side glow on every verdict =====
-        // one element per verdict so the pulses never fight each other when the player seeks
-        const glows = $("#glows");
-        const glow = (c, t) => {
-          const el = document.createElement("div");
-          el.className = "glow " + c;
-          glows.appendChild(el);
-          tl.set(el, { visibility: "visible" }, t);
-          tl.set(el, { visibility: "hidden" }, t + 1.42);
-          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, t);
-          tl.fromTo(el, { opacity: 1 }, { opacity: 0.35, duration: 0.25, ease: "power1.out", immediateRender: false }, t + 0.3);
-          tl.fromTo(el, { opacity: 0.35 }, { opacity: 1, duration: 0.12, immediateRender: false }, t + 0.6);
-          tl.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.5, ease: "power1.in", immediateRender: false }, t + 0.9);
-        };
-        [31.4, 39.9, 41.95, 63.7, 90.7, 96.6, 101.5].forEach((t) => glow("g", t));
-        [37.45, 74.85].forEach((t) => glow("y", t));
-        [60.75, 77.9, 97.95].forEach((t) => glow("r", t));
+
 
 
         tl.set({}, {}, 112.15);
