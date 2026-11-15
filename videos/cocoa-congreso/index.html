@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="es" data-mode="full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>COCOA — Congreso SST tráiler</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-normal.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Playfair";
+        src: url("assets/fonts/playfair-display-latin-wght-italic.woff2") format("woff2");
+        font-weight: 400 900;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+      }
+      /* COCOA gold, taken from the logo gradient */
+      :root {
+        --gold: linear-gradient(100deg, #9c7f45 0%, #c9a75c 22%, #f3dc9a 38%, #e1b553 50%, #fff1c4 58%, #c38e45 72%, #a8763f 100%);
+        --gold-solid: #d9b25e;
+        --ink: #1a0b1e;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        font-family: "Poppins", sans-serif;
+      }
+      html[data-mode="green"],
+      html[data-mode="green"] body,
+      html[data-mode="green"] #root {
+        background: #00b140;
+      }
+      html[data-mode="green"] #zoom,
+      html[data-mode="green"] .shade {
+        display: none;
+      }
+      #zoom,
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      /* cinematic grade: permanent soft vignette, plus a deeper dim behind the impact cards */
+      #vig {
+        background: radial-gradient(ellipse 85% 70% at 50% 48%, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 100%);
+      }
+      #dim {
+        background: rgba(8, 0, 12, 0.62);
+        opacity: 0;
+      }
+      #low {
+        background: linear-gradient(0deg, rgba(10, 0, 14, 0.75) 0%, rgba(10, 0, 14, 0.35) 22%, rgba(10, 0, 14, 0) 40%);
+      }
+      .shade {
+        position: absolute;
+        inset: 0;
+      }
+      #flash {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        opacity: 0;
+      }
+      #cold {
+        position: absolute;
+        inset: 0;
+        background: #000;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 34px;
+      }
+      #cold img {
+        width: 520px;
+      }
+      #cold .p {
+        font-weight: 500;
+        font-size: 30px;
+        letter-spacing: 0.6em;
+        margin-right: -0.6em;
+        color: #fff;
+        opacity: 0;
+      }
+
+      /* ---------- trailer type ---------- */
+      .card {
+        position: absolute;
+        left: 50px;
+        right: 50px;
+        text-align: center;
+        visibility: hidden;
+      }
+      .card.c {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .card.l {
+        bottom: 300px;
+      }
+      .ln {
+        display: block;
+        white-space: nowrap;
+        filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.55));
+      }
+      .cap {
+        font-weight: 500;
+        font-size: 40px;
+        letter-spacing: 0.32em;
+        margin-right: -0.32em;
+        text-transform: uppercase;
+        color: #fff;
+        margin-bottom: 10px;
+      }
+      .ser {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 92px;
+        line-height: 1.08;
+        color: #fff;
+      }
+      .big {
+        font-weight: 600;
+        font-size: 120px;
+        line-height: 1.02;
+        letter-spacing: 0.08em;
+        margin-right: -0.08em;
+        text-transform: uppercase;
+        color: #fff;
+      }
+      .huge {
+        font-weight: 600;
+        font-size: 190px;
+        line-height: 1;
+        letter-spacing: 0.04em;
+        margin-right: -0.04em;
+        text-transform: uppercase;
+        color: #fff;
+      }
+      .g {
+        background: var(--gold);
+        background-size: 280% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .strike {
+        position: relative;
+        display: inline-block;
+      }
+      .strike i {
+        position: absolute;
+        left: -4%;
+        right: -4%;
+        top: 52%;
+        height: 12px;
+        border-radius: 6px;
+        background: var(--gold-solid);
+        transform-origin: 0 50%;
+        transform: scaleX(0);
+      }
+      .rule {
+        width: 220px;
+        height: 3px;
+        margin: 18px auto 14px;
+        background: var(--gold);
+        transform-origin: 50% 50%;
+      }
+      /* closing lockup */
+      #lock {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 330px;
+        text-align: center;
+        visibility: hidden;
+      }
+      #lock img {
+        width: 640px;
+        filter: drop-shadow(0 6px 26px rgba(0, 0, 0, 0.6));
+      }
+      #lock .tri {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        gap: 26px;
+        font-weight: 600;
+        font-size: 38px;
+        letter-spacing: 0.22em;
+        color: #fff;
+        filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.6));
+      }
+      #lock .tri b {
+        font-weight: 600;
+        opacity: 0;
+      }
+      #lock .tri s {
+        text-decoration: none;
+        color: var(--gold-solid);
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="66.08" data-width="1080" data-height="1920">
+      <div id="zoom">
+        <video id="footage" src="assets/footage.mp4" data-start="0" data-duration="66.08" data-track-index="0" muted playsinline></video>
+      </div>
+      <audio id="voice" src="assets/footage.mp4" data-start="0" data-duration="66.08" data-track-index="10" data-volume="1"></audio>
+
+      <div id="stage" class="clip" data-start="0" data-duration="66.08" data-track-index="1">
+        <div class="shade" id="vig"></div>
+        <div class="shade" id="low"></div>
+        <div class="shade" id="dim"></div>
+        <div id="cards"></div>
+        <div id="lock">
+          <img src="assets/img/cocoa-logo.png" alt="" />
+          <div class="tri"><b>CONSCIENCIA</b><s>·</s><b>COHERENCIA</b><s>·</s><b>ACCIÓN</b></div>
+        </div>
+        <div id="cold"><img src="assets/img/cocoa-logo.png" alt="" /><div class="p">PRESENTA</div></div>
+        <div id="flash"></div>
+      </div>
+
+      <!-- trailer SFX: swell → boom on the big hits, impacts on the stacked words -->
+      <audio id="s0" src="assets/sfx/riser.wav" data-start="0.6" data-duration="1.4" data-track-index="20" data-volume="0.3"></audio>
+      <audio id="s1" src="assets/sfx/impact.wav" data-start="2.3" data-duration="0.4" data-track-index="21" data-volume="0.45"></audio>
+      <audio id="s2" src="assets/sfx/whoosh-soft.wav" data-start="4.55" data-duration="0.55" data-track-index="22" data-volume="0.3"></audio>
+      <audio id="s3" src="assets/sfx/swell.wav" data-start="7.24" data-duration="1.4" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="s4" src="assets/sfx/boom.wav" data-start="8.64" data-duration="2.2" data-track-index="24" data-volume="0.5"></audio>
+      <audio id="s5" src="assets/sfx/whoosh-soft.wav" data-start="16.55" data-duration="0.55" data-track-index="22" data-volume="0.3"></audio>
+      <audio id="s6" src="assets/sfx/impact.wav" data-start="17.4" data-duration="0.4" data-track-index="21" data-volume="0.4"></audio>
+      <audio id="s7" src="assets/sfx/impact.wav" data-start="22.0" data-duration="0.4" data-track-index="21" data-volume="0.45"></audio>
+      <audio id="s8" src="assets/sfx/boom.wav" data-start="23.0" data-duration="2.2" data-track-index="24" data-volume="0.45"></audio>
+      <audio id="s9" src="assets/sfx/boom.wav" data-start="25.45" data-duration="2.2" data-track-index="25" data-volume="0.45"></audio>
+      <audio id="s10" src="assets/sfx/boom.wav" data-start="27.83" data-duration="2.2" data-track-index="24" data-volume="0.45"></audio>
+      <audio id="s11" src="assets/sfx/whoosh-soft.wav" data-start="40.3" data-duration="0.55" data-track-index="22" data-volume="0.25"></audio>
+      <audio id="s12" src="assets/sfx/swell.wav" data-start="40.74" data-duration="1.4" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="s13" src="assets/sfx/boom.wav" data-start="42.14" data-duration="2.2" data-track-index="25" data-volume="0.5"></audio>
+      <audio id="s14" src="assets/sfx/impact.wav" data-start="44.0" data-duration="0.4" data-track-index="21" data-volume="0.4"></audio>
+      <audio id="s15" src="assets/sfx/impact.wav" data-start="44.82" data-duration="0.4" data-track-index="26" data-volume="0.4"></audio>
+      <audio id="s16" src="assets/sfx/impact.wav" data-start="46.0" data-duration="0.4" data-track-index="21" data-volume="0.45"></audio>
+      <audio id="s17" src="assets/sfx/whoosh-fast.wav" data-start="53.0" data-duration="0.22" data-track-index="22" data-volume="0.4"></audio>
+      <audio id="s18" src="assets/sfx/swell.wav" data-start="56.26" data-duration="1.4" data-track-index="23" data-volume="0.3"></audio>
+      <audio id="s19" src="assets/sfx/boom.wav" data-start="57.66" data-duration="2.2" data-track-index="24" data-volume="0.5"></audio>
+      <audio id="s20" src="assets/sfx/impact.wav" data-start="58.24" data-duration="0.4" data-track-index="21" data-volume="0.3"></audio>
+      <audio id="s21" src="assets/sfx/impact.wav" data-start="59.1" data-duration="0.4" data-track-index="26" data-volume="0.3"></audio>
+      <audio id="s22" src="assets/sfx/impact.wav" data-start="60.02" data-duration="0.4" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="s23" src="assets/sfx/bowl.wav" data-start="62.1" data-duration="3.2" data-track-index="27" data-volume="0.25"></audio>
+    </div>
+
+    <script>
+      document.fonts.ready.then(() => {
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => document.querySelectorAll(s);
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
+
+        // ---------- cold open ----------
+        tl.set("#cold", { opacity: 1 }, 0);
+        tl.fromTo("#cold img", { opacity: 0, scale: 1.12, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.0, ease: "power2.out" }, 0.1);
+        tl.fromTo("#cold .p", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.8);
+        tl.to("#cold", { opacity: 0, duration: 0.25, ease: "power2.in" }, 1.8);
+        tl.set("#cold", { visibility: "hidden" }, 2.06);
+
+        // ---------- cards: [start, end, place c|l, lines [[text, t, style]], hit] ----------
+        // style: cap | ser | big | huge, with "g" for gold; "+N" counts up; "~" strikes through
+        const C = [
+          [2.06, 3.95, "c", [["más de", 2.06, "cap"], ["+300", 2.3, "huge g +300"], ["personas", 3.0, "big"]], 1, 1320],
+          [3.98, 5.45, "c", [["un mismo", 3.98, "cap"], ["espacio", 4.6, "big"]], 0, 1260],
+          [5.48, 7.12, "l", [["una experiencia que", 5.48, "cap"], ["transformó", 6.7, "ser"]], 0, 1500],
+          [7.14, 8.4, "l", [["el ruido de", 7.14, "cap"], ["la rutina", 7.58, "ser"]], 0, 1500],
+          [8.42, 10.6, "c", [["en", 8.42, "cap"], ["bienestar", 8.64, "huge g"]], 1, 1440],
+          [14.1, 15.35, "l", [["llegamos al", 14.1, "cap"], ["Congreso de Seguridad", 14.4, "ser"]], 0, 600],
+          [15.37, 16.5, "l", [["y Salud en el", 15.4, "cap"], ["Trabajo", 15.7, "ser"]], 0, 600],
+          [16.55, 18.8, "c", [["SST 2026", 16.55, "cap"], ["Expofutura", 16.6, "big"], ["Pereira", 17.4, "big g"]], 1, 760],
+          [18.86, 20.55, "l", [["con una herramienta", 18.86, "cap"], ["real", 19.94, "ser g"]], 0, 1320],
+          [20.6, 22.95, "c", [["para la prevención del", 20.6, "cap"], ["riesgo", 21.6, "big"], ["psicosocial", 22.0, "big g"]], 1, 1240],
+          [23.0, 25.4, "c", [["respira", 23.0, "huge"]], 1, 1300],
+          [25.45, 27.8, "c", [["siente", 25.45, "huge"]], 1, 980],
+          [27.83, 30.6, "c", [["suelta", 27.83, "huge g"]], 1, 960],
+          [32.58, 34.68, "l", [["hicimos", 32.58, "cap"], ["una pausa para respirar", 33.04, "ser"]], 0, 1500],
+          [34.7, 36.22, "l", [["la respiración", 34.7, "cap"], ["consciente", 35.72, "ser g"]], 0, 1500],
+          [36.24, 37.62, "l", [["para", 36.24, "cap"], ["bajar el estrés", 36.44, "ser"]], 0, 1500],
+          [37.64, 39.76, "l", [["regular el", 37.66, "cap"], ["sistema nervioso", 38.32, "ser"]], 0, 1500],
+          [39.78, 41.15, "c", [["y volver al", 39.8, "cap"], ["presente", 40.34, "big g"]], 0, 960],
+          [41.18, 43.95, "c", [["y después, un", 41.2, "cap"], ["baño de", 42.14, "huge"], ["sonido", 42.14, "huge g"]], 1, 1040],
+          [44.0, 46.72, "c", [["cuencos", 44.0, "big"], ["frecuencia", 44.82, "big"], ["vibración", 46.0, "big g"]], 1, 1520],
+          [46.76, 49.95, "l", [["los envolvieron a todos en", 46.76, "cap"], ["relajación", 48.04, "ser"], ["y conexión", 49.0, "ser g"]], 0, 1500],
+          [50.0, 51.82, "l", [["porque prevenir el", 50.0, "cap"], ["riesgo psicosocial", 50.79, "ser"]], 0, 1500],
+          [51.86, 53.5, "c", [["no es solo llenar un", 51.86, "cap"], ["formato", 52.6, "big ~"]], 0, 1100],
+          [53.54, 55.38, "l", [["es enseñarle al cuerpo a", 53.54, "cap"], ["soltar", 54.66, "ser g"]], 0, 1240],
+          [55.4, 56.85, "l", [["y a sentirse", 55.4, "cap"], ["seguro", 55.8, "ser"]], 0, 1500],
+          [60.66, 66.08, "l", [["llevamos la respiración,", 60.66, "cap"], ["el camino del bienestar", 62.1, "ser g"], ["a donde más nos necesitan", 63.84, "cap"]], 0, 1500],
+        ];
+        const cards = $("#cards");
+        const dims = [];
+        C.forEach(([a, b, place, lines, hit, cy]) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          cards.appendChild(card);
+          lines.forEach(([text, t, style]) => {
+            const el = document.createElement("span");
+            const tags = style.split(" ");
+            el.className = "ln " + tags.filter((x) => !x.startsWith("+") && x !== "~").join(" ");
+            const count = tags.find((x) => x.startsWith("+"));
+            if (tags.includes("~")) {
+              const w = document.createElement("span");
+              w.className = "strike";
+              w.textContent = text;
+              const bar = document.createElement("i");
+              w.appendChild(bar);
+              el.appendChild(w);
+              tl.to(bar, { scaleX: 1, duration: 0.35, ease: "power3.inOut" }, t + 0.45);
+              tl.to(w, { opacity: 0.55, duration: 0.3 }, t + 0.7);
+            } else el.textContent = count ? "+0" : text;
+            card.appendChild(el);
+            // long words shrink so they always fit the 980px line
+            const px = style.includes("huge") ? 190 : style.includes("big") ? 120 : 0;
+            if (px && text.length * px * 0.84 > 960) el.style.fontSize = Math.floor(960 / (text.length * 0.84)) + "px";
+            const st = Math.max(a, t);
+            if (style.includes("huge") || (style.includes("big") && hit)) {
+              // slam: big, blurred, then lands
+              tl.fromTo(el, { opacity: 0, scale: 1.7, filter: "blur(14px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "power4.out" }, st);
+            } else if (style.includes("big")) {
+              tl.fromTo(el, { opacity: 0, y: 40, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55 }, st);
+            } else if (style.includes("ser")) {
+              tl.fromTo(el, { opacity: 0, y: 30, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }, st);
+            } else {
+              tl.fromTo(el, { opacity: 0, scaleX: 1.25, filter: "blur(6px)" }, { opacity: 1, scaleX: 1, filter: "blur(0px)", duration: 0.7, ease: "power3.out" }, st);
+            }
+            if (style.includes(" g") || style.startsWith("g")) tl.fromTo(el, { backgroundPosition: "0% 0" }, { backgroundPosition: "100% 0", duration: 1.6, ease: "power1.inOut" }, st + 0.2);
+            if (count) {
+              const n = { v: 0 }, max = +count.slice(1);
+              tl.to(n, { v: max, duration: 0.9, ease: "power3.out", onUpdate: () => (el.textContent = "+" + Math.round(n.v)) }, st);
+            }
+          });
+          tl.set(card, { visibility: "visible" }, a);
+          tl.fromTo(card, { scale: 1 }, { scale: 1.05, duration: b - a, ease: "none" }, a);
+          tl.to(card, { opacity: 0, filter: "blur(8px)", duration: 0.22, ease: "power2.in" }, b - 0.22);
+          tl.set(card, { visibility: "hidden" }, b);
+          // vertically centred on cy, a band chosen per shot so it never covers a face
+          card.style.top = cy - card.offsetHeight / 2 + "px";
+          if (place === "c") dims.push([a, b]);
+        });
+        // deep dim behind every centre card
+        dims.forEach(([a, b]) => {
+          tl.to("#dim", { opacity: 1, duration: 0.25, ease: "power1.out" }, a);
+          tl.to("#dim", { opacity: 0, duration: 0.3, ease: "power1.in" }, b - 0.15);
+        });
+
+        // ---------- hits: white flash + punch-in ----------
+        [8.64, 23.0, 25.45, 27.83, 42.14, 57.66].forEach((t) => {
+          tl.set("#flash", { opacity: 0.85 }, t);
+          tl.to("#flash", { opacity: 0, duration: 0.35, ease: "power2.out" }, t);
+          tl.set("#zoom", { scale: 1.14 }, t);
+          tl.to("#zoom", { scale: 1, duration: 1.2, ease: "expo.out" }, t);
+        });
+        [2.3, 17.4, 22.0, 44.0, 44.82, 46.0].forEach((t) => {
+          tl.set("#zoom", { scale: 1.06 }, t);
+          tl.to("#zoom", { scale: 1, duration: 0.6, ease: "expo.out" }, t);
+        });
+
+        // ---------- "Esto es COCOA" lockup ----------
+        tl.set("#lock", { visibility: "visible" }, 56.9);
+        tl.to("#dim", { opacity: 1, duration: 0.3 }, 56.9);
+        tl.fromTo("#lock img", { opacity: 0, scale: 1.6, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.6, ease: "power4.out" }, 57.66);
+        const tri = $$("#lock .tri b");
+        [58.24, 59.1, 60.02].forEach((t, i) => tl.fromTo(tri[i], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, t));
+        $$("#lock .tri s").forEach((d, i) => tl.to(d, { opacity: 1, duration: 0.3 }, [58.7, 59.6][i]));
+        tl.to("#lock", { y: -120, scale: 0.7, duration: 0.9, ease: "power3.inOut" }, 60.5);
+        tl.to("#dim", { opacity: 0.45, duration: 0.9 }, 60.5);
+        tl.to("#dim", { opacity: 1, duration: 1.0 }, 64.9);
+
+        tl.set({}, {}, 66.08);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      });
+    </script>
+  </body>
+</html>
