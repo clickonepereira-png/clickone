@@ -139,7 +139,7 @@
       .ln {
         display: block;
         white-space: nowrap;
-        filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.55));
+        filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.7)) drop-shadow(0 4px 18px rgba(0, 0, 0, 0.6));
       }
       .cap {
         font-weight: 500;
@@ -309,8 +309,8 @@
           [7.14, 8.4, "l", [["el ruido de", 7.14, "cap"], ["la rutina", 7.58, "ser"]], 0, 1500],
           [8.42, 10.6, "c", [["en", 8.42, "cap"], ["bienestar", 8.64, "huge g"]], 1, 1440],
           [14.1, 15.35, "l", [["llegamos al", 14.1, "cap"], ["Congreso de Seguridad", 14.4, "ser"]], 0, 600],
-          [15.37, 16.5, "l", [["y Salud en el", 15.4, "cap"], ["Trabajo", 15.7, "ser"]], 0, 600],
-          [16.55, 18.8, "c", [["SST 2026", 16.55, "cap"], ["Expofutura", 16.6, "big"], ["Pereira", 17.4, "big g"]], 1, 760],
+          [15.37, 16.5, "l", [["y Salud en el", 15.4, "cap"], ["Trabajo", 15.7, "ser"]], 0, 1560],
+          [16.55, 18.8, "c", [["SST 2026", 16.55, "cap"], ["Expofuturo", 16.6, "big"], ["Pereira", 17.4, "big g"]], 1, 760],
           [18.86, 20.55, "l", [["con una herramienta", 18.86, "cap"], ["real", 19.94, "ser g"]], 0, 1320],
           [20.6, 22.95, "c", [["para la prevención del", 20.6, "cap"], ["riesgo", 21.6, "big"], ["psicosocial", 22.0, "big g"]], 1, 1240],
           [23.0, 25.4, "c", [["respira", 23.0, "huge"]], 1, 1300],
@@ -380,6 +380,8 @@
           card.style.top = cy - card.offsetHeight / 2 + "px";
           if (place === "c") dims.push([a, b]);
         });
+        // bright congress-hall shots: dim them behind the lower lines too
+        dims.push([14.1, 16.5], [18.86, 20.55]);
         // deep dim behind every centre card
         dims.forEach(([a, b]) => {
           tl.to("#dim", { opacity: 1, duration: 0.25, ease: "power1.out" }, a);
