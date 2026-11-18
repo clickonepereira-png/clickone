@@ -1,12 +1,23 @@
 # Guía para continuar las ediciones en otra sesión de Claude
 
-> **Cómo usarla:** abre una sesión nueva de Claude Code en el repositorio `clickonepereira-png/clickone`. En el primer mensaje escribe: *"Lee GUIA-EDICION-CLAUDE.md y sigue esas reglas"*, y adjunta el video.
+> **Cómo usarla en un repositorio NUEVO:**
+> 1. Crea el repositorio nuevo en GitHub y abre una sesión de Claude Code con él.
+> 2. Adjunta este archivo en el primer mensaje, o súbelo a la raíz del repositorio nuevo.
+> 3. Escribe: *"Lee GUIA-EDICION-CLAUDE.md y sigue esas reglas. Trabaja en este repositorio."*
+> 4. Adjunta el video.
+>
+> **Sobre los recursos (sonidos, logos, overlays, señales):** están en el repositorio anterior, `clickonepereira-png/clickone`. Tienes dos opciones:
+> - **(a) Recomendada:** pídele al nuevo Claude *"agrega el repositorio clickonepereira-png/clickone solo para copiar recursos"*. Así puede copiar a su repositorio lo que necesite: sonidos, logo de COCOA, overlays o un proyecto parecido como plantilla.
+> - **(b)** Vuelve a enviarle los recursos (zips de sonidos, logos) cuando los necesite.
+>
+> Las rutas `videos/...` de esta guía se refieren al repositorio anterior. En el nuevo, Claude debe crear su propia carpeta por video, con la misma estructura.
 
 ## 1. Cómo trabajamos
 
 - El usuario edita en **CapCut** y habla en español. Claude edita los videos con **HyperFrames** (`npx hyperframes@0.8.101`), renderiza y entrega los archivos.
 - Cada video tiene su carpeta en `videos/<proyecto>/`, con `index.html`, `assets/` (footage, sfx, fuentes, imágenes) y `renders/`.
-- Se trabaja en la rama `claude/motion-graphics-vertical-video-08l3bb`. Hay que hacer commit y push al terminar.
+- Se trabaja en la rama que indique la sesión del repositorio nuevo. Hay que hacer commit y push al terminar.
+- Para arrancar un proyecto nuevo, corre `npx hyperframes@0.8.101 init <nombre>`, o copia la estructura de un proyecto del repositorio anterior.
 - El render "completo" pesa mucho: se agrega a `.gitignore` y no se sube. GitHub no acepta archivos de más de 100 MB.
 
 ### Entregables de cada video
@@ -79,13 +90,13 @@
   - no animes `letterSpacing`;
   - revisa que la plantilla no tenga clases viejas con el mismo nombre (pasó con `.stamp`).
 
-## 5. Proyectos hechos (en `videos/`)
+## 5. Proyectos hechos (en el repositorio anterior `clickonepereira-png/clickone`, carpeta `videos/`)
 
 casa-lujo, cocoa-testimonio, cocoa-congreso, boda-diana-german, cornabis-pension, cornabis-arl, cornabis-pago, cornabis-eps, cornabis-regimenes, milton-transito, milton-tecnomecanica, milton-alcoholemia, milton-soat, milton-senales, viajando-eje, movigym.
 
 Todos usan la misma estructura. Para un video nuevo de un cliente, lo más rápido es copiar el proyecto más parecido y cambiar el guion, los tiempos, los efectos y las escenas.
 
-## 6. Biblioteca de recursos
+## 6. Biblioteca de recursos (en el repositorio anterior; copiar al nuevo según se necesite)
 
 - **Sonidos del cliente** (whoosh, click, error/falla, correct, cash, digits, riser, typing…): en `videos/cornabis-regimenes/assets/sfx` y `videos/movigym/assets/sfx`.
 - **Sonidos graciosos:** en `videos/milton-transito/assets/sfx`.
